@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id                Int      @id @default(autoincrement())
+  name              String
+  email             String   @unique
+  phoneNumber       String?
+  password          String
+  diaChi            String?
+  role              String?  @default("user")
+  avatar            String?  @default("https://i0.wp.com/www.repol.copl.ulaval.ca/wp-content/uploads/2019/01/default-user-icon.jpg?ssl=1")
+  isEmailVerified   Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  loaiHinhKinhDoanh Int?
+  hoTenOrganizer    String?
+  cccdNumber        String?
+  maSoThueCaNhan    String?
+  anhDaiDienToChuc  String?  @default("https://i0.wp.com/www.repol.copl.ulaval.ca/wp-content/uploads/2019/01/default-user-icon.jpg?ssl=1")
+  tenDoanhNghiep    String?
+  maSoDKKD          String?
+  noiCap            String?
+  ngayCap           String?
+  chiNhanh          String?
+  soTaiKhoan        String?
+  tenChuTaiKhoan    String?
+  tenNganHang       String?
+  trangThai         String?  @default("dang_hoat_dong")
+  otp               String?
+  SuKiens           SuKien[]
+  HoaDon            HoaDon[]
+}
+
+model SuKien {
+  id            Int         @id @default(autoincrement())
+  name          String
+  moTa          String?     @db.Text
+  diaChi        String?
+  hinhAnhSuKien String?     @db.LongText
+  ngayBatDau    DateTime
+  ngayKetThuc   DateTime
+  userId        Int
+  ChuDeId       Int
+  trangThai     String      @default("Đã duyệt")
+  user          User        @relation(fields: [userId], references: [id])
+  ChuDe         ChuDe       @relation(fields: [ChuDeId], references: [id])
+  ves           Ve[]
+  MaGiamGia     MaGiamGia[]
+  Banners       Banners[]
+  HoaDon        HoaDon[]
+
+  @@index([userId])
+  @@index([ChuDeId])
+}
+
+model ChuDe {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  SuKiens   SuKien[]
+}
+
+model Ve {
+  id              Int         @id @default(autoincrement())
+  name            String
+  moTa            String?     @db.Text
+  gia             Float
+  mau             String
+  soLuong         Int
+  soLuongToiThieu Int
+  soLuongToiDa    Int
+  ngayBan         DateTime
+  ngayKetThuc     DateTime
+  SuKienId        Int
+  suKien          SuKien      @relation(fields: [SuKienId], references: [id])
+  HoaDonVe        HoaDonVe[]
+  MaGiamGia       MaGiamGia[]
+
+  @@index([SuKienId])
+}
+
+model HoaDon {
+  id                  Int        @id @default(autoincrement())
+  ngayDatHang         DateTime
+  userId              Int
+  phuongThucThanhToan String
+  createdAt           DateTime   @default(now())
+  tinhTrang           String     @default("Chưa thanh toán")
+  tongTien            Float      @default(0)
+  maGiamGiaId         Int?
+  checkIn             Boolean    @default(false)
+  suKienId            Int
+  maDatCho            String
+  suKien              SuKien     @relation(fields: [suKienId], references: [id])
+  user                User       @relation(fields: [userId], references: [id])
+  HoaDonVe            HoaDonVe[]
+
+  @@index([userId])
+  @@index([suKienId])
+}
+
+model HoaDonVe {
+  id       Int    @id @default(autoincrement())
+  hoaDonId Int
+  veId     Int
+  soLuong  Int
+  tongGia  Float
+  hoaDon   HoaDon @relation(fields: [hoaDonId], references: [id])
+  ve       Ve     @relation(fields: [veId], references: [id])
+
+  @@index([hoaDonId, veId], map: "HoaDonVe_HoaDonVeId")
+  @@index([veId])
+}
+
+model MaGiamGia {
+  id           Int      @id @default(autoincrement())
+  maGiamGia    String   @unique
+  soTienGiam   Float?
+  phanTramGiam Int?
+  ngayBatDau   DateTime
+  ngayKetThuc  DateTime
+  SuKienId     Int?
+  VeId         Int?
+  trangThai    Boolean  @default(true)
+  suKien       SuKien?  @relation(fields: [SuKienId], references: [id])
+  ve           Ve?      @relation(fields: [VeId], references: [id])
+
+  @@index([SuKienId])
+  @@index([VeId])
+}
+
+model Banners {
+  id       Int    @id @default(autoincrement())
+  SuKienId Int
+  position Int?
+  suKien   SuKien @relation(fields: [SuKienId], references: [id])
+
+  @@index([SuKienId])
+}
