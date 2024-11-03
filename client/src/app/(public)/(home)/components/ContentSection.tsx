@@ -1,10 +1,10 @@
 import React from "react";
-import EventCarousel from "./EventCarousel";
+import BannerCarousel from "./BannerCarousel";
 import ListComponent from "./ListComponent";
 const ContentSection = () => {
   return (
-    <div className="bg-grey-200 flex flex-1 flex-col items-center">
-      <EventCarousel />
+    <div className="bg-[#141414]">
+      <BannerCarousel />
       <ListComponent />
     </div>
   );

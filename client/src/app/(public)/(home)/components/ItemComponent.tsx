@@ -2,7 +2,6 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { IoMdTime } from "react-icons/io";
-import { main_color } from "../../../../../public/color";
 import LiveMusic from "@/components/livemusic";
 import NightLifeIcon from "@/components/nightlife";
 import StageIcon from "@/components/stage";

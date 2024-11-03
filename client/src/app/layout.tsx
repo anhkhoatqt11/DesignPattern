@@ -11,8 +11,8 @@ import { Toaster } from "react-hot-toast";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "TicketNow",
-  description: "TicketNow - Nền tảng bán vé sự kiện",
+  title: "Skylark: Thế giới Anime giải trí thỏa thích",
+  description: "Skylark - Xem phim, đọc truyện thỏa thích",
 };
 
 export default function RootLayout({
