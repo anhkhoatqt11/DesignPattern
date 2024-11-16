@@ -159,7 +159,7 @@ const NavigationMenuDemo = ({ session }) => {
           </div>
         ) : null}
         <div className="flex flex-row gap-4 items-center justify-center ml-auto mr-6">
-          <Link href="/organizer/event">
+          <Link href="/comic">
             <Button
               className={`h-full py-0 w-fit text-lg bg-transparent text-white hover:text-fuchsia-500 hover:bg-transparent font-semibold`}
               style={{ fontFamily: "'Nunito', sans-serif" }}
@@ -167,7 +167,7 @@ const NavigationMenuDemo = ({ session }) => {
               Truyện tranh
             </Button>
           </Link>
-          <Link href="/organizer/event">
+          <Link href="/anime">
             <Button
               className={`h-full py-0 w-fit text-lg bg-transparent text-white hover:text-fuchsia-500 hover:bg-transparent font-semibold`}
               style={{ fontFamily: "'Nunito', sans-serif" }}

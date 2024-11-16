@@ -23,6 +23,20 @@ export const useComic = () => {
     return res;
   };
 
+  const getComicAlbumContentAll = async (idList) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getComicInAlbum?idList=${idList}&limit=10000&page=1`,
+    });
+    return res;
+  };
+
+  const getRankingTable = async () => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getRankingTable`,
+    });
+    return res;
+  };
+
   const fetchAllEventsBySearch = async (page, props = {}) => {
     let endPointUrl = `/api/event?page=${page}&limit=12`;
     const appendParam = (param, value) => {
@@ -41,6 +55,8 @@ export const useComic = () => {
     fetchComicBanner,
     getComicAlbum,
     getComicAlbumContent,
+    getComicAlbumContentAll,
+    getRankingTable,
 
     fetchAllEventsBySearch,
   };

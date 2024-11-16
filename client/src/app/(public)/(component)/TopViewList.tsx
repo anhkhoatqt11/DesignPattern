@@ -18,7 +18,6 @@ function TopViewList({ animeName, animeId }) {
   useEffect(() => {
     const fetchEpisodeDetail = async () => {
       const result = await getAnimeChapterById(animeId);
-      console.log("🚀 ~ fetchEpisodeDetail ~ result:", result);
       setEpisodeList(result[0]?.movieEpisodes);
       setIsLoading(false);
     };
@@ -32,7 +31,7 @@ function TopViewList({ animeName, animeId }) {
         <section
           id="categories"
           aria-labelledby="categories-heading"
-          className="space-y-6 py-3 px-20"
+          className="space-y-6 py-3 px-8 sm:px-20"
         >
           <div className="flex flex-row gap-3">
             <div className="w-[6px] h-[24px] sm:w-[8px] sm:h-[40px] bg-gradient-to-b from-[#A958FE] to-[#DA5EF0] rounded-full z-10">
@@ -42,7 +41,7 @@ function TopViewList({ animeName, animeId }) {
               {animeName}
             </h2>
             <Link
-              href={`/bat-dong-san/loai-hinh-bat-dong-san/`}
+              href={`/anime/album/topView?animeId=${animeId}`}
               className="z-10"
             >
               <IoIosArrowForward className="text-white w-6 h-6 sm:w-10 sm:h-10" />
@@ -59,12 +58,16 @@ function TopViewList({ animeName, animeId }) {
                 "--swiper-pagination-bullet-height": "0px",
               } as React.CSSProperties
             }
-            slidesPerView={3}
+            slidesPerView={2}
             spaceBetween={14}
             pagination={{
               clickable: true,
             }}
             breakpoints={{
+              425: {
+                slidesPerView: 2,
+                spaceBetween: 14,
+              },
               700: {
                 slidesPerView: 3,
                 spaceBetween: 14,
@@ -86,7 +89,10 @@ function TopViewList({ animeName, animeId }) {
             className="w-full h-auto overflow-visible relative"
           >
             {episodeList?.map((item) => (
-              <SwiperSlide className="h-full relative overflow-visible">
+              <SwiperSlide
+                key={item?._id}
+                className="h-full relative overflow-visible"
+              >
                 <Link href={``}>
                   <TopViewItem
                     img={item?.coverImage}

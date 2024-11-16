@@ -14,18 +14,14 @@ import DonateList from "../../(component)/DonateList";
 import RankingAnime from "../../(component)/RankingAnime";
 import RankingComic from "../../(component)/RankingComic";
 
-function HomeAlbum() {
+function AnimeAlbum() {
   const { getAnimeAlbum, getTopViewAnime } = useAnime();
-  const { getComicAlbum } = useComic();
-  const [listComicAlbum, setListComicAlbum] = useState();
   const [listAnimeAlbum, setListAnimeAlbum] = useState();
   const [listTopView, setListTopView] = useState();
   const [isLoaded, setIsLoaded] = useState(false);
   const [listGenerate, setListGenerate] = useState<number[]>([]);
   useEffect(() => {
     const fetchHomeAlbum = async () => {
-      const resComic = await getComicAlbum();
-      setListComicAlbum(resComic);
       const resAnime = await getAnimeAlbum();
       setListAnimeAlbum(resAnime);
       const resTopView = await getTopViewAnime();
@@ -36,12 +32,8 @@ function HomeAlbum() {
             length:
               Math.round(resAnime?.length / 2) >
               Math.round(resTopView?.length / 2)
-                ? Math.round(resAnime?.length / 2) > resComic?.length
-                  ? Math.round(resAnime?.length / 2)
-                  : resComic?.length
-                : Math.round(resTopView?.length / 2) > resComic?.length
-                ? Math.round(resTopView?.length / 2)
-                : resComic?.length,
+                ? Math.round(resAnime?.length / 2)
+                : Math.round(resTopView?.length / 2),
           },
           (_, index) => index + 1
         )
@@ -61,14 +53,6 @@ function HomeAlbum() {
         <div className="flex flex-col gap-3">
           {listGenerate.map((_, index) => (
             <div key={index} className="flex flex-col gap-3">
-              {index < listComicAlbum.length ? (
-                <ComicAlbumList
-                  comicAlbumName={listComicAlbum[index]?.albumName}
-                  idList={listComicAlbum[index]?.comicList}
-                />
-              ) : (
-                ""
-              )}
               {2 * index < listAnimeAlbum.length ? (
                 <AnimeAlbumList
                   animeAlbumName={listAnimeAlbum[2 * index].albumName}
@@ -81,6 +65,15 @@ function HomeAlbum() {
                 <AnimeAlbumList
                   animeAlbumName={listAnimeAlbum[2 * index + 1].albumName}
                   idList={listAnimeAlbum[2 * index + 1]._id}
+                />
+              ) : (
+                ""
+              )}
+
+              {index * 2 < listTopView.length ? (
+                <TopViewList
+                  animeName={listTopView[index * 2]._id?.movieName[0]}
+                  animeId={listTopView[index * 2]._id?.movieOwnerId[0]}
                 />
               ) : (
                 ""
@@ -101,7 +94,7 @@ function HomeAlbum() {
 
               {index === 2 || index === 3 ? <DonateList /> : ""}
 
-              {index == 4 ? <RankingAnime /> : ""}
+              {index == 1 ? <RankingAnime /> : ""}
             </div>
           ))}
         </div>
@@ -110,4 +103,4 @@ function HomeAlbum() {
   );
 }
 
-export default HomeAlbum;
+export default AnimeAlbum;

@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import BannerCarousel from "./components/BannerCarousel";
-import ListComponent from "./components/ListComponent";
+import BannerCarousel from "../(home)/components/BannerCarousel";
+import ListComponent from "./(components)/ListComponent";
 
 const page = () => {
   return (

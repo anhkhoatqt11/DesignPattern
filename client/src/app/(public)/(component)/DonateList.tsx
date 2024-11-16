@@ -18,7 +18,6 @@ function DonateList() {
   useEffect(() => {
     const fetchDonateList = async () => {
       const result = await getDonatePackageList();
-      console.log("🚀 ~ fetchDonateList ~ result:", result);
       setDonateList(result);
       setIsLoading(false);
     };
@@ -32,7 +31,7 @@ function DonateList() {
         <section
           id="categories"
           aria-labelledby="categories-heading"
-          className="space-y-6 py-3 px-20"
+          className="space-y-6 py-3 px-8 sm:px-20"
         >
           <div className="flex flex-row gap-3">
             <div className="w-[6px] h-[24px] sm:w-[8px] sm:h-[40px] bg-gradient-to-b from-[#A958FE] to-[#DA5EF0] rounded-full z-10">
@@ -41,10 +40,7 @@ function DonateList() {
             <h2 className="text-white text-xl font-bold leading-[1.1] sm:text-3xl z-10">
               🔥 Donate ủng hộ chúng mình nè
             </h2>
-            <Link
-              href={`/bat-dong-san/loai-hinh-bat-dong-san/`}
-              className="z-10"
-            >
+            <Link href={`/donate`} className="z-10">
               <IoIosArrowForward className="text-white w-6 h-6 sm:w-10 sm:h-10" />
             </Link>
           </div>
@@ -59,12 +55,16 @@ function DonateList() {
                 "--swiper-pagination-bullet-height": "0px",
               } as React.CSSProperties
             }
-            slidesPerView={4}
+            slidesPerView={2}
             spaceBetween={14}
             pagination={{
               clickable: true,
             }}
             breakpoints={{
+              425: {
+                slidesPerView: 2,
+                spaceBetween: 14,
+              },
               700: {
                 slidesPerView: 4,
                 spaceBetween: 14,
@@ -86,7 +86,10 @@ function DonateList() {
             className="w-full h-auto overflow-visible relative"
           >
             {donateList?.map((item) => (
-              <SwiperSlide className="h-full relative overflow-visible">
+              <SwiperSlide
+                key={item?._id}
+                className="h-full relative overflow-visible"
+              >
                 <Link href={``}>
                   <DonateItem
                     img={item?.coverImage}

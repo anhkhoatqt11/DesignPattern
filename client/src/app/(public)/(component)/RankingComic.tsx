@@ -5,32 +5,33 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
-import { useAnime } from "@/hooks/useAnime";
-import { RankingAnimeItem } from "./RankingAnimeItem";
+import Link from "next/link";
+import { IoIosArrowForward } from "react-icons/io";
+import { useComic } from "@/hooks/useComic";
+import { RankingComicItem } from "./RankingComicItem";
 
-function RankingAnime() {
-  const { getRankingTable } = useAnime();
+function RankingComic() {
+  const { getRankingTable } = useComic();
   const [rankingList, setRankingList] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAnimeRanking = async () => {
+    const fetchComicRanking = async () => {
       const result = await getRankingTable();
-      const transformArray = [
-        result[0],
-        ...result?.slice(1).reduce((acc, curr, index) => {
-          if (index % 2 === 0) {
-            acc.push([curr]);
-          } else {
-            acc[acc.length - 1].push(curr);
-          }
-          return acc;
-        }, []),
-      ];
+      const transformArray: any[] = [];
+      for (let i = 0; i < result?.length; i += 5) {
+        transformArray.push([
+          result[i],
+          result[i + 1],
+          result[i + 2],
+          result[i + 3],
+          result[i + 4],
+        ]);
+      }
       setRankingList(transformArray);
       setIsLoading(false);
     };
-    fetchAnimeRanking();
+    fetchComicRanking();
   }, []);
   return (
     <>
@@ -49,6 +50,12 @@ function RankingAnime() {
             <h2 className="text-white text-xl font-bold leading-[1.1] sm:text-3xl z-10">
               🏆 Bảng xếp hạng
             </h2>
+            <Link
+              href={`/bat-dong-san/loai-hinh-bat-dong-san/`}
+              className="z-10"
+            >
+              <IoIosArrowForward className="text-white w-6 h-6 sm:w-10 sm:h-10" />
+            </Link>
           </div>
           <Swiper
             style={
@@ -61,26 +68,26 @@ function RankingAnime() {
                 "--swiper-pagination-bullet-height": "0px",
               } as React.CSSProperties
             }
-            slidesPerView={2}
+            slidesPerView={1}
             spaceBetween={14}
             pagination={{
               clickable: true,
             }}
             breakpoints={{
               700: {
-                slidesPerView: 2,
+                slidesPerView: 1,
                 spaceBetween: 14,
               },
               900: {
-                slidesPerView: 3,
+                slidesPerView: 2,
                 spaceBetween: 14,
               },
               1100: {
-                slidesPerView: 5,
+                slidesPerView: 3,
                 spaceBetween: 20,
               },
               1300: {
-                slidesPerView: 5,
+                slidesPerView: 4,
                 spaceBetween: 20,
               },
             }}
@@ -92,7 +99,9 @@ function RankingAnime() {
                 key={index}
                 className="h-full relative overflow-visible"
               >
-                <RankingAnimeItem item={item} rank={index} />
+                <Link href={``}>
+                  <RankingComicItem item={item} rank={index} />
+                </Link>
               </SwiperSlide>
             ))}
           </Swiper>
@@ -102,4 +111,4 @@ function RankingAnime() {
   );
 }
 
-export default RankingAnime;
+export default RankingComic;

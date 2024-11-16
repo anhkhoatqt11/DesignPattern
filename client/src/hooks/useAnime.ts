@@ -23,6 +23,13 @@ export const useAnime = () => {
     return res;
   };
 
+  const getAnimeAlbumContentAll = async (albumId) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeInAlbum?idAlbum=${albumId}&limit=10000&page=1`,
+    });
+    return res;
+  };
+
   const getTopViewAnime = async () => {
     const res = await getRequest({
       endPoint: `https://skylark-entertainment.vercel.app/api/animes/getTopViewAnime`,
@@ -40,6 +47,13 @@ export const useAnime = () => {
   const getRankingTable = async () => {
     const res = await getRequest({
       endPoint: `https://skylark-entertainment.vercel.app/api/animes/getRankingTable`,
+    });
+    return res;
+  };
+
+  const getAnimeDetailById = async (animeId) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeDetailById?animeId=${animeId}`,
     });
     return res;
   };
@@ -63,8 +77,10 @@ export const useAnime = () => {
     getAnimeAlbum,
     getTopViewAnime,
     getAnimeAlbumContent,
+    getAnimeAlbumContentAll,
     getAnimeChapterById,
     getRankingTable,
+    getAnimeDetailById,
 
     fetchAllEventsBySearch,
   };

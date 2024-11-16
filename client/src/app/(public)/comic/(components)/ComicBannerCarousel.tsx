@@ -4,21 +4,22 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useAnime } from "@/hooks/useAnime";
+import { useComic } from "@/hooks/useComic";
 
-function BannerCarousel() {
-  const { fetchAnimeBanner } = useAnime();
+function ComicBannerCarousel() {
+  const { fetchComicBanner } = useComic();
   const [isLoaded, setIsLoaded] = React.useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: [],
     queryFn: async () => {
-      const res = await fetchAnimeBanner();
+      const res = await fetchComicBanner();
       setIsLoaded(true);
       return res;
     },
   });
 
+  console.log("🚀 ~ ComicBannerCarousel ~ data:", data);
   //Ensure data is available before rendering
   if (isLoading || !data) {
     return null;
@@ -34,13 +35,13 @@ function BannerCarousel() {
         showStatus={false}
         showArrows={true}
       >
-        {data?.animeList?.map((item) => (
-          <Link key={item?._id} href={`/anime/${item?._id}`}>
+        {data?.comicList?.map((item) => (
+          <Link key={item?._id} href={`event/${item?.SuKienId}`}>
             <div key={item?._id} className="w-full aspect-[16/8] relative">
               <img
                 className="rounded-lg w-full aspect-[16/8]"
                 src={item?.landspaceImage}
-                alt="Anime background"
+                alt="Comic background"
                 style={{ objectFit: "cover" }}
               />
               <div className="absolute inset-0 bg-black opacity-60" />
@@ -52,4 +53,4 @@ function BannerCarousel() {
   );
 }
 
-export default BannerCarousel;
+export default ComicBannerCarousel;

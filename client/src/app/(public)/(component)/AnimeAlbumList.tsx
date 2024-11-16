@@ -18,7 +18,6 @@ function AnimeAlbumList({ animeAlbumName, idList }) {
   useEffect(() => {
     const fetchAlbumDetail = async () => {
       const result = await getAnimeAlbumContent(idList);
-      console.log("🚀 ~ fetchAlbumDetail ~ result:", result);
       setAnimeList(result[0]?.detailList);
       setIsLoading(false);
     };
@@ -32,7 +31,7 @@ function AnimeAlbumList({ animeAlbumName, idList }) {
         <section
           id="categories"
           aria-labelledby="categories-heading"
-          className="space-y-6 py-3 px-20"
+          className="space-y-6 py-3 px-8 sm:px-20"
         >
           <div className="flex flex-row gap-3">
             <div className="w-[6px] h-[24px] sm:w-[8px] sm:h-[40px] bg-gradient-to-b from-[#A958FE] to-[#DA5EF0] rounded-full z-10">
@@ -41,10 +40,7 @@ function AnimeAlbumList({ animeAlbumName, idList }) {
             <h2 className="text-white text-xl font-bold leading-[1.1] sm:text-3xl z-10">
               {animeAlbumName}
             </h2>
-            <Link
-              href={`/bat-dong-san/loai-hinh-bat-dong-san/`}
-              className="z-10"
-            >
+            <Link href={`/anime/album?id=${idList}`} className="z-10">
               <IoIosArrowForward className="text-white w-6 h-6 sm:w-10 sm:h-10" />
             </Link>
           </div>
@@ -59,12 +55,16 @@ function AnimeAlbumList({ animeAlbumName, idList }) {
                 "--swiper-pagination-bullet-height": "0px",
               } as React.CSSProperties
             }
-            slidesPerView={4}
+            slidesPerView={2}
             spaceBetween={14}
             pagination={{
               clickable: true,
             }}
             breakpoints={{
+              425: {
+                slidesPerView: 2,
+                spaceBetween: 14,
+              },
               700: {
                 slidesPerView: 4,
                 spaceBetween: 14,
@@ -86,8 +86,11 @@ function AnimeAlbumList({ animeAlbumName, idList }) {
             className="w-full h-auto overflow-visible relative"
           >
             {animeList?.map((item) => (
-              <SwiperSlide className="h-full relative overflow-visible">
-                <Link href={``}>
+              <SwiperSlide
+                key={item?._id}
+                className="h-full relative overflow-visible"
+              >
+                <Link href={`/anime/${item?._id}`}>
                   <AnimeItem img={item?.coverImage} name={item?.movieName} />
                 </Link>
               </SwiperSlide>

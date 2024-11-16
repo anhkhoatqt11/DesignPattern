@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import BannerCarousel from "./components/BannerCarousel";
-import ListComponent from "./components/ListComponent";
+import ComicBannerCarousel from "./(components)/ComicBannerCarousel";
+import { ListComponent } from "./(components)/ListComponent";
 
 const page = () => {
   return (
     <div className="bg-[#141414]">
-      <BannerCarousel />
+      <ComicBannerCarousel />
       <ListComponent />
     </div>
   );
