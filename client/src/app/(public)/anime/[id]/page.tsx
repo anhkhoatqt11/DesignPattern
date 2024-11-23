@@ -54,7 +54,7 @@ const page = ({ params }) => {
             className="brightness-75 object-cover h-full w-full"
           />
         </AspectRatio>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/75 to-transparent" />
       </div>
       <div className="w-full sm:px-20 px-8 absolute top-0 right-0 h-full items-center">
         <div className="flex flex-col gap-3 mt-[100px] mr-3">
@@ -218,7 +218,7 @@ const page = ({ params }) => {
   );
 };
 
-const convertTagArrayToStr = (genres) =>
-  genres.map((item) => item.genreName).join(", ");
+export const convertTagArrayToStr = (genres) =>
+  genres?.map((item) => item.genreName).join(", ");
 
 export default page;

@@ -58,6 +58,65 @@ export const useAnime = () => {
     return res;
   };
 
+  const getAnimeDetailInEpisodePageById = async (animeId) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeDetailInEpisodePageById?animeId=${animeId}`,
+    });
+    return res;
+  };
+
+  const getAnimeEpisodeDetailById = async (episodeId) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeEpisodeDetailById?episodeId=${episodeId}`,
+    });
+    return res;
+  };
+
+  const getSomeTopViewEpisodes = async () => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getSomeTopViewEpisodes`,
+    });
+    return res;
+  };
+
+  const checkUserHistoryHadSeenEpisode = async (episodeId, userId) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/checkUserHistoryHadSeenEpisode?episodeId=${episodeId}&userId=${userId}`,
+    });
+    return res;
+  };
+
+  const checkUserHasLikeOrSaveEpisode = async (episodeId, userId) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/checkUserHasLikeOrSaveEpisode?episodeId=${episodeId}&userId=${userId}`,
+    });
+    return res;
+  };
+
+  const updateUserLikeEpisode = async (episodeId, userId) => {
+    const res = await postRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/updateUserLikeEpisode`,
+      isFormData: false,
+      formData: {
+        episodeId,
+        userId,
+      },
+    });
+    return res;
+  };
+
+  const updateUserSaveEpisode = async (episodeId, userId) => {
+    const res = await postRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/updateUserSaveEpisode`,
+      isFormData: false,
+      formData: {
+        episodeId,
+        userId,
+      },
+    });
+    return res;
+  };
+
   const fetchAllEventsBySearch = async (page, props = {}) => {
     let endPointUrl = `/api/event?page=${page}&limit=12`;
     const appendParam = (param, value) => {
@@ -81,6 +140,13 @@ export const useAnime = () => {
     getAnimeChapterById,
     getRankingTable,
     getAnimeDetailById,
+    getAnimeDetailInEpisodePageById,
+    getAnimeEpisodeDetailById,
+    getSomeTopViewEpisodes,
+    checkUserHistoryHadSeenEpisode,
+    checkUserHasLikeOrSaveEpisode,
+    updateUserLikeEpisode,
+    updateUserSaveEpisode,
 
     fetchAllEventsBySearch,
   };
