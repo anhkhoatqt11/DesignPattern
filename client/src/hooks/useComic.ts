@@ -1,4 +1,4 @@
-import { getRequest, postRequest } from "@/lib/fetch";
+import { getRequest, postRequest, putRequest } from "@/lib/fetch";
 import toast from "react-hot-toast";
 
 export const useComic = () => {
@@ -37,6 +37,31 @@ export const useComic = () => {
     return res;
   };
 
+  const checkUserBanned = async (userId) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/comics/checkUserBanned?userId=${userId}`,
+    });
+    return res;
+  };
+
+  const checkValidCommentContent = async (content) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/comics/checkValidCommentContent?content=${content}`,
+    });
+    return res;
+  };
+
+  const banUser = async (userId) => {
+    const res = await putRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/comics/banUser`,
+      isFormData: false,
+      formData: {
+        userId,
+      },
+    });
+    return res;
+  };
+
   const fetchAllEventsBySearch = async (page, props = {}) => {
     let endPointUrl = `/api/event?page=${page}&limit=12`;
     const appendParam = (param, value) => {
@@ -57,6 +82,9 @@ export const useComic = () => {
     getComicAlbumContent,
     getComicAlbumContentAll,
     getRankingTable,
+    checkUserBanned,
+    checkValidCommentContent,
+    banUser,
 
     fetchAllEventsBySearch,
   };

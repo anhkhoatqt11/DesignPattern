@@ -20,29 +20,34 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { BsFillSendFill } from "react-icons/bs";
 import { useAnime } from "@/hooks/useAnime";
+import toast from "react-hot-toast";
+import { useQuest } from "@/hooks/useQuest";
+import { EpisodeComment } from "./EpisodeComment";
 
-const FormSchema = z.object({
-  comment: z.string().min(1, {
-    message: "Bình luận không được trống",
-  }),
-});
 const EpisodePlayer = ({ episodeDetail }) => {
   const userId = "65ec67ad05c5cb2ad67cfb3f";
-  const { checkUserHistoryHadSeenEpisode } = useAnime();
+  const userInfo = {
+    id: "65ec67ad05c5cb2ad67cfb3f",
+    questLog: {
+      readingTime: 3,
+      watchingTime: 2,
+    },
+  };
+  const {
+    checkUserHistoryHadSeenEpisode,
+    updateUserHistoryHadSeenEpisode,
+    updateEpisodeView,
+  } = useAnime();
+  const { updateQuestLog } = useQuest();
   const [hasWatchFullAd, setHasWatchFullAd] = useState(false);
   const [adPosition, setAdPosition] = useState(0);
   const adVideoRef = useRef(null);
   const animeVideoRef = useRef(null);
   const [adDuration, setAdDuration] = useState(0);
   const [previousPosition, setPreviousPosition] = useState(0);
+  const [viewTimeStack, setViewTimeStack] = useState<number[]>([]);
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      comment: "",
-    },
-  });
-
+  // video player .......................
   const onTimeUpdateFunction = () => {
     if (adVideoRef?.current?.currentTime === adVideoRef?.current?.duration)
       setHasWatchFullAd(true);
@@ -52,20 +57,55 @@ const EpisodePlayer = ({ episodeDetail }) => {
     }
   };
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log("🚀 ~ onSubmit ~ JSON.stringify(data, null, 2):", data);
-    form.reset({ comment: "" });
-  }
+  const onAnimeTimeUpdateFunction = async () => {
+    localStorage.setItem(
+      "currentVideoPosition",
+      animeVideoRef?.current?.currentTime || 0
+    );
+    const currentVideoPosition = Math.round(
+      animeVideoRef?.current?.currentTime
+    );
+    if (viewTimeStack.length === 3) {
+      return;
+    }
+    if (viewTimeStack.length === 2) {
+      setViewTimeStack([...viewTimeStack, currentVideoPosition]);
+      await updateEpisodeView(episodeDetail?._id);
+      await updateQuestLog("", userInfo);
+      return;
+    }
+    if (
+      !viewTimeStack.length ||
+      viewTimeStack[viewTimeStack.length - 1] !== currentVideoPosition
+    ) {
+      if (currentVideoPosition !== viewTimeStack[viewTimeStack.length - 1] + 1)
+        setViewTimeStack([currentVideoPosition]);
+      else setViewTimeStack([...viewTimeStack, currentVideoPosition]);
+    }
+  };
 
   useEffect(() => {
     const getPreviousPositionVideo = async () => {
       const result = await checkUserHistoryHadSeenEpisode(
-        "65fff02865ac19bed8721863",
+        episodeDetail?._id,
         userId
       );
       setPreviousPosition(result ? result?.position : 0);
     };
+    const updateUserWatchingHistory = async () => {
+      const position = localStorage.getItem("currentVideoPosition");
+      await updateUserHistoryHadSeenEpisode(
+        episodeDetail?._id,
+        userId,
+        Math.round(position)
+      );
+    };
     getPreviousPositionVideo();
+    return () => {
+      if (userId) {
+        updateUserWatchingHistory();
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -73,6 +113,8 @@ const EpisodePlayer = ({ episodeDetail }) => {
       animeVideoRef.current.currentTime = previousPosition;
     }
   }, [previousPosition, animeVideoRef]);
+
+  // video player ..............................
 
   return (
     <div>
@@ -119,6 +161,7 @@ const EpisodePlayer = ({ episodeDetail }) => {
                       controls
                       className="absolute top-0 left-0 z-0"
                       src={episodeDetail?.content}
+                      onTimeUpdate={onAnimeTimeUpdateFunction}
                     />
                   </div>
                 </AspectRatio>
@@ -127,96 +170,7 @@ const EpisodePlayer = ({ episodeDetail }) => {
           </Suspense>
         </div>
         <div className="hidden lg:block basis-1/3">
-          <div className="relative h-full w-full">
-            <AspectRatio ratio={9 / 10} className="absolute w-full">
-              <div className="h-full w-full overflow-y-auto scrollbar-thin pb-20">
-                <div className="pl-2 pb-3 text-white text-xl font-semibold">
-                  Bình luận
-                </div>
-                {episodeDetail?.comments?.map((item) => (
-                  <div
-                    className="flex flex-row gap-3 px-2 mt-3 w-full"
-                    key={item?._id}
-                  >
-                    <Avatar>
-                      <AvatarImage src={item?.avatar} />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col gap-3 w-full">
-                      <div className="flex flex-col gap-[2px] bg-[#2A2A2A] rounded-md p-3 w-full">
-                        <p className="text-white font-semibold text-[13px]">
-                          {item?.userName}
-                        </p>
-                        <div className="w-full text-[#cecece] font-normal text-[13px] text-wrap break-all">
-                          {item?.content}
-                        </div>
-                      </div>
-                      <div className="flex justify-between">
-                        <div className="flex flex-row gap-5 ml-3">
-                          <div className="text-white text-[12px] font-semibold">
-                            Thích
-                          </div>
-                          <div className="text-white text-[12px] font-semibold">
-                            Trả lời
-                          </div>
-                          <div className="text-white text-[12px] font-semibold">
-                            Báo cáo
-                          </div>
-                        </div>
-                        <p className="flex flex-row gap-1 justify-center items-center text-white text-[12px] font-semibold">
-                          13 <FaThumbsUp />
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                {episodeDetail?.comments?.length === 0 && (
-                  <div className="flex flex-col gap-1 justify-center items-center">
-                    <Image
-                      alt="Skylark"
-                      src="/commentempty.png"
-                      width={120}
-                      height={120}
-                    />
-                    <p className="text-white text-[14px]">
-                      Chưa có bình luận nào
-                    </p>
-                    <p className="text-gray-500 text-[13px]">
-                      Hãy là người bình luận đầu tiên nào
-                    </p>
-                  </div>
-                )}
-              </div>
-            </AspectRatio>
-            <div className="w-full h-10 bottom-8 left-0 z-10 absolute">
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="w-[98%] flex flex-row pl-4 pr-2 bg-black py-2"
-                >
-                  <FormField
-                    control={form.control}
-                    name="comment"
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormControl className="w-full">
-                          <Input
-                            placeholder="Viết bình luận"
-                            {...field}
-                            className="w-full rounded-full text-white"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit" className="bg-transparent">
-                    <BsFillSendFill className="text-lg" />
-                  </Button>
-                </form>
-              </Form>
-            </div>
-          </div>
+          <EpisodeComment episodeId={episodeDetail?._id} />
         </div>
       </section>
     </div>

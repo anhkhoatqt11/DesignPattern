@@ -1,4 +1,4 @@
-import { getRequest, postRequest } from "@/lib/fetch";
+import { getRequest, postRequest, putRequest } from "@/lib/fetch";
 import toast from "react-hot-toast";
 
 export const useAnime = () => {
@@ -117,6 +117,73 @@ export const useAnime = () => {
     return res;
   };
 
+  const updateUserHistoryHadSeenEpisode = async (
+    episodeId,
+    userId,
+    position
+  ) => {
+    const res = await postRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/updateUserHistoryHadSeenEpisode`,
+      isFormData: false,
+      formData: {
+        episodeId,
+        userId,
+        position,
+      },
+    });
+    return res;
+  };
+
+  const updateEpisodeView = async (episodeId) => {
+    const res = await postRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/updateEpisodeView`,
+      isFormData: false,
+      formData: {
+        episodeId,
+      },
+    });
+    return res;
+  };
+
+  const getAnimeEpisodeComments = async (episodeId) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeEpisodeComments?episodeId=${episodeId}`,
+    });
+    return res;
+  };
+
+  const addRootEpisodeComment = async (episodeId, userId, content) => {
+    const res = await postRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/addRootEpisodeComments`,
+      isFormData: false,
+      formData: {
+        episodeId,
+        userId,
+        content,
+      },
+    });
+    return res;
+  };
+
+  const addChildEpisodeComment = async (
+    episodeId,
+    commentId,
+    userId,
+    content
+  ) => {
+    const res = await putRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/addChildEpisodeComments`,
+      isFormData: false,
+      formData: {
+        episodeId,
+        commentId,
+        userId,
+        content,
+      },
+    });
+    return res;
+  };
+
   const fetchAllEventsBySearch = async (page, props = {}) => {
     let endPointUrl = `/api/event?page=${page}&limit=12`;
     const appendParam = (param, value) => {
@@ -147,6 +214,11 @@ export const useAnime = () => {
     checkUserHasLikeOrSaveEpisode,
     updateUserLikeEpisode,
     updateUserSaveEpisode,
+    updateUserHistoryHadSeenEpisode,
+    updateEpisodeView,
+    getAnimeEpisodeComments,
+    addRootEpisodeComment,
+    addChildEpisodeComment,
 
     fetchAllEventsBySearch,
   };

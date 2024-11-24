@@ -58,7 +58,7 @@ export const EpisodeInformation = ({ animeDetail, episodeDetail }) => {
             {animeDetail?.movieName}
           </h1>
         </div>
-        <div className="flex flex-row gap-10 mt-2 mb-2 justify-center items-center sm:justify-start sm:items-start">
+        <div className="flex flex-row gap-10 mt-2 mb-2 justify-center items-center sm:justify-start sm:items-start  z-50">
           <div
             className="flex flex-col gap-2 justify-center items-center"
             onClick={handleChangeLike}
