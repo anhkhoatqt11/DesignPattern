@@ -2,45 +2,57 @@ import { AuthOptions } from "next-auth";
 import CredentialsProvider from 'next-auth/providers/credentials';
 import prisma from "@/lib/prisma";
 import jwt from 'jsonwebtoken';
+import { hashPassword } from "@/lib/auth";
 
 
 const options: AuthOptions = {
+  secret: process.env.AUTH_SECRET,
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
   },
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
-      credentials: {},
+      name: "Credentials",
+      credentials: {
+        phone: { label: "Phone", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
       async authorize(credentials) {
-        const { email, password } = credentials as {
-          email: string;
+        const { phone, password } = credentials as {
+          phone: string;
           password: string;
         };
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: email,
-          },
+        // Find the user by phone
+        const user = await prisma.users.findFirst({
+          where: { phone },
         });
 
-        console.log(user);
+        if (!user) throw new Error("Phone or password is incorrect");
 
-        if (!user) throw new Error('Email or password is incorrect');
-        if (user.password !== password)
-          throw new Error('Email or password is incorrect');
+        if (!user.authentication) throw new Error("User authentication data is missing");
 
-        if (user.trangThai === 'khoa_tai_khoan') throw new Error('Your account has been locked');
+        const { password: storedPassword, salt } = user.authentication;
 
+        // Hash the provided password using the shared utility
+        const hashedInputPassword = hashPassword(salt, password);
+
+        console.log(hashedInputPassword, storedPassword);
+
+        // Compare the hashes
+        if (hashedInputPassword !== storedPassword) {
+          throw new Error("Phone or password is incorrect");
+        }
+
+        // Return user data to attach to the session
         return {
-          name: user.name,
-          email: user.email,
-          role: user.role,
           id: user.id,
+          username: user.username,
           avatar: user.avatar,
-          isVerified: user.isEmailVerified,
+          phone: user.phone,
+          coinPoint: user.coinPoint,
         };
-      }
+      },
     }),
   ],
 
@@ -68,33 +80,22 @@ const options: AuthOptions = {
         return { ...token, ...session.user };
       }
       if (user) {
-        token.role = user.role;
         token.id = user.id;
         token.avatar = user.avatar;
         token.name = user.name;
         token.email = user.email;
-        token.isEmailVerified = user.isVerified;
       }
-      //user is from the oauth config or in the credentials setting options
 
-      //return final token
       return token;
     },
     async session({ token, session }) {
-      // if (!userFind) {
-      //   return {
-      //     redirectTo: `/auth/login?email=${session?.user.email}&name=${session?.user.name}`,
-      //   };
-      // }
 
       if (session.user) {
         (session.user as { id: string }).id = token.id as string;
-        (session.user as { name: string }).name = token.name as string;
-        (session.user as { role: string }).role = token.role as string;
+        (session.user as { username: string }).username = token.username as string;
         (session.user as { avatar: string }).avatar = token.avatar as string;
-        (session.user as { email: string }).email = token.email as string;
-        (session.user as { isEmailVerified: boolean }).isEmailVerified =
-          token.isEmailVerified as boolean;
+        (session.user as { phone: string }).phone = token.phone as string;
+        (session.user as { coinPoint: number }).coinPoint = token.coinPoint as number;
       }
       return session;
     },

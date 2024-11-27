@@ -23,6 +23,20 @@ export const useComic = () => {
     return res;
   };
 
+  const getComic = async (id) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getComic?comicId=${id}`,
+    });
+    return res;
+  };
+
+  const getChapter = async (id) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getDetailComicById?comicId=${id}`,
+    });
+    return res;
+  };
+
   const getComicAlbumContentAll = async (idList) => {
     const res = await getRequest({
       endPoint: `https://skylark-entertainment.vercel.app/api/comics/getComicInAlbum?idList=${idList}&limit=10000&page=1`,
@@ -85,7 +99,8 @@ export const useComic = () => {
     checkUserBanned,
     checkValidCommentContent,
     banUser,
-
     fetchAllEventsBySearch,
+    getChapter,
+    getComic,
   };
 };

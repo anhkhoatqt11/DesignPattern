@@ -44,3 +44,20 @@ export async function mustBeAdmin() {
     redirect('/');
   }
 }
+
+
+import crypto from "crypto";
+
+// Use an environment variable for the secret key
+const SECRET = 'SKYLARK-REST-API';
+
+export const hashPassword = (salt: string, password: string): string => {
+  return crypto
+    .createHmac("sha256", [salt, password].join("/"))
+    .update(SECRET)
+    .digest("hex");
+};
+
+export const generateSalt = (): string => {
+  return crypto.randomBytes(128).toString("base64");
+};

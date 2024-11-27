@@ -10,8 +10,8 @@ export default async function Layout({
   const session = await getSession();
   console.log(session);
   return (
-    <div className="w-full h-full">
-      <Header session={session} />
+    <div className="w-full h-full bg-[#141414]">
+      <Header session={session}  />
       {children}
       <Footer />
     </div>
