@@ -9,20 +9,25 @@ import Link from "next/link";
 import { useAnime } from "@/hooks/useAnime";
 import { IoIosArrowForward } from "react-icons/io";
 import { TopViewItem } from "./TopViewItem";
+import { VideoHistoryItem } from "./VideoHistoryItem";
+import { NewEpisodeItem } from "./NewEpisodeItem";
 
-function TopViewList({ animeName, animeId }) {
-  const { getAnimeChapterById } = useAnime();
+function NewEpisodeList() {
+  const userId = "65ec67ad05c5cb2ad67cfb3f";
+  const { getNewEpisodeAnime } = useAnime();
   const [episodeList, setEpisodeList] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchEpisodeDetail = async () => {
-      const result = await getAnimeChapterById(animeId);
-      console.log("🚀 ~ fetchEpisodeDetail ~ result:", result);
-      setEpisodeList(result[0]?.movieEpisodes);
+    const fetchNewEpisodeListDetail = async () => {
+      if (userId) {
+        const result = await getNewEpisodeAnime();
+        console.log("🚀 ~ fetchNewEpisodeListDetail ~ result:", result);
+        setEpisodeList(result);
+      }
       setIsLoading(false);
     };
-    fetchEpisodeDetail();
+    fetchNewEpisodeListDetail();
   }, []);
   return (
     <>
@@ -39,14 +44,8 @@ function TopViewList({ animeName, animeId }) {
               {" "}
             </div>
             <h2 className="text-white text-xl font-bold leading-[1.1] sm:text-3xl z-10">
-              {animeName}
+              Tập mới, xem ngay!
             </h2>
-            <Link
-              href={`/anime/album/topView?animeId=${animeId}`}
-              className="z-10"
-            >
-              <IoIosArrowForward className="text-white w-6 h-6 sm:w-10 sm:h-10" />
-            </Link>
           </div>
           <Swiper
             style={
@@ -59,30 +58,30 @@ function TopViewList({ animeName, animeId }) {
                 "--swiper-pagination-bullet-height": "0px",
               } as React.CSSProperties
             }
-            slidesPerView={2}
+            slidesPerView={1}
             spaceBetween={14}
             pagination={{
               clickable: true,
             }}
             breakpoints={{
               425: {
-                slidesPerView: 2,
+                slidesPerView: 1,
                 spaceBetween: 14,
               },
               700: {
-                slidesPerView: 3,
+                slidesPerView: 2,
                 spaceBetween: 14,
               },
               900: {
-                slidesPerView: 4,
+                slidesPerView: 3,
                 spaceBetween: 14,
               },
               1100: {
-                slidesPerView: 5,
+                slidesPerView: 4,
                 spaceBetween: 20,
               },
               1300: {
-                slidesPerView: 6,
+                slidesPerView: 4,
                 spaceBetween: 20,
               },
             }}
@@ -95,10 +94,10 @@ function TopViewList({ animeName, animeId }) {
                 className="h-full relative overflow-visible"
               >
                 <Link href={``}>
-                  <TopViewItem
+                  <NewEpisodeItem
                     img={item?.coverImage}
                     name={item?.episodeName}
-                    view={item?.views}
+                    movieOwner={item?.animeOwner[0]?.movieName}
                   />
                 </Link>
               </SwiperSlide>
@@ -110,4 +109,4 @@ function TopViewList({ animeName, animeId }) {
   );
 }
 
-export default TopViewList;
+export default NewEpisodeList;

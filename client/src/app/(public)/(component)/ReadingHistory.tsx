@@ -9,20 +9,26 @@ import Link from "next/link";
 import { useAnime } from "@/hooks/useAnime";
 import { IoIosArrowForward } from "react-icons/io";
 import { TopViewItem } from "./TopViewItem";
+import { VideoHistoryItem } from "./VideoHistoryItem";
+import { useComic } from "@/hooks/useComic";
+import { ComicHistoryItem } from "./ComicHistoryItem";
 
-function TopViewList({ animeName, animeId }) {
-  const { getAnimeChapterById } = useAnime();
-  const [episodeList, setEpisodeList] = useState();
+function ReadingHistory() {
+  const userId = "65ec67ad05c5cb2ad67cfb3f";
+  const { getReadingHistories } = useComic();
+  const [chapterList, setChapterList] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchEpisodeDetail = async () => {
-      const result = await getAnimeChapterById(animeId);
-      console.log("🚀 ~ fetchEpisodeDetail ~ result:", result);
-      setEpisodeList(result[0]?.movieEpisodes);
+    const fetchReadingHistoryDetail = async () => {
+      if (userId) {
+        const result = await getReadingHistories(userId);
+        console.log("🚀 ~ fetchReadingHistoryDetail ~ result:", result);
+        setChapterList(result[0]?.detailHistories);
+      }
       setIsLoading(false);
     };
-    fetchEpisodeDetail();
+    fetchReadingHistoryDetail();
   }, []);
   return (
     <>
@@ -39,14 +45,8 @@ function TopViewList({ animeName, animeId }) {
               {" "}
             </div>
             <h2 className="text-white text-xl font-bold leading-[1.1] sm:text-3xl z-10">
-              {animeName}
+              Đọc tiếp
             </h2>
-            <Link
-              href={`/anime/album/topView?animeId=${animeId}`}
-              className="z-10"
-            >
-              <IoIosArrowForward className="text-white w-6 h-6 sm:w-10 sm:h-10" />
-            </Link>
           </div>
           <Swiper
             style={
@@ -59,46 +59,42 @@ function TopViewList({ animeName, animeId }) {
                 "--swiper-pagination-bullet-height": "0px",
               } as React.CSSProperties
             }
-            slidesPerView={2}
+            slidesPerView={4}
             spaceBetween={14}
             pagination={{
               clickable: true,
             }}
             breakpoints={{
-              425: {
-                slidesPerView: 2,
-                spaceBetween: 14,
-              },
               700: {
-                slidesPerView: 3,
-                spaceBetween: 14,
-              },
-              900: {
                 slidesPerView: 4,
                 spaceBetween: 14,
               },
-              1100: {
+              900: {
                 slidesPerView: 5,
+                spaceBetween: 14,
+              },
+              1100: {
+                slidesPerView: 7,
                 spaceBetween: 20,
               },
               1300: {
-                slidesPerView: 6,
+                slidesPerView: 8,
                 spaceBetween: 20,
               },
             }}
             modules={[Pagination]}
             className="w-full h-auto overflow-visible relative"
           >
-            {episodeList?.map((item) => (
+            {chapterList?.map((item) => (
               <SwiperSlide
                 key={item?._id}
                 className="h-full relative overflow-visible"
               >
                 <Link href={``}>
-                  <TopViewItem
+                  <ComicHistoryItem
                     img={item?.coverImage}
-                    name={item?.episodeName}
-                    view={item?.views}
+                    name={item?.chapterName}
+                    ownerId={item?.comicOwner[0]?._id}
                   />
                 </Link>
               </SwiperSlide>
@@ -110,4 +106,4 @@ function TopViewList({ animeName, animeId }) {
   );
 }
 
-export default TopViewList;
+export default ReadingHistory;

@@ -37,6 +37,20 @@ export const useComic = () => {
     return res;
   };
 
+  const getReadingHistories = async (userId) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getReadingHistories?userId=${userId}&limit=20&page=1`,
+    });
+    return res;
+  };
+
+  const getNewChapterComic = async () => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getNewChapterComic`,
+    });
+    return res;
+  };
+
   const checkUserBanned = async (userId) => {
     const res = await getRequest({
       endPoint: `https://skylark-entertainment.vercel.app/api/comics/checkUserBanned?userId=${userId}`,
@@ -85,6 +99,8 @@ export const useComic = () => {
     checkUserBanned,
     checkValidCommentContent,
     banUser,
+    getReadingHistories,
+    getNewChapterComic,
 
     fetchAllEventsBySearch,
   };

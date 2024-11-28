@@ -13,6 +13,10 @@ import { DonateBanner } from "../../(component)/DonateBanner";
 import DonateList from "../../(component)/DonateList";
 import RankingAnime from "../../(component)/RankingAnime";
 import RankingComic from "../../(component)/RankingComic";
+import WatchingHistory from "../../(component)/WatchingHistory";
+import ReadingHistory from "../../(component)/ReadingHistory";
+import NewEpisodeList from "../../(component)/NewEpisodeList";
+import NewChapterList from "../../(component)/NewChapterList";
 
 function HomeAlbum() {
   const { getAnimeAlbum, getTopViewAnime } = useAnime();
@@ -69,6 +73,9 @@ function HomeAlbum() {
               ) : (
                 ""
               )}
+
+              {index === 1 ? <ReadingHistory /> : ""}
+              {index === 1 ? <NewChapterList /> : ""}
               {2 * index < listAnimeAlbum.length ? (
                 <AnimeAlbumList
                   animeAlbumName={listAnimeAlbum[2 * index].albumName}
@@ -77,6 +84,10 @@ function HomeAlbum() {
               ) : (
                 ""
               )}
+
+              {index === 1 ? <WatchingHistory /> : ""}
+              {index === 1 ? <NewEpisodeList /> : ""}
+
               {2 * index + 1 < listAnimeAlbum.length ? (
                 <AnimeAlbumList
                   animeAlbumName={listAnimeAlbum[2 * index + 1].albumName}

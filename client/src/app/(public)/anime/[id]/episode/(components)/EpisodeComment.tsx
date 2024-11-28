@@ -13,6 +13,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+} from "@nextui-org/react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -34,6 +41,7 @@ import {
 } from "@nextui-org/react";
 import { useNotification } from "@/hooks/useNotification";
 import Loader from "@/components/Loader";
+import { useReport } from "@/hooks/useReport";
 
 const FormSchema = z.object({
   comment: z.string().min(1, {
@@ -47,9 +55,12 @@ export const EpisodeComment = ({ episodeId }) => {
     getAnimeEpisodeComments,
     addRootEpisodeComment,
     addChildEpisodeComment,
+    updateUserLikeParentComment,
+    updateUserLikeChildComment,
   } = useAnime();
   const { checkUserBanned, checkValidCommentContent, banUser } = useComic();
   const { sendPushNoti, addCommentNotiToUser } = useNotification();
+  const { sendUserReport } = useReport();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLoading, setIsLoading] = useState(true);
   const [commentTree, setCommentTree] = useState();
@@ -145,11 +156,8 @@ export const EpisodeComment = ({ episodeId }) => {
                 Bình luận
               </div>
               {commentTree?.map((item) => (
-                <div className="flex flex-col w-full items-end">
-                  <div
-                    className="flex flex-row gap-3 px-2 mt-3 w-full"
-                    key={item?._id}
-                  >
+                <div className="flex flex-col w-full items-end" key={item?._id}>
+                  <div className="flex flex-row gap-3 px-2 mt-3 w-full">
                     <Avatar>
                       <AvatarImage src={item?.avatar} />
                       <AvatarFallback>CN</AvatarFallback>
@@ -165,12 +173,59 @@ export const EpisodeComment = ({ episodeId }) => {
                       </div>
                       <div className="flex justify-between">
                         <div className="flex flex-row gap-5 ml-3">
-                          <div className="text-white text-[12px] font-semibold cursor-default">
-                            Thích
+                          <div
+                            className={`${
+                              item?.likes?.includes(userId)
+                                ? "text-[#DA5EF0]"
+                                : "text-white"
+                            } text-[12px] font-semibold cursor-default`}
+                            onClick={async () => {
+                              if (!userId) {
+                                setModalMessage(
+                                  `Vui lòng đăng nhập trước khi thực hiện thao tác`
+                                );
+                                onOpen();
+                                return;
+                              }
+                              const updatedArray = commentTree?.map((cm) => {
+                                if (cm._id === item?._id) {
+                                  if (cm.likes?.includes(userId))
+                                    return {
+                                      ...cm,
+                                      likes: cm?.likes?.filter(
+                                        (e) => e !== userId
+                                      ),
+                                    };
+                                  else
+                                    return {
+                                      ...cm,
+                                      likes: [...cm?.likes, userId],
+                                    };
+                                }
+                                return cm;
+                              });
+                              setCommentTree(updatedArray);
+                              await updateUserLikeParentComment(
+                                episodeId,
+                                userId,
+                                item?._id
+                              );
+                            }}
+                          >
+                            {item?.likes?.includes(userId)
+                              ? "Đã thích"
+                              : "Thích"}
                           </div>
                           <div
                             className="text-white text-[12px] font-semibold cursor-default"
                             onClick={() => {
+                              if (!userId) {
+                                setModalMessage(
+                                  `Vui lòng đăng nhập trước khi thực hiện thao tác`
+                                );
+                                onOpen();
+                                return;
+                              }
                               setUserNameReplied(item?.userName);
                               setUserIdReplied(item?.userId);
                               setCommentIdReplied(item?._id);
@@ -178,13 +233,76 @@ export const EpisodeComment = ({ episodeId }) => {
                           >
                             Trả lời
                           </div>
-                          <div className="text-white text-[12px] font-semibold cursor-default">
-                            Báo cáo
-                          </div>
+                          <Dropdown>
+                            <DropdownTrigger>
+                              <div
+                                className="text-white text-[12px] font-semibold cursor-default"
+                                onClick={() => {
+                                  if (!userId) {
+                                    setModalMessage(
+                                      `Vui lòng đăng nhập trước khi thực hiện thao tác`
+                                    );
+                                    onOpen();
+                                    return;
+                                  }
+                                }}
+                              >
+                                Báo cáo
+                              </div>
+                            </DropdownTrigger>
+                            {userId && (
+                              <DropdownMenu aria-label="Static Report">
+                                <DropdownItem
+                                  onClick={async () => {
+                                    await sendUserReport(
+                                      "Ngôn ngữ thô tục",
+                                      item?.userId,
+                                      userId,
+                                      "anime",
+                                      episodeId,
+                                      item?._id
+                                    );
+                                  }}
+                                >
+                                  Ngôn ngữ thô tục
+                                </DropdownItem>
+                                <DropdownItem
+                                  onClick={async () => {
+                                    await sendUserReport(
+                                      "Nội dung công kích",
+                                      item?.userId,
+                                      userId,
+                                      "anime",
+                                      episodeId,
+                                      item?._id
+                                    );
+                                  }}
+                                >
+                                  Nội dung công kích
+                                </DropdownItem>
+                                <DropdownItem
+                                  onClick={async () => {
+                                    await sendUserReport(
+                                      "Khác",
+                                      item?.userId,
+                                      userId,
+                                      "anime",
+                                      episodeId,
+                                      item?._id
+                                    );
+                                  }}
+                                >
+                                  Khác
+                                </DropdownItem>
+                              </DropdownMenu>
+                            )}
+                          </Dropdown>
                         </div>
-                        <p className="flex flex-row gap-1 justify-center items-center text-white text-[12px] font-semibold">
-                          13 <FaThumbsUp />
-                        </p>
+                        {item?.likes?.length > 0 && (
+                          <p className="flex flex-row gap-1 justify-center items-center text-[#DA5EF0] text-[12px] font-semibold">
+                            {item?.likes?.length} <FaThumbsUp />
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -192,7 +310,7 @@ export const EpisodeComment = ({ episodeId }) => {
                     {item?.replies?.map((child) => (
                       <div
                         className="flex flex-row gap-3 px-2 mt-3 w-full"
-                        key={item?._id}
+                        key={child?._id}
                       >
                         <Avatar>
                           <AvatarImage src={child?.avatar} />
@@ -209,16 +327,127 @@ export const EpisodeComment = ({ episodeId }) => {
                           </div>
                           <div className="flex justify-between">
                             <div className="flex flex-row gap-5 ml-3">
-                              <div className="text-white text-[12px] font-semibold cursor-default">
-                                Thích
+                              <div
+                                className={`${
+                                  child?.likes?.includes(userId)
+                                    ? "text-[#DA5EF0]"
+                                    : "text-white"
+                                } text-[12px] font-semibold cursor-default`}
+                                onClick={async () => {
+                                  if (!userId) {
+                                    setModalMessage(
+                                      `Vui lòng đăng nhập trước khi thực hiện thao tác`
+                                    );
+                                    onOpen();
+                                    return;
+                                  }
+                                  const updatedArray = item?.replies?.map(
+                                    (e1) => {
+                                      if (e1?._id === child?._id) {
+                                        if (e1?.likes?.includes(userId))
+                                          return {
+                                            ...e1,
+                                            likes: e1?.likes?.filter(
+                                              (m) => m !== userId
+                                            ),
+                                          };
+                                        else
+                                          return {
+                                            ...e1,
+                                            likes: [...e1?.likes, userId],
+                                          };
+                                      }
+                                      return e1;
+                                    }
+                                  );
+                                  const updatedTree = commentTree?.map((e2) =>
+                                    e2?._id === item?._id
+                                      ? { ...e2, replies: updatedArray }
+                                      : e2
+                                  );
+                                  setCommentTree(updatedTree);
+                                  await updateUserLikeChildComment(
+                                    episodeId,
+                                    userId,
+                                    item?._id,
+                                    child?._id
+                                  );
+                                }}
+                              >
+                                {child?.likes?.includes(userId)
+                                  ? "Đã thích"
+                                  : "Thích"}
                               </div>
-                              <div className="text-white text-[12px] font-semibold cursor-default">
-                                Báo cáo
-                              </div>
+                              <Dropdown>
+                                <DropdownTrigger>
+                                  <div
+                                    className="text-white text-[12px] font-semibold cursor-default"
+                                    onClick={() => {
+                                      if (!userId) {
+                                        setModalMessage(
+                                          `Vui lòng đăng nhập trước khi thực hiện thao tác`
+                                        );
+                                        onOpen();
+                                        return;
+                                      }
+                                    }}
+                                  >
+                                    Báo cáo
+                                  </div>
+                                </DropdownTrigger>
+                                {userId && (
+                                  <DropdownMenu aria-label="Static Report">
+                                    <DropdownItem
+                                      onClick={async () => {
+                                        await sendUserReport(
+                                          "Ngôn ngữ thô tục",
+                                          child?.userId,
+                                          userId,
+                                          "anime",
+                                          episodeId,
+                                          child?._id
+                                        );
+                                      }}
+                                    >
+                                      Ngôn ngữ thô tục
+                                    </DropdownItem>
+                                    <DropdownItem
+                                      onClick={async () => {
+                                        await sendUserReport(
+                                          "Nội dung công kích",
+                                          child?.userId,
+                                          userId,
+                                          "anime",
+                                          episodeId,
+                                          child?._id
+                                        );
+                                      }}
+                                    >
+                                      Nội dung công kích
+                                    </DropdownItem>
+                                    <DropdownItem
+                                      onClick={async () => {
+                                        await sendUserReport(
+                                          "Khác",
+                                          child?.userId,
+                                          userId,
+                                          "anime",
+                                          episodeId,
+                                          child?._id
+                                        );
+                                      }}
+                                    >
+                                      Khác
+                                    </DropdownItem>
+                                  </DropdownMenu>
+                                )}
+                              </Dropdown>
                             </div>
-                            <p className="flex flex-row gap-1 justify-center items-center text-white text-[12px] font-semibold">
-                              13 <FaThumbsUp />
-                            </p>
+                            {child?.likes?.length > 0 && (
+                              <p className="flex flex-row gap-1 justify-center items-center text-[#DA5EF0] text-[12px] font-semibold">
+                                {child?.likes?.length} <FaThumbsUp />
+                              </p>
+                            )}
                           </div>
                         </div>
                       </div>

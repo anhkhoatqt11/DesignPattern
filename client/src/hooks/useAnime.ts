@@ -51,6 +51,13 @@ export const useAnime = () => {
     return res;
   };
 
+  const getWatchingHistories = async (userId) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getWatchingHistories?userId=${userId}&limit=20&page=1`,
+    });
+    return res;
+  };
+
   const getAnimeDetailById = async (animeId) => {
     const res = await getRequest({
       endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeDetailById?animeId=${animeId}`,
@@ -75,6 +82,13 @@ export const useAnime = () => {
   const getSomeTopViewEpisodes = async () => {
     const res = await getRequest({
       endPoint: `https://skylark-entertainment.vercel.app/api/animes/getSomeTopViewEpisodes`,
+    });
+    return res;
+  };
+
+  const getNewEpisodeAnime = async () => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getNewEpisodeAnime`,
     });
     return res;
   };
@@ -184,6 +198,38 @@ export const useAnime = () => {
     return res;
   };
 
+  const updateUserLikeChildComment = async (
+    episodeId,
+    userId,
+    commentId,
+    commentChildId
+  ) => {
+    const res = await putRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/updateUserLikeChildComment`,
+      isFormData: false,
+      formData: {
+        episodeId,
+        userId,
+        commentId,
+        commentChildId,
+      },
+    });
+    return res;
+  };
+
+  const updateUserLikeParentComment = async (episodeId, userId, commentId) => {
+    const res = await putRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/updateUserLikeParentComment`,
+      isFormData: false,
+      formData: {
+        episodeId,
+        userId,
+        commentId,
+      },
+    });
+    return res;
+  };
+
   const fetchAllEventsBySearch = async (page, props = {}) => {
     let endPointUrl = `/api/event?page=${page}&limit=12`;
     const appendParam = (param, value) => {
@@ -219,6 +265,10 @@ export const useAnime = () => {
     getAnimeEpisodeComments,
     addRootEpisodeComment,
     addChildEpisodeComment,
+    updateUserLikeChildComment,
+    updateUserLikeParentComment,
+    getWatchingHistories,
+    getNewEpisodeAnime,
 
     fetchAllEventsBySearch,
   };

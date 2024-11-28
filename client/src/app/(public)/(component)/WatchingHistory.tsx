@@ -9,20 +9,26 @@ import Link from "next/link";
 import { useAnime } from "@/hooks/useAnime";
 import { IoIosArrowForward } from "react-icons/io";
 import { TopViewItem } from "./TopViewItem";
+import { VideoHistoryItem } from "./VideoHistoryItem";
 
-function TopViewList({ animeName, animeId }) {
-  const { getAnimeChapterById } = useAnime();
+function WatchingHistory() {
+  const userId = "65ec67ad05c5cb2ad67cfb3f";
+  const { getWatchingHistories } = useAnime();
   const [episodeList, setEpisodeList] = useState();
+  const [recordList, setRecordList] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchEpisodeDetail = async () => {
-      const result = await getAnimeChapterById(animeId);
-      console.log("🚀 ~ fetchEpisodeDetail ~ result:", result);
-      setEpisodeList(result[0]?.movieEpisodes);
+    const fetchWatchingHistoryDetail = async () => {
+      if (userId) {
+        const result = await getWatchingHistories(userId);
+        console.log("🚀 ~ fetchWatchingHistoryDetail ~ result:", result);
+        setEpisodeList(result[0]?.detailHistories);
+        setRecordList(result[0]?.histories?.watchingMovie);
+      }
       setIsLoading(false);
     };
-    fetchEpisodeDetail();
+    fetchWatchingHistoryDetail();
   }, []);
   return (
     <>
@@ -39,14 +45,8 @@ function TopViewList({ animeName, animeId }) {
               {" "}
             </div>
             <h2 className="text-white text-xl font-bold leading-[1.1] sm:text-3xl z-10">
-              {animeName}
+              Bạn đang xem
             </h2>
-            <Link
-              href={`/anime/album/topView?animeId=${animeId}`}
-              className="z-10"
-            >
-              <IoIosArrowForward className="text-white w-6 h-6 sm:w-10 sm:h-10" />
-            </Link>
           </div>
           <Swiper
             style={
@@ -95,10 +95,15 @@ function TopViewList({ animeName, animeId }) {
                 className="h-full relative overflow-visible"
               >
                 <Link href={``}>
-                  <TopViewItem
+                  <VideoHistoryItem
                     img={item?.coverImage}
                     name={item?.episodeName}
-                    view={item?.views}
+                    progress={
+                      (recordList?.find((e) => e.episodeId === item?._id)
+                        ?.position /
+                        item?.totalTime) *
+                      100
+                    }
                   />
                 </Link>
               </SwiperSlide>
@@ -110,4 +115,4 @@ function TopViewList({ animeName, animeId }) {
   );
 }
 
-export default TopViewList;
+export default WatchingHistory;

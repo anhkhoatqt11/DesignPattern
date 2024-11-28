@@ -50,8 +50,8 @@ const page = ({ params }) => {
             animeDetail={animeDetail}
             episodeDetail={episodeDetail}
           />
-          {/* <EpisodeOwnerList listEpisodes={animeDetail?.listEpisodes} />
-          <SuggestionByView /> */}
+          <EpisodeOwnerList listEpisodes={animeDetail?.listEpisodes} />
+          <SuggestionByView />
         </>
       )}
     </div>
