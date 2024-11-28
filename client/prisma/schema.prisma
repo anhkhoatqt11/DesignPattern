@@ -3,144 +3,307 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
-model User {
-  id                Int      @id @default(autoincrement())
-  name              String
-  email             String   @unique
-  phoneNumber       String?
-  password          String
-  diaChi            String?
-  role              String?  @default("user")
-  avatar            String?  @default("https://i0.wp.com/www.repol.copl.ulaval.ca/wp-content/uploads/2019/01/default-user-icon.jpg?ssl=1")
-  isEmailVerified   Boolean  @default(false)
-  createdAt         DateTime @default(now())
-  loaiHinhKinhDoanh Int?
-  hoTenOrganizer    String?
-  cccdNumber        String?
-  maSoThueCaNhan    String?
-  anhDaiDienToChuc  String?  @default("https://i0.wp.com/www.repol.copl.ulaval.ca/wp-content/uploads/2019/01/default-user-icon.jpg?ssl=1")
-  tenDoanhNghiep    String?
-  maSoDKKD          String?
-  noiCap            String?
-  ngayCap           String?
-  chiNhanh          String?
-  soTaiKhoan        String?
-  tenChuTaiKhoan    String?
-  tenNganHang       String?
-  trangThai         String?  @default("dang_hoat_dong")
-  otp               String?
-  SuKiens           SuKien[]
-  HoaDon            HoaDon[]
+type AnimeepisodesComments {
+  id       String?                        @map("_id") @db.ObjectId
+  avatar   String?
+  content  String
+  likes    String[]
+  replies  AnimeepisodesCommentsReplies[]
+  /// Multiple data types found: String: 6.7%, String (ObjectId): 93.3% out of 15 sampled entries
+  userId   Json
+  userName String?
 }
 
-model SuKien {
-  id            Int         @id @default(autoincrement())
-  name          String
-  moTa          String?     @db.Text
-  diaChi        String?
-  hinhAnhSuKien String?     @db.LongText
-  ngayBatDau    DateTime
-  ngayKetThuc   DateTime
-  userId        Int
-  ChuDeId       Int
-  trangThai     String      @default("Đã duyệt")
-  user          User        @relation(fields: [userId], references: [id])
-  ChuDe         ChuDe       @relation(fields: [ChuDeId], references: [id])
-  ves           Ve[]
-  MaGiamGia     MaGiamGia[]
-  Banners       Banners[]
-  HoaDon        HoaDon[]
-
-  @@index([userId])
-  @@index([ChuDeId])
+type AnimeepisodesCommentsReplies {
+  id       String?  @map("_id") @db.ObjectId
+  avatar   String?
+  content  String
+  likes    String[]
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  replies  Json?
+  userId   String   @db.ObjectId
+  userName String?
 }
 
-model ChuDe {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  SuKiens   SuKien[]
+type ChallengesQuestionCollection {
+  answers         String[]
+  correctAnswerID Int
+  mediaUrl        String
+  questionId      String   @db.ObjectId
+  questionName    String
 }
 
-model Ve {
-  id              Int         @id @default(autoincrement())
-  name            String
-  moTa            String?     @db.Text
-  gia             Float
-  mau             String
-  soLuong         Int
-  soLuongToiThieu Int
-  soLuongToiDa    Int
-  ngayBan         DateTime
-  ngayKetThuc     DateTime
-  SuKienId        Int
-  suKien          SuKien      @relation(fields: [SuKienId], references: [id])
-  HoaDonVe        HoaDonVe[]
-  MaGiamGia       MaGiamGia[]
-
-  @@index([SuKienId])
+type ComicchaptersComments {
+  id       String                         @map("_id") @db.ObjectId
+  avatar   String
+  content  String
+  likes    String[]
+  replies  ComicchaptersCommentsReplies[]
+  userId   String                         @db.ObjectId
+  userName String
 }
 
-model HoaDon {
-  id                  Int        @id @default(autoincrement())
-  ngayDatHang         DateTime
-  userId              Int
-  phuongThucThanhToan String
-  createdAt           DateTime   @default(now())
-  tinhTrang           String     @default("Chưa thanh toán")
-  tongTien            Float      @default(0)
-  maGiamGiaId         Int?
-  checkIn             Boolean    @default(false)
-  suKienId            Int
-  maDatCho            String
-  suKien              SuKien     @relation(fields: [suKienId], references: [id])
-  user                User       @relation(fields: [userId], references: [id])
-  HoaDonVe            HoaDonVe[]
-
-  @@index([userId])
-  @@index([suKienId])
+type ComicchaptersCommentsReplies {
+  id       String   @map("_id") @db.ObjectId
+  avatar   String
+  content  String
+  likes    String[]
+  userId   String   @db.ObjectId
+  userName String
 }
 
-model HoaDonVe {
-  id       Int    @id @default(autoincrement())
-  hoaDonId Int
-  veId     Int
-  soLuong  Int
-  tongGia  Float
-  hoaDon   HoaDon @relation(fields: [hoaDonId], references: [id])
-  ve       Ve     @relation(fields: [veId], references: [id])
-
-  @@index([hoaDonId, veId], map: "HoaDonVe_HoaDonVeId")
-  @@index([veId])
+type DonatepackagesDonateRecords {
+  datetime DateTime @db.Date
+  userId   String
 }
 
-model MaGiamGia {
-  id           Int      @id @default(autoincrement())
-  maGiamGia    String   @unique
-  soTienGiam   Float?
-  phanTramGiam Int?
-  ngayBatDau   DateTime
-  ngayKetThuc  DateTime
-  SuKienId     Int?
-  VeId         Int?
-  trangThai    Boolean  @default(true)
-  suKien       SuKien?  @relation(fields: [SuKienId], references: [id])
-  ve           Ve?      @relation(fields: [VeId], references: [id])
-
-  @@index([SuKienId])
-  @@index([VeId])
+type UsersAuthentication {
+  password     String
+  salt         String
+  sessionToken String
 }
 
-model Banners {
-  id       Int    @id @default(autoincrement())
-  SuKienId Int
-  position Int?
-  suKien   SuKien @relation(fields: [SuKienId], references: [id])
+type UsersBookmarkList {
+  comic  String[]
+  movies String[]
+}
 
-  @@index([SuKienId])
+type UsersChallenges {
+  date  String
+  point Int
+  time  Int
+}
+
+type UsersHistories {
+  readingComic  UsersHistoriesReadingComic[]
+  watchingMovie UsersHistoriesWatchingMovie[]
+}
+
+type UsersHistoriesReadingComic {
+  chapterId String @db.ObjectId
+}
+
+type UsersHistoriesWatchingMovie {
+  episodeId String @db.ObjectId
+  position  Int
+}
+
+type UsersNotifications {
+  content  String
+  sentTime DateTime @db.Date
+  /// Multiple data types found: String: 23%, String (ObjectId): 77% out of 74 sampled entries
+  sourceId Json
+  status   String
+  type     String
+}
+
+type UsersQuestLog {
+  finalTime            DateTime @db.Date
+  hasReceivedDailyGift Boolean
+  readingTime          Int
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  received             Json?
+  watchingTime         Int
+}
+
+model advertisementportalhistories {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int      @map("__v")
+  episodeList   String[]
+  ep_odeList    String[] @map("epíodeList")
+  linkUrl       String
+  orderDate     DateTime @db.Date
+  paymentMethod String
+  price         Int
+  status        String
+  userId        String
+  videoUrl      String
+}
+
+model advertisements {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  v              Int    @map("__v")
+  adVideoUrl     String
+  amount         Int?
+  forwardLink    String
+  pricePerAd     Int?
+  representative String
+}
+
+model animealbums {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  albumName String
+  animeList String[]
+}
+
+model animeepisodes {
+  id            String                  @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int?                    @map("__v")
+  advertisement String?                 @db.ObjectId
+  comments      AnimeepisodesComments[]
+  content       String
+  coverImage    String
+  episodeName   String
+  likes         String[]
+  publicTime    DateTime                @db.Date
+  totalTime     Int
+  views         Int
+}
+
+model animes {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  v              Int?     @map("__v")
+  ageFor         String
+  coverImage     String
+  description    String
+  episodes       String[]
+  genres         String[]
+  landspaceImage String
+  movieName      String
+  publishTime    String
+  publisher      String
+}
+
+model avatars {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  avatarList     String[]
+  collectionName String
+}
+
+model banners {
+  id   String   @id @default(auto()) @map("_id") @db.ObjectId
+  v    Int      @map("__v")
+  list String[]
+  type String
+}
+
+model challenges {
+  id                 String                         @id @default(auto()) @map("_id") @db.ObjectId
+  challengeName      String
+  endTime            DateTime                       @db.Date
+  questionCollection ChallengesQuestionCollection[]
+}
+
+model comicalbums {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  albumName String
+  comicList String[]
+}
+
+model comicchapters {
+  id           String                  @id @default(auto()) @map("_id") @db.ObjectId
+  v            Int?                    @map("__v")
+  chapterName  String
+  comments     ComicchaptersComments[]
+  content      String[]
+  coverImage   String
+  likes        String[]
+  publicTime   DateTime                @db.Date
+  unlockPrice  Int
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  userUnlocked Json?
+  views        Int
+}
+
+model comics {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  ageFor         String?
+  artist         String
+  author         String
+  chapterList    String[]
+  comicName      String
+  coverImage     String
+  description    String
+  genres         String[]
+  landspaceImage String
+  newChapterTime String
+  publisher      String
+}
+
+model credentials {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int      @map("__v")
+  createdAt DateTime @db.Date
+  loginid   String
+  password  String
+  role      String
+  status    String
+  updatedAt DateTime @db.Date
+  username  String
+}
+
+model dailyquests {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  prize        Int
+  questName    String
+  questType    String
+  requiredTime Int
+}
+
+model donatepackages {
+  id            String                        @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int?                          @map("__v")
+  coin          Int
+  coverImage    String
+  donateRecords DonatepackagesDonateRecords[]
+  subTitle      String?
+  title         String
+}
+
+model genres {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  genreName String
+}
+
+model paymenthistories {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int      @map("__v")
+  orderDate     DateTime @db.Date
+  packageId     String?
+  paymentMethod String
+  price         Int
+  status        String
+  userId        String
+}
+
+model skycoinpackages {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  packageName String
+  price       BigInt
+  quantity    Int
+}
+
+model userreports {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  v                Int      @map("__v")
+  commentId        String   @db.ObjectId
+  destinationId    String   @db.ObjectId
+  reportContent    String
+  reportTime       DateTime @db.Date
+  status           String
+  type             String
+  userBeReportedId String   @db.ObjectId
+  userReportedId   String   @db.ObjectId
+}
+
+model users {
+  id                String               @id @default(auto()) @map("_id") @db.ObjectId
+  v                 Int?                 @map("__v")
+  accessCommentDate DateTime             @db.Date
+  authentication    UsersAuthentication?
+  avatar            String
+  bookmarkList      UsersBookmarkList
+  challenges        UsersChallenges[]
+  coinPoint         Int
+  deviceToken       String?
+  histories         UsersHistories
+  notifications     UsersNotifications[]
+  paymentHistories  String[]
+  phone             String
+  questLog          UsersQuestLog
+  username          String
 }

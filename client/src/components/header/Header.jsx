@@ -203,7 +203,7 @@ const NavigationMenuDemo = ({ session }) => {
                   </Avatar>
                 </DropdownTrigger>
                 <DropdownMenu>
-                  <DropdownSection title={`${user?.name}`}>
+                  <DropdownSection title={`${user?.username} (${user?.phone})`}>
                     {HeaderNav.map((item, index) => (
                       <DropdownItem
                         onClick={() => {

@@ -23,6 +23,20 @@ export const useComic = () => {
     return res;
   };
 
+  const getComic = async (id) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getComic?comicId=${id}`,
+    });
+    return res;
+  };
+
+  const getChapter = async (id) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getDetailComicById?comicId=${id}`,
+    });
+    return res;
+  };
+
   const getComicAlbumContentAll = async (idList) => {
     const res = await getRequest({
       endPoint: `https://skylark-entertainment.vercel.app/api/comics/getComicInAlbum?idList=${idList}&limit=10000&page=1`,
@@ -76,20 +90,6 @@ export const useComic = () => {
     return res;
   };
 
-  const fetchAllEventsBySearch = async (page, props = {}) => {
-    let endPointUrl = `/api/event?page=${page}&limit=12`;
-    const appendParam = (param, value) => {
-      if (value !== "" && typeof value !== "undefined") {
-        endPointUrl += `&${param}=${value}`;
-      }
-    };
-    Object.keys(props).forEach((prop) => {
-      appendParam(prop, props[prop]);
-    });
-    const res = await getRequest({ endPoint: endPointUrl });
-    return res;
-  };
-
   return {
     fetchComicBanner,
     getComicAlbum,
@@ -101,7 +101,7 @@ export const useComic = () => {
     banUser,
     getReadingHistories,
     getNewChapterComic,
-
-    fetchAllEventsBySearch,
+    getChapter,
+    getComic,
   };
 };

@@ -230,20 +230,6 @@ export const useAnime = () => {
     return res;
   };
 
-  const fetchAllEventsBySearch = async (page, props = {}) => {
-    let endPointUrl = `/api/event?page=${page}&limit=12`;
-    const appendParam = (param, value) => {
-      if (value !== "" && typeof value !== "undefined") {
-        endPointUrl += `&${param}=${value}`;
-      }
-    };
-    Object.keys(props).forEach((prop) => {
-      appendParam(prop, props[prop]);
-    });
-    const res = await getRequest({ endPoint: endPointUrl });
-    return res;
-  };
-
   return {
     fetchAnimeBanner,
     getAnimeAlbum,
@@ -269,7 +255,5 @@ export const useAnime = () => {
     updateUserLikeParentComment,
     getWatchingHistories,
     getNewEpisodeAnime,
-
-    fetchAllEventsBySearch,
   };
 };
