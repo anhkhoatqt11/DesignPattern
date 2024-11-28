@@ -81,9 +81,10 @@ const options: AuthOptions = {
       }
       if (user) {
         token.id = user.id;
+        token.coinPoint = user.coinPoint;
         token.avatar = user.avatar;
-        token.name = user.name;
-        token.email = user.email;
+        token.username = user.username;
+        token.phone = user.phone;
       }
 
       return token;
