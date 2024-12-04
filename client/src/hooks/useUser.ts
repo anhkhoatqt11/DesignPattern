@@ -38,9 +38,17 @@ export const useUser = () => {
     }
   };
 
+  const getUserCoinAndChallenge = async (id) => {
+    const res = await getRequest({
+      endPoint: `/api/user/getUserCoinAndChallenge?id=${id}`,
+    });
+    return res;
+  };
+
   return {
     fetchUserInfoById,
     updateUserInfo,
     uploadUserInfo1,
+    getUserCoinAndChallenge,
   };
 };

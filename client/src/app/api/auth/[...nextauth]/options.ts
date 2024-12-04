@@ -51,6 +51,7 @@ const options: AuthOptions = {
           avatar: user.avatar,
           phone: user.phone,
           coinPoint: user.coinPoint,
+          questLog: user.questLog,
         };
       },
     }),
@@ -85,6 +86,7 @@ const options: AuthOptions = {
         token.avatar = user.avatar;
         token.username = user.username;
         token.phone = user.phone;
+        token.questLog = user.questLog;
       }
 
       return token;
@@ -97,6 +99,7 @@ const options: AuthOptions = {
         (session.user as { avatar: string }).avatar = token.avatar as string;
         (session.user as { phone: string }).phone = token.phone as string;
         (session.user as { coinPoint: number }).coinPoint = token.coinPoint as number;
+        (session.user as { questLog: any[] }).questLog = token.questLog as any[];
       }
       return session;
     },
