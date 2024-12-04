@@ -2,6 +2,7 @@ import options from '@/app/api/auth/[...nextauth]/options';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import jwt from 'jsonwebtoken';
+import crypto from "crypto";
 
 export async function mustBeLoggedIn() {
   const session = await getServerSession(options);
@@ -44,9 +45,6 @@ export async function mustBeAdmin() {
     redirect('/');
   }
 }
-
-
-import crypto from "crypto";
 
 // Use an environment variable for the secret key
 const SECRET = 'SKYLARK-REST-API';

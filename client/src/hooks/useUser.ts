@@ -58,11 +58,19 @@ export const useUser = () => {
     }
   };
 
+  const getUserCoinAndChallenge = async (id) => {
+    const res = await getRequest({
+      endPoint: `/api/user/getUserCoinAndChallenge?id=${id}`,
+    });
+    return res;
+  };
+
   return {
     getPaymentHistories,
     paySkycoin,
     fetchUserInfoById,
     updateUserInfo,
     uploadUserInfo1,
+    getUserCoinAndChallenge,
   };
 };
