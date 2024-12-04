@@ -5,7 +5,7 @@ import { Pagination } from "swiper/modules";
 import Link from "next/link";
 import { TopViewItem } from "@/app/(public)/(component)/TopViewItem";
 
-export const EpisodeOwnerList = ({ listEpisodes }) => {
+export const EpisodeOwnerList = ({ listEpisodes, animeId }) => {
   return (
     <div className="w-full">
       <section
@@ -63,7 +63,7 @@ export const EpisodeOwnerList = ({ listEpisodes }) => {
               key={item?._id}
               className="h-full relative overflow-visible"
             >
-              <Link href={``}>
+              <Link href={`/anime/${animeId}/episode?episodeId=${item?._id}`}>
                 <TopViewItem
                   img={item?.coverImage}
                   name={item?.episodeName}

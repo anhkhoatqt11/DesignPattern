@@ -1,7 +1,27 @@
-import { getRequest, postRequest } from "@/lib/fetch";
+import { getRequest, postRequest, putRequest } from "@/lib/fetch";
 import toast from "react-hot-toast";
 
 export const useUser = () => {
+  const getPaymentHistories = async (userId) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/users/getPaymentHistories?userId=${userId}`,
+    });
+    return res;
+  };
+
+  const paySkycoin = async (userId, coin, chapterId) => {
+    const res = await putRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/users/paySkycoin`,
+      isFormData: false,
+      formData: {
+        userId,
+        coin,
+        chapterId,
+      },
+    });
+    return res;
+  };
+
   const fetchUserInfoById = async (id) => {
     const res = await getRequest({
       endPoint: `/api/user?id=${id}`,
@@ -39,6 +59,8 @@ export const useUser = () => {
   };
 
   return {
+    getPaymentHistories,
+    paySkycoin,
     fetchUserInfoById,
     updateUserInfo,
     uploadUserInfo1,

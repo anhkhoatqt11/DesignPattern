@@ -29,7 +29,6 @@ const page = ({ params }) => {
     fetchAnimeDetail();
   }, []);
 
-  // return <div className="bg-[#141414] h-screen">{params.id}</div>;
   return isLoading ? (
     <div className="bg-[#141414] flex h-screen items-center justify-center -mt-[50px] md:-mt-[76px]">
       <Loader />
@@ -67,11 +66,15 @@ const page = ({ params }) => {
                 className="brightness-75 object-cover h-[200px] w-[150px]"
               />
               {/* </AspectRatio> */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className=" transition ease-in-out duration-300 hover:scale-105 bg-white/70 w-[50px] h-[50px] rounded-full flex items-center justify-center">
-                  <FaPlay className="w-6 h-6 text-[#da5ef0] ml-1 mt-[2px]" />
+              <Link
+                href={`/anime/${params.id}/episode?episodeId=${animeDetail?.detailEpisodeList[0]?._id}`}
+              >
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className=" transition ease-in-out duration-300 hover:scale-105 bg-white/70 w-[50px] h-[50px] rounded-full flex items-center justify-center">
+                    <FaPlay className="w-6 h-6 text-[#da5ef0] ml-1 mt-[2px]" />
+                  </div>
                 </div>
-              </div>
+              </Link>
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-2xl font-bold text-white line-clamp-1">
@@ -202,7 +205,9 @@ const page = ({ params }) => {
                 key={item?._id}
                 className="h-full relative overflow-visible"
               >
-                <Link href={``}>
+                <Link
+                  href={`/anime/${params.id}/episode?episodeId=${item?._id}`}
+                >
                   <TopViewItem
                     img={item?.coverImage}
                     name={item?.episodeName}

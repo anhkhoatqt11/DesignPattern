@@ -93,7 +93,7 @@ function ComicAlbumList({ comicAlbumName, idList }) {
                 key={index}
                 className="h-full relative overflow-visible"
               >
-                <Link href={``}>
+                <Link href={`/comic/${item[0]?._id}`}>
                   <ComicItem
                     img={item[0]?.coverImage}
                     name={item[0]?.comicName}

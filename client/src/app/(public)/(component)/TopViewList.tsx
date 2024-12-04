@@ -18,7 +18,6 @@ function TopViewList({ animeName, animeId }) {
   useEffect(() => {
     const fetchEpisodeDetail = async () => {
       const result = await getAnimeChapterById(animeId);
-      console.log("🚀 ~ fetchEpisodeDetail ~ result:", result);
       setEpisodeList(result[0]?.movieEpisodes);
       setIsLoading(false);
     };
@@ -94,7 +93,7 @@ function TopViewList({ animeName, animeId }) {
                 key={item?._id}
                 className="h-full relative overflow-visible"
               >
-                <Link href={``}>
+                <Link href={`/anime/${animeId}/episode?episodeId=${item?._id}`}>
                   <TopViewItem
                     img={item?.coverImage}
                     name={item?.episodeName}

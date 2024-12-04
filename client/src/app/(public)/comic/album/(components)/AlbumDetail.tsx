@@ -42,7 +42,7 @@ export const AlbumDetail = ({ albumName, idList }) => {
       ) : (
         <div className="grid grid-cols-7 gap-x-5 gap-y-8">
           {listAlbumContent?.map((item) => (
-            <Link href={``} key={item[0]?._id}>
+            <Link href={`/comic/${item[0]?._id}`} key={item[0]?._id}>
               <ComicItem
                 img={item[0]?.coverImage}
                 name={item[0]?.comicName}

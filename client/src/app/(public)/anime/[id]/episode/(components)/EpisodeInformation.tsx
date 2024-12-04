@@ -1,10 +1,5 @@
-import {
-  FaClipboardList,
-  FaCommentAlt,
-  FaEye,
-  FaThumbsUp,
-  FaYoutube,
-} from "react-icons/fa";
+import { FaClipboardList, FaEye, FaThumbsUp, FaYoutube } from "react-icons/fa";
+import { BiSolidCommentDetail } from "react-icons/bi";
 import { FaBookmark } from "react-icons/fa6";
 import { convertTagArrayToStr } from "../../page";
 import { useAnime } from "@/hooks/useAnime";
@@ -107,7 +102,7 @@ export const EpisodeInformation = ({ animeDetail, episodeDetail }) => {
                 onOpen();
               }}
             >
-              <FaCommentAlt className={`text-white`} />
+              <BiSolidCommentDetail className={`text-white`} />
               <p className={`text-[#8E8E8E] text-xs`}>Bình luận</p>
             </div>
           </div>

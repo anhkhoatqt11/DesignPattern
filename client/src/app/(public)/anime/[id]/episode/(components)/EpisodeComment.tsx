@@ -67,8 +67,6 @@ export const EpisodeComment = ({ episodeId }) => {
   const [userNameReplied, setUserNameReplied] = useState("");
   const [commentIdReplied, setCommentIdReplied] = useState("");
   const [userIdReplied, setUserIdReplied] = useState("");
-  const [commentReportId, setCommentReportId] = useState("");
-  const [reportedPersonId, setReportedPersonId] = useState("");
   const [modalMessage, setModalMessage] = useState("");
 
   const getEpisodeComment = async () => {
@@ -233,7 +231,7 @@ export const EpisodeComment = ({ episodeId }) => {
                           >
                             Trả lời
                           </div>
-                          <Dropdown>
+                          <Dropdown className="bg-[#141414]">
                             <DropdownTrigger>
                               <div
                                 className="text-white text-[12px] font-semibold cursor-default"
@@ -251,7 +249,10 @@ export const EpisodeComment = ({ episodeId }) => {
                               </div>
                             </DropdownTrigger>
                             {userId && (
-                              <DropdownMenu aria-label="Static Report">
+                              <DropdownMenu
+                                aria-label="report"
+                                className="bg-[#141414] text-white ring-[#141414] border-[#141414]"
+                              >
                                 <DropdownItem
                                   onClick={async () => {
                                     await sendUserReport(
@@ -378,7 +379,7 @@ export const EpisodeComment = ({ episodeId }) => {
                                   ? "Đã thích"
                                   : "Thích"}
                               </div>
-                              <Dropdown>
+                              <Dropdown className="bg-[#141414]">
                                 <DropdownTrigger>
                                   <div
                                     className="text-white text-[12px] font-semibold cursor-default"
@@ -396,7 +397,10 @@ export const EpisodeComment = ({ episodeId }) => {
                                   </div>
                                 </DropdownTrigger>
                                 {userId && (
-                                  <DropdownMenu aria-label="Static Report">
+                                  <DropdownMenu
+                                    aria-label="report"
+                                    className="bg-[#141414] text-white ring-[#141414] border-[#141414]"
+                                  >
                                     <DropdownItem
                                       onClick={async () => {
                                         await sendUserReport(
@@ -455,6 +459,19 @@ export const EpisodeComment = ({ episodeId }) => {
                   </div>
                 </div>
               ))}
+              {commentTree?.length === 0 && (
+                <div className="flex justify-center items-center">
+                  <div className="flex flex-col gap-1 justify-center items-center">
+                    <img src="\commentempty.png" width={180} height={180} />
+                    <p className="text-white font-medium">
+                      Chưa có bình luận nào
+                    </p>
+                    <p className="text-slate-400 text-sm">
+                      Hãy là người đầu tiên bình luận nào
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </AspectRatio>
           {userIdReplied && (

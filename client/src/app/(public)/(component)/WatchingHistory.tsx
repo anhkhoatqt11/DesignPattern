@@ -22,9 +22,12 @@ function WatchingHistory() {
     const fetchWatchingHistoryDetail = async () => {
       if (userId) {
         const result = await getWatchingHistories(userId);
-        console.log("🚀 ~ fetchWatchingHistoryDetail ~ result:", result);
         setEpisodeList(result[0]?.detailHistories);
         setRecordList(result[0]?.histories?.watchingMovie);
+        console.log(
+          "🚀 ~ fetchWatchingHistoryDetail ~ result[0]?.detailHistories:",
+          result[0]?.detailHistories
+        );
       }
       setIsLoading(false);
     };
@@ -94,7 +97,9 @@ function WatchingHistory() {
                 key={item?._id}
                 className="h-full relative overflow-visible"
               >
-                <Link href={``}>
+                <Link
+                  href={`/anime/${item?.movieOwner[0]?._id}/episode?episodeId=${item?._id}`}
+                >
                   <VideoHistoryItem
                     img={item?.coverImage}
                     name={item?.episodeName}

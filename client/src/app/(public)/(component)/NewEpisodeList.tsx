@@ -22,7 +22,6 @@ function NewEpisodeList() {
     const fetchNewEpisodeListDetail = async () => {
       if (userId) {
         const result = await getNewEpisodeAnime();
-        console.log("🚀 ~ fetchNewEpisodeListDetail ~ result:", result);
         setEpisodeList(result);
       }
       setIsLoading(false);
@@ -93,7 +92,9 @@ function NewEpisodeList() {
                 key={item?._id}
                 className="h-full relative overflow-visible"
               >
-                <Link href={``}>
+                <Link
+                  href={`/anime/${item?.animeOwner[0]?._id}/episode?episodeId=${item?._id}`}
+                >
                   <NewEpisodeItem
                     img={item?.coverImage}
                     name={item?.episodeName}

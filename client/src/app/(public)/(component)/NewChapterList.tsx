@@ -94,7 +94,7 @@ function NewChapterList() {
                 key={item?._id?.chapterOwnerId[0]}
                 className="h-full relative overflow-visible"
               >
-                <Link href={``}>
+                <Link href={`/comic/${item?._id?.chapterOwnerId[0]}`}>
                   <ComicItem
                     img={item?._id?.coverImage[0]}
                     name={item?._id?.comicName[0]}

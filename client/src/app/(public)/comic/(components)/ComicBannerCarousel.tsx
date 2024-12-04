@@ -36,7 +36,7 @@ function ComicBannerCarousel() {
         showArrows={true}
       >
         {data?.comicList?.map((item) => (
-          <Link key={item?._id} href={`event/${item?.SuKienId}`}>
+          <Link key={item?._id} href={`/comic/${item?._id}`}>
             <div key={item?._id} className="w-full aspect-[16/8] relative">
               <img
                 className="rounded-lg w-full aspect-[16/8]"

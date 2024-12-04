@@ -23,7 +23,6 @@ function ReadingHistory() {
     const fetchReadingHistoryDetail = async () => {
       if (userId) {
         const result = await getReadingHistories(userId);
-        console.log("🚀 ~ fetchReadingHistoryDetail ~ result:", result);
         setChapterList(result[0]?.detailHistories);
       }
       setIsLoading(false);
@@ -90,13 +89,12 @@ function ReadingHistory() {
                 key={item?._id}
                 className="h-full relative overflow-visible"
               >
-                <Link href={``}>
-                  <ComicHistoryItem
-                    img={item?.coverImage}
-                    name={item?.chapterName}
-                    ownerId={item?.comicOwner[0]?._id}
-                  />
-                </Link>
+                <ComicHistoryItem
+                  id={item?._id}
+                  img={item?.coverImage}
+                  name={item?.chapterName}
+                  ownerId={item?.comicOwner[0]?._id}
+                />
               </SwiperSlide>
             ))}
           </Swiper>

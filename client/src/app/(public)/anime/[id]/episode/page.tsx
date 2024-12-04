@@ -23,13 +23,11 @@ const page = ({ params }) => {
   useEffect(() => {
     const fetchAnimeDetail = async () => {
       const result = await getAnimeDetailInEpisodePageById(animeId);
-      console.log("🚀 ~ fetchAnimeDetail ~ result:", result);
       setIsLoadingAnimeDetail(false);
       setAnimeDetail(result[0]);
     };
     const fetchEpisodeDetail = async () => {
       const result = await getAnimeEpisodeDetailById(episodeId);
-      console.log("🚀 ~ fetchEpisodeDetail ~ result:", result);
       setIsLoadingEpisodeDetail(false);
       setEpisodeDetail(result[0]);
     };
@@ -50,7 +48,10 @@ const page = ({ params }) => {
             animeDetail={animeDetail}
             episodeDetail={episodeDetail}
           />
-          <EpisodeOwnerList listEpisodes={animeDetail?.listEpisodes} />
+          <EpisodeOwnerList
+            listEpisodes={animeDetail?.listEpisodes}
+            animeId={animeId}
+          />
           <SuggestionByView />
         </>
       )}

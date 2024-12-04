@@ -9,7 +9,6 @@ export const SuggestionByView = () => {
   useEffect(() => {
     const fetchSuggestion = async () => {
       const result = await getSomeTopViewEpisodes();
-      console.log("🚀 ~ fetchSuggestion ~ result:", result);
       setSuggestList(result);
     };
     fetchSuggestion();
@@ -31,7 +30,10 @@ export const SuggestionByView = () => {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
           {suggestList?.map((item) => (
-            <Link href={``}>
+            <Link
+              href={`/anime/${item?.movieOwner[0]?._id}/episode?episodeId=${item?._id}`}
+              key={item?._id}
+            >
               <TopViewItem
                 img={item?.coverImage}
                 name={item?.episodeName}

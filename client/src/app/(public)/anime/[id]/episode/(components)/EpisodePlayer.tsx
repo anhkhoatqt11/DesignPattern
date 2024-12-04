@@ -97,7 +97,7 @@ const EpisodePlayer = ({ episodeDetail }) => {
       await updateUserHistoryHadSeenEpisode(
         episodeDetail?._id,
         userId,
-        Math.round(position)
+        Math.round(position || 0)
       );
     };
     getPreviousPositionVideo();
@@ -110,7 +110,7 @@ const EpisodePlayer = ({ episodeDetail }) => {
 
   useEffect(() => {
     if (animeVideoRef.current !== null) {
-      animeVideoRef.current.currentTime = previousPosition;
+      animeVideoRef.current.currentTime = previousPosition || 0;
     }
   }, [previousPosition, animeVideoRef]);
 

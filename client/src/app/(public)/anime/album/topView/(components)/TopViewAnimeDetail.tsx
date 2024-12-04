@@ -43,7 +43,10 @@ export const TopViewAnimeDetail = ({ animeId }) => {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-5 gap-y-8">
           {animeDetail?.movieEpisodes?.map((item) => (
-            <Link href={``} key={item?._id}>
+            <Link
+              href={`/anime/${animeId}/episode?episodeId=${item?._id}`}
+              key={item?._id}
+            >
               <TopViewItem
                 img={item?.coverImage}
                 name={item?.episodeName}
