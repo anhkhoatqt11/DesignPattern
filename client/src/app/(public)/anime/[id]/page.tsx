@@ -22,7 +22,6 @@ const page = ({ params }) => {
     const fetchAnimeDetail = async () => {
       const result = await getAnimeDetailById(params.id);
       setAnimeDetail(result[0]);
-      console.log("🚀 ~ fetchAnimeDetail ~ result:", result);
       setIsLoading(false);
     };
 

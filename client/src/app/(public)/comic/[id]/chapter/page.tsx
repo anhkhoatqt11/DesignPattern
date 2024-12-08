@@ -6,17 +6,8 @@ import Loader from "@/components/Loader";
 import { useComic } from "@/hooks/useComic";
 import { FaCommentAlt, FaThumbsUp } from "react-icons/fa";
 import { LuPlusSquare } from "react-icons/lu";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { FaClipboardList } from "react-icons/fa6";
-import { Divider, Image, Progress } from "@nextui-org/react";
+import { Divider, Image, Progress, Spinner } from "@nextui-org/react";
 import { convertUtcToGmtPlus7 } from "../(components)/ComicInfo";
 import {
   Modal,
@@ -30,6 +21,21 @@ import { ChapterComment } from "./(components)/ChapterComment";
 import { BiSolidCommentDetail } from "react-icons/bi";
 import toast from "react-hot-toast";
 import { useQuest } from "@/hooks/useQuest";
+import { useUser } from "@/hooks/useUser";
+import { MdErrorOutline, MdLock } from "react-icons/md";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { IoWalletOutline } from "react-icons/io5";
+import { Button } from "@/components/ui/button";
+import { IoIosCheckmarkCircleOutline } from "react-icons/io";
+import { GoQuestion } from "react-icons/go";
 
 const page = ({ params }) => {
   const searchParams = useSearchParams();
@@ -44,6 +50,7 @@ const page = ({ params }) => {
       watchingTime: 2,
     },
   };
+  const userCoins = 1000;
   const {
     getChapter,
     checkUserHasLikeOrSaveChapter,
@@ -53,6 +60,7 @@ const page = ({ params }) => {
     updateUserHistoryHadSeenChapter,
   } = useComic();
   const { updateQuestLog } = useQuest();
+  const { getPaymentHistories, paySkycoin } = useUser();
   let completedView = false;
   const [isLoading, setIsLoading] = useState(true);
   const [chapterList, setChapterList] = useState([]);
@@ -63,6 +71,17 @@ const page = ({ params }) => {
   const [readingPercentage, setReadingPercentage] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
+  const [boughtChapterList, setBoughtChapterList] = useState([]);
+  const [processPayment, setProcessPayment] = useState(false);
+  let boughtInfo = {
+    chapterId: "",
+    unlockPrice: 0,
+    chapterName: "",
+    coverImage: "",
+  };
+  const [modalMode, setModalMode] = useState("comment");
+  const [errorMessage, setErrorMessage] = useState("");
+
   const onScroll = useCallback(async (event) => {
     const { scrollY, innerHeight } = window;
     const scrollTop = scrollY;
@@ -80,9 +99,24 @@ const page = ({ params }) => {
     setReadingPercentage(percentScroll);
   }, []);
 
+  const processBuyChapter = async () => {
+    setProcessPayment(true);
+    try {
+      await paySkycoin(userId, boughtInfo?.unlockPrice, boughtInfo?.chapterId);
+      setBoughtChapterList([...boughtChapterList, boughtInfo.chapterId]);
+    } catch (error) {
+      setErrorMessage(
+        "Giao dịch thất bại, vui lòng kiểm tra lại số dư và thử lại"
+      );
+    }
+    setProcessPayment(false);
+  };
+
   const fetchChapterList = async () => {
     const result = await getChapter(comicId);
+    const boughtList = await getPaymentHistories(userId);
     setChapterList(result[0]?.detailChapterList);
+    setBoughtChapterList(boughtList);
     setCurrentChapterDetail(
       result[0]?.detailChapterList?.find((i) => i?._id === chapterId)?.content
     );
@@ -153,7 +187,10 @@ const page = ({ params }) => {
                 <div className="flex flex-row gap-6">
                   <div
                     className="flex flex-col gap-2 justify-center items-center"
-                    onClick={onOpen}
+                    onClick={() => {
+                      setModalMode("comment");
+                      onOpen();
+                    }}
                   >
                     <BiSolidCommentDetail className={`w-6 h-6 text-white`} />
                   </div>
@@ -176,26 +213,157 @@ const page = ({ params }) => {
                               <Divider className="h-[0.8px] bg-[#353434] rounded-full mb-2" />
                             )}
                             <SheetClose asChild>
-                              <a
-                                href={`/comic/${comicId}/chapter?chapterId=${chap?._id}`}
-                                className="flex flex-row gap-3 hover:bg-[#141414] px-8 py-4 cursor-default"
-                              >
-                                <Image
-                                  src={chap?.coverImage}
-                                  alt={`Chapter Cover`}
-                                  width={50}
-                                  height={50}
-                                  className="rounded-lg"
-                                />
-                                <div className="flex flex-col gap-1">
-                                  <span className="block text-white font-semibold">
-                                    {chap?.chapterName}
-                                  </span>
-                                  <span className="block text-xs text-[#8E8E8E]">
-                                    {convertUtcToGmtPlus7(chap?.publicTime)}
-                                  </span>
-                                </div>
-                              </a>
+                              {boughtChapterList.includes(chap?._id) ||
+                              chap?.unlockPrice === 0 ? (
+                                <a
+                                  href={`/comic/${comicId}/chapter?chapterId=${chap?._id}`}
+                                  className="flex flex-row gap-3 hover:bg-[#141414] px-8 py-4 cursor-default"
+                                >
+                                  <Image
+                                    src={chap?.coverImage}
+                                    alt={`Chapter Cover`}
+                                    width={50}
+                                    height={50}
+                                    className="rounded-lg"
+                                  />
+                                  <div className="flex flex-col gap-1">
+                                    <span className="block text-white font-semibold">
+                                      {chap?.chapterName}
+                                    </span>
+                                    <span className="block text-xs text-[#8E8E8E]">
+                                      {convertUtcToGmtPlus7(chap?.publicTime)}
+                                    </span>
+                                  </div>
+                                </a>
+                              ) : (
+                                <Sheet key={"bottom"}>
+                                  <SheetTrigger asChild>
+                                    <div className="flex flex-row gap-3 hover:bg-[#141414] px-8 py-4 cursor-default">
+                                      <Image
+                                        src={chap?.coverImage}
+                                        alt={`Chapter Cover`}
+                                        width={50}
+                                        height={50}
+                                        className="rounded-lg"
+                                      />
+                                      <div className="flex flex-col gap-1 w-full">
+                                        <div className="flex flex-row w-full justify-between items-center">
+                                          <span className="block text-white font-semibold">
+                                            {chap?.chapterName}
+                                          </span>
+                                          <MdLock className="text-[#8E8E8E] w-4 h-4" />
+                                        </div>
+                                        <span className="block text-xs text-[#8E8E8E]">
+                                          {convertUtcToGmtPlus7(
+                                            chap?.publicTime
+                                          )}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </SheetTrigger>
+                                  <SheetContent
+                                    side={"bottom"}
+                                    className="bg-[#2b2b2b]"
+                                  >
+                                    <SheetHeader>
+                                      <SheetTitle className="text-white px-8">
+                                        Mở khóa truyện để tiếp tục đọc nhé!
+                                      </SheetTitle>
+                                    </SheetHeader>
+                                    <div className="flex flex-col gap-4">
+                                      <div className=" px-8 flex flex-row justify-between items-center">
+                                        <div className="flex flex-row gap-3 mt-3 items-center">
+                                          <Image
+                                            src={chap?.coverImage}
+                                            alt="Comic Cover"
+                                            width={120}
+                                            height={120}
+                                            className="rounded-lg"
+                                          />
+                                          <div className="flex flex-col gap-1">
+                                            <span className="text-[#DA5EF0] font-semibold text-xl">
+                                              {"kakaka"}
+                                            </span>
+                                            <span className="text-lg text-slate-400">
+                                              {chap?.chapterName}
+                                            </span>
+                                          </div>
+                                        </div>
+                                        <div className="flex flex-row gap-2 text-white font-semibold text-xl">
+                                          {chap?.unlockPrice}
+                                          <img
+                                            src="/skycoin.png"
+                                            width={30}
+                                            height={30}
+                                          />
+                                        </div>
+                                      </div>
+                                      <Divider className="h-[0.8px] bg-[#686868] rounded-full" />
+                                      <div className=" px-8 flex flex-row justify-between items-center">
+                                        <div className="flex flex-row gap-2">
+                                          <IoWalletOutline className="text-[#DA5EF0] w-6 h-6" />
+                                          <span className="text-lg text-white">
+                                            Bạn hiện đang có:
+                                          </span>
+                                        </div>
+                                        <div className="flex flex-row gap-2 text-white font-semibold text-xl">
+                                          {userCoins.toLocaleString("de-DE")}
+                                          <img
+                                            src="/skycoin.png"
+                                            width={30}
+                                            height={30}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <SheetFooter>
+                                      <SheetClose asChild>
+                                        {userId ? (
+                                          <div className="flex flex-row gap-3 w-full mt-4 px-8">
+                                            <Button
+                                              className="basis-1/2 bg-transparent border-solid border-2 border-[#DA5EF0] text-[#DA5EF0] hover:bg-[#DA5EF0] hover:text-white"
+                                              onClick={() => {
+                                                router.push(
+                                                  "https://anime-entertainment-payment.vercel.app/"
+                                                );
+                                              }}
+                                            >
+                                              Nạp thêm
+                                            </Button>
+                                            <Button
+                                              className="basis-1/2 bg-gradient-to-r from-[#A958FE] to-[#DA5EF0] transition ease-in-out duration-300 hover:scale-[1.01]"
+                                              onClick={() => {
+                                                boughtInfo = {
+                                                  chapterId: chap?._id,
+                                                  unlockPrice:
+                                                    chap?.unlockPrice,
+                                                  chapterName:
+                                                    chap?.chapterName,
+                                                  coverImage: chap?.coverImage,
+                                                };
+                                                processBuyChapter();
+                                                setModalMode("pay");
+                                                onOpen();
+                                              }}
+                                            >
+                                              Mua ngay
+                                            </Button>
+                                          </div>
+                                        ) : (
+                                          <Button
+                                            className="mt-4 w-full px-8 mx-8 bg-gradient-to-r from-[#A958FE] to-[#DA5EF0] hover:scale-[1.01] transition ease-in-out duration-300"
+                                            onClick={() => {
+                                              router.push("/auth/login");
+                                            }}
+                                          >
+                                            Đăng nhập để mua chương
+                                          </Button>
+                                        )}
+                                      </SheetClose>
+                                    </SheetFooter>
+                                  </SheetContent>
+                                </Sheet>
+                              )}
                             </SheetClose>
                           </div>
                         ))}
@@ -241,14 +409,51 @@ const page = ({ params }) => {
         className="bg-black"
       >
         <ModalContent>
-          {
-            <>
-              <ModalHeader className="flex flex-col gap-1"></ModalHeader>
+          <>
+            <ModalHeader className="flex flex-col gap-1"></ModalHeader>
+            {modalMode === "pay" ? (
+              <ModalBody>
+                {userCoins < boughtInfo?.unlockPrice || errorMessage ? (
+                  <div className="text-white w-full h-full text-center flex flex-row gap-2 items-start">
+                    <MdErrorOutline className="text-red-500 w-5 h-5" />
+                    {errorMessage ||
+                      "Số dư hiện tại không đủ, vui lòng nạp thêm"}
+                  </div>
+                ) : (
+                  <div className="w-full h-full flex justify-center items-center">
+                    {processPayment ? (
+                      <Spinner
+                        label="Đang xử lý giao dịch"
+                        color="danger"
+                        labelColor="danger"
+                      />
+                    ) : (
+                      <div className="flex flex-col gap-3 w-full">
+                        <div className="text-emerald-500 w-full h-full text-center flex flex-row gap-2 items-center">
+                          <IoIosCheckmarkCircleOutline className="text-emerald-500 w-5 h-5" />
+                          Mua chương truyện thành công
+                        </div>
+                        <Divider className="h-[0.8px] bg-[#686868] rounded-full" />
+                        <div className="flex flex-col gap-1 justify-center w-full items-center">
+                          <span className="text-[#A958FE] font-semibold text-base">
+                            Cảm ơn bạn đã chọn Skylark
+                          </span>
+                          <span className="text-gray-300 font-medium text-sm">
+                            Chúc bạn có một trải nghiệm vui vẻ
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </ModalBody>
+            ) : (
               <ModalBody>
                 <ChapterComment chapterId={chapterId} />
               </ModalBody>
-            </>
-          }
+            )}
+            {modalMode === "pay" && <ModalFooter></ModalFooter>}
+          </>
         </ModalContent>
       </Modal>
     </>

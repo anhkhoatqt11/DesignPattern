@@ -47,7 +47,7 @@ export function convertUtcToGmtPlus7(utcString) {
 }
 
 const ComicInfo = ({ id }) => {
-  const userId = "65f709463fafb1d0bdce1bb0";
+  const userId = "65ec67ad05c5cb2ad67cfb3f";
   // const userId = "";
   const userCoins = 1000;
   const router = useRouter();
@@ -60,6 +60,7 @@ const ComicInfo = ({ id }) => {
   const [verifyBuy, setVerifyBuy] = useState(false);
   const [boughtChapterList, setBoughtChapterList] = useState([]);
   const [boughtInfo, setBoughtInfo] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { data, isLoading } = useQuery({
     queryKey: ["comic", id],
@@ -80,12 +81,14 @@ const ComicInfo = ({ id }) => {
 
   const processBuyChapter = async () => {
     setProcessPayment(true);
-    setBoughtChapterList([...boughtChapterList, boughtInfo?.chapterId]);
-    const result = await paySkycoin(
-      userId,
-      boughtInfo?.unlockPrice,
-      boughtInfo?.chapterId
-    );
+    try {
+      await paySkycoin(userId, boughtInfo?.unlockPrice, boughtInfo?.chapterId);
+      setBoughtChapterList([...boughtChapterList, boughtInfo?.chapterId]);
+    } catch (error) {
+      setErrorMessage(
+        "Giao dịch thất bại, vui lòng kiểm tra lại số dư và thử lại"
+      );
+    }
     setProcessPayment(false);
   };
 
@@ -132,7 +135,12 @@ const ComicInfo = ({ id }) => {
               <div className="absolute inset-x-0 -bottom-2 left-0 z-10 w-full flex justify-center">
                 <Button
                   size="sm"
-                  className="w-2/3 bg-gradient-to-r from-[#A958FE] to-[#DA5EF0] z-10 transition ease-in-out duration-300 hover:scale-105"
+                  className="w-2/3 z-10 transition-colors transition-transform transition-shadow transition-all duration-500 bg-left hover:bg-right shadow-[#A958FE] hover:shadow-md"
+                  style={{
+                    backgroundSize: "200% auto",
+                    backgroundImage:
+                      "var(--button_primary_background_color, linear-gradient(90deg, #A958FE, #DA5EF0 50%, #A958FE))",
+                  }}
                   onClick={() => {
                     router.push(
                       `/comic/${id}/chapter?chapterId=${data[0].detailChapterList[0]?._id}`
@@ -410,10 +418,11 @@ const ComicInfo = ({ id }) => {
             <>
               <ModalHeader className="flex flex-col gap-1"></ModalHeader>
               <ModalBody>
-                {userCoins < boughtInfo?.unlockPrice ? (
-                  <div className="text-white w-full h-full text-center flex flex-row gap-2 items-center">
+                {userCoins < boughtInfo?.unlockPrice || errorMessage ? (
+                  <div className="text-white w-full h-full text-center flex flex-row gap-2 items-start">
                     <MdErrorOutline className="text-red-500 w-5 h-5" />
-                    Số dư hiện tại không đủ, vui lòng nạp thêm
+                    {errorMessage ||
+                      "Số dư hiện tại không đủ, vui lòng nạp thêm"}
                   </div>
                 ) : verifyBuy ? (
                   <div className="w-full h-full flex justify-center items-center">

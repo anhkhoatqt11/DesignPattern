@@ -90,7 +90,7 @@ function DonateList() {
                 key={item?._id}
                 className="h-full relative overflow-visible"
               >
-                <Link href={``}>
+                <Link href={`/donate/${item?._id}`}>
                   <DonateItem
                     img={item?.coverImage}
                     name={item?.title}

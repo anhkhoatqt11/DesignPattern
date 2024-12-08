@@ -156,7 +156,12 @@ const Login = ({ className }: { className?: string }) => {
             <div className="flex justify-center w-full my-4">
               <Button
                 type="submit"
-                className="w-[60%] rounded-full h-[50px] bg-gradient-to-b from-[#A958FE] to-[#DA5EF0] hover:scale-105 ease-in-out transition duration-300 text-white text-base font-medium mt-2"
+                className="w-[60%] rounded-full h-[50px] text-white text-base font-medium mt-2 transition-colors transition-transform transition-shadow transition-all duration-500 bg-left hover:bg-right hover:shadow-[#A958FE] hover:shadow-lg data-[hover=true]:opacity-100"
+                style={{
+                  backgroundSize: "200% auto",
+                  backgroundImage:
+                    "var(--button_primary_background_color, linear-gradient(90deg, #A958FE, #DA5EF0 50%, #A958FE))",
+                }}
               >
                 Đăng nhập
               </Button>
