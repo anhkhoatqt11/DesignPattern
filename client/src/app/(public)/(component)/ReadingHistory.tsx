@@ -13,8 +13,8 @@ import { VideoHistoryItem } from "./VideoHistoryItem";
 import { useComic } from "@/hooks/useComic";
 import { ComicHistoryItem } from "./ComicHistoryItem";
 
-function ReadingHistory() {
-  const userId = "65ec67ad05c5cb2ad67cfb3f";
+function ReadingHistory({session}) {
+  const userId = session?.user?.id;
   const { getReadingHistories } = useComic();
   const [chapterList, setChapterList] = useState();
   const [isLoading, setIsLoading] = useState(true);

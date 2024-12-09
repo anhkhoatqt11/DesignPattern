@@ -11,8 +11,8 @@ import { IoIosArrowForward } from "react-icons/io";
 import { TopViewItem } from "./TopViewItem";
 import { VideoHistoryItem } from "./VideoHistoryItem";
 
-function WatchingHistory() {
-  const userId = "65ec67ad05c5cb2ad67cfb3f";
+function WatchingHistory({session}) {
+  const userId = session?.user?.id;
   const { getWatchingHistories } = useAnime();
   const [episodeList, setEpisodeList] = useState();
   const [recordList, setRecordList] = useState();

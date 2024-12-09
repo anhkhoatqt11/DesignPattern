@@ -14,8 +14,8 @@ import { NewEpisodeItem } from "./NewEpisodeItem";
 import { useComic } from "@/hooks/useComic";
 import { ComicItem } from "./ComicItem";
 
-function NewChapterList() {
-  const userId = "65ec67ad05c5cb2ad67cfb3f";
+function NewChapterList({session}) {
+  const userId = session?.user?.id;
   const { getNewChapterComic } = useComic();
   const [chapterList, setChapterList] = useState();
   const [isLoading, setIsLoading] = useState(true);

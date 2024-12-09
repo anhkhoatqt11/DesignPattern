@@ -12,8 +12,8 @@ import { TopViewItem } from "./TopViewItem";
 import { VideoHistoryItem } from "./VideoHistoryItem";
 import { NewEpisodeItem } from "./NewEpisodeItem";
 
-function NewEpisodeList() {
-  const userId = "65ec67ad05c5cb2ad67cfb3f";
+function NewEpisodeList({session}) {
+  const userId = session?.user?.id;
   const { getNewEpisodeAnime } = useAnime();
   const [episodeList, setEpisodeList] = useState();
   const [isLoading, setIsLoading] = useState(true);
