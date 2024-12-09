@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from 'react'
-import { Trophy, Home, Book, Film, Star, User } from 'lucide-react'
+import { Trophy, Home, Book, Film, Star, User, Hourglass } from 'lucide-react'
 
 import { Card, CardContent } from "@/components/ui/card"
 import DailyMission from './DailyMission';
@@ -12,14 +12,16 @@ import { useQuery } from '@tanstack/react-query';
 import Loader from '@/components/Loader';
 import DailyQuest from './DailyQuest';
 import { useUser } from '@/hooks/useUser';
+import { useRouter } from "next/navigation";
 
 
 const ChallengeDashboardLayout = ({ session }) => {
 
-    const { getUsersChallengesPoint } = useChallenge();
-    const { updateLoginLog, getDailyQuests, updateQuestLog} = useQuest();
+    const { getUsersChallengesPoint, getChallengeInformation } = useChallenge();
+    const { updateLoginLog, getDailyQuests, updateQuestLog } = useQuest();
     const [currentDateTime, setCurrentDateTime] = React.useState(new Date());
     const { getUserCoinAndChallenge } = useUser();
+    const router = useRouter();
 
     const { data: userCoinAndQCData, isLoading: isUserCoinAndQCDataLoading, refetch: refetchUserCoinAndQCData } = useQuery({
         queryKey: ['user', 'coinAndQCData', session?.user?.id],
@@ -33,6 +35,7 @@ const ChallengeDashboardLayout = ({ session }) => {
         queryKey: ['challenge', 'points'],
         queryFn: async () => {
             const res = await getUsersChallengesPoint();
+            console.log(res);
             return res;
         },
     })
@@ -45,6 +48,15 @@ const ChallengeDashboardLayout = ({ session }) => {
             return res;
         },
     });
+
+    const { data: challengeInformation, isLoading: isChallengeInformationLoading } = useQuery({
+        queryKey: ['challenge', 'information'],
+        queryFn: async () => {
+            const res = await getChallengeInformation();
+            console.log(res);
+            return res;
+        },
+    })
 
 
     useEffect(() => {
@@ -64,7 +76,7 @@ const ChallengeDashboardLayout = ({ session }) => {
 
 
 
-    if (isLoading || isDailyQuestsLoading || isUserCoinAndQCDataLoading) {
+    if (isLoading || isDailyQuestsLoading || isUserCoinAndQCDataLoading || isChallengeInformationLoading) {
         return (
             <div className="flex h-screen items-center justify-center">
                 <Loader />
@@ -80,10 +92,24 @@ const ChallengeDashboardLayout = ({ session }) => {
                         {/* Challenge Info, Podium, and Results (on top for smaller screens) */}
                         <div className="w-full lg:w-1/2 space-y-8 order-1 lg:order-2">
                             {/* Header */}
-                            <div className="text-center lg:text-left">
+                            <div className="flex flex-col text-center lg:text-left">
                                 <h1 className="text-3xl font-bold mb-2">Thử thách</h1>
-                                <p className="text-purple-400 text-lg">Tiến về đại lực Beggarit - Challenge sesion 22</p>
-                                <p className="text-gray-400 text-sm mt-2">2 còn lại 3 giờ thử thách</p>
+                                <p className="text-purple-400 text-lg">{challengeInformation?.challengeName}</p>
+                                {challengeInformation?.endTime && (
+                                    <div className="flex items-center justify-center lg:justify-start">
+                                        {currentDateTime < new Date(challengeInformation.endTime) ? (
+                                            <p className="text-purple-400 text-lg flex flex-row">
+                                                <Hourglass className="mr-1 w-6 h-6" />
+                                                Thời gian còn lại: {Math.max(0, Math.floor((new Date(challengeInformation.endTime).getTime() - currentDateTime.getTime()) / (1000 * 60 * 60 * 24)))} ngày {Math.max(0, Math.floor((new Date(challengeInformation.endTime).getTime() - currentDateTime.getTime()) / (1000 * 60 * 60)) % 24)} giờ {Math.max(0, Math.floor((new Date(challengeInformation.endTime).getTime() - currentDateTime.getTime()) / (1000 * 60)) % 60)} phút
+                                            </p>
+                                        ) : (
+                                            <p className="text-red-400 text-lg flex flex-row">
+                                                <Hourglass className="mr-1 w-6 h-6" />
+                                                Thời gian thử thách đã kết thúc
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
 
                             <Leaderboard challengePoints={challengePoints} />
@@ -92,9 +118,23 @@ const ChallengeDashboardLayout = ({ session }) => {
                             <Card className="bg-gray-800 border-purple-500 border">
                                 <CardContent className="p-6">
                                     <h2 className="text-xl font-semibold mb-4 text-purple-300">Kết quả thử thách:</h2>
-                                    <p className="text-4xl font-bold text-purple-400">280 điểm</p>
+                                    <p className="text-4xl font-bold text-purple-400">
+                                        {challengePoints?.find(user => user.userId === session?.user?.id)?.point.reduce((acc, curr) => acc + curr.point, 0) || 0} điểm
+                                    </p>
                                 </CardContent>
                             </Card>
+                            {challengePoints?.find(user => user.userId === session?.user?.id)?.point.length === 0 && (
+                                <div className="flex justify-center mt-4">
+                                    <button
+                                        className="bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-700"
+                                        onClick={() => router.push("/challenge/ingame")}
+                                    >
+                                        THAM GIA NGAY
+                                    </button>
+                                </div>
+                            )}
+
+
                         </div>
 
                         <div className="w-full lg:w-1/2 space-y-8 order-2 lg:order-1">
@@ -106,17 +146,17 @@ const ChallengeDashboardLayout = ({ session }) => {
                                 refetchUserCoinAndQCData={refetchUserCoinAndQCData}
                             />
 
-                            <DailyQuest dailyQuests={dailyQuests} 
-                            questLog={userCoinAndQCData?.questLog} 
-                            updateQuestLog={updateQuestLog} 
-                            userId={session?.user?.id}
-                            refetchUserCoinAndQCData={refetchUserCoinAndQCData} />
+                            <DailyQuest dailyQuests={dailyQuests}
+                                questLog={userCoinAndQCData?.questLog}
+                                updateQuestLog={updateQuestLog}
+                                userId={session?.user?.id}
+                                refetchUserCoinAndQCData={refetchUserCoinAndQCData} />
 
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

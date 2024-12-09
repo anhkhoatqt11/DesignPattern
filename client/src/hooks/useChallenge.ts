@@ -9,14 +9,25 @@ export const useChallenge =  () => {
         return res;
     }
 
-    const getDailyQuests = async () => {
+    const getChallengeInformation = async () => {
         const res = await getRequest({
-            endPoint: "https://skylark-entertainment.vercel.app/api/quest/getDailyQuests",
-        });
+            endPoint: "https://skylark-entertainment.vercel.app/api/challenges/getChallengeInformation"
+        })
         return res;
-    };
+    }
+
+    const uploadChallengesPoint = async (data) => {
+        const res = await postRequest({
+            endPoint: "https://skylark-entertainment.vercel.app/api/challenges/uploadUsersChallengesPoint",
+            isFormData: false,
+            formData: data
+        })
+        return res;
+    }
 
     return {
         getUsersChallengesPoint,
+        getChallengeInformation,
+        uploadChallengesPoint
     }
 }

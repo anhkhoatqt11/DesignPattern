@@ -63,10 +63,10 @@ const DailyQuest = ({ dailyQuests, questLog, updateQuestLog, userId, refetchUser
                                     Phần thưởng: <span className="text-yellow-400">{quest.prize} xu</span>
                                 </p>
                                 <p className="text-sm text-gray-400 mb-2">
-                                    Yêu cầu: {quest.requiredTime > 0 ? `${quest.requiredTime} phút` : "Không yêu cầu"}
+                                    Yêu cầu: {quest.requiredTime > 0 ? `${quest.requiredTime} tập` : "Không yêu cầu"}
                                 </p>
                                 <p className="text-sm text-gray-400 mb-2">
-                                    Tiến độ: {userProgress} / {quest.requiredTime} phút ({progressPercentage}%)
+                                    Tiến độ: {userProgress} / {quest.requiredTime} tập ({progressPercentage}%)
                                 </p>
                                 <div className="w-full bg-gray-600 rounded-full h-2.5 overflow-hidden">
                                     <div
