@@ -46,8 +46,8 @@ export function convertUtcToGmtPlus7(utcString) {
   return formattedDate;
 }
 
-const ComicInfo = ({ id }) => {
-  const userId = "65ec67ad05c5cb2ad67cfb3f";
+const ComicInfo = ({ id, session }) => {
+  const userId = session?.user?.id;
   // const userId = "";
   const userCoins = 1000;
   const router = useRouter();
