@@ -65,6 +65,31 @@ export const useUser = () => {
     return res;
   };
 
+  const getAvatarList = async () => {
+    const res = await getRequest({
+      endPoint: "https://skylark-entertainment.vercel.app/api/users/getAvatarList",
+    });
+    return res;
+  }
+
+  const updateAvatar = async (data) => {
+    const res = await postRequest({
+      endPoint: "https://skylark-entertainment.vercel.app/api/users/updateAvatar",
+      isFormData: false,
+      formData: data,
+    });
+    return res;
+  }
+
+  const updateUsername = async (data) => {
+    const res = await postRequest({
+      endPoint: "https://skylark-entertainment.vercel.app/api/users/updateUsername",
+      isFormData: false,
+      formData: data,
+    });
+    return res;
+  }
+
   return {
     getPaymentHistories,
     paySkycoin,
@@ -72,5 +97,8 @@ export const useUser = () => {
     updateUserInfo,
     uploadUserInfo1,
     getUserCoinAndChallenge,
+    getAvatarList,
+    updateAvatar,
+    updateUsername
   };
 };
