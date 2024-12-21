@@ -95,7 +95,7 @@ type UsersHistoriesWatchingMovie {
 type UsersNotifications {
   content  String
   sentTime DateTime @db.Date
-  /// Multiple data types found: String: 23%, String (ObjectId): 77% out of 74 sampled entries
+  /// Multiple data types found: String: 24%, String (ObjectId): 76% out of 75 sampled entries
   sourceId Json
   status   String
   type     String
