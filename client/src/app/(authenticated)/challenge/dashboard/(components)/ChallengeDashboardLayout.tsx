@@ -181,11 +181,11 @@ const ChallengeDashboardLayout = ({ session }) => {
               <Leaderboard challengePoints={challengePoints} />
 
               {/* Challenge Results */}
-              <div className="w-full flex flex-row justify-between items-end">
+              <div className="w-full flex flex-row justify-between items-center">
                 <span className="text-xl font-semibold text-white">
                   {challengePoints?.find(
                     (user) => user.userId === session?.user?.id
-                  )?.point.length === 0
+                  )?.point.length !== 0
                     ? "Chưa vượt thử thách"
                     : "Kết quả thử thách"}
                 </span>

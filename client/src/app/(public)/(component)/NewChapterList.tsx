@@ -14,18 +14,15 @@ import { NewEpisodeItem } from "./NewEpisodeItem";
 import { useComic } from "@/hooks/useComic";
 import { ComicItem } from "./ComicItem";
 
-function NewChapterList({session}) {
-  const userId = session?.user?.id;
+function NewChapterList() {
   const { getNewChapterComic } = useComic();
   const [chapterList, setChapterList] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchNewChapterListDetail = async () => {
-      if (userId) {
-        const result = await getNewChapterComic();
-        setChapterList(result);
-      }
+      const result = await getNewChapterComic();
+      setChapterList(result);
       setIsLoading(false);
     };
     fetchNewChapterListDetail();

@@ -11,7 +11,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import { TopViewItem } from "./TopViewItem";
 import { VideoHistoryItem } from "./VideoHistoryItem";
 
-function WatchingHistory({session}) {
+function WatchingHistory({ session }) {
   const userId = session?.user?.id;
   const { getWatchingHistories } = useAnime();
   const [episodeList, setEpisodeList] = useState();
@@ -35,7 +35,7 @@ function WatchingHistory({session}) {
   }, []);
   return (
     <>
-      {isLoading ? (
+      {isLoading || !userId ? (
         <div className="flex h-full items-center justify-center"></div>
       ) : (
         <section

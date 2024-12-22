@@ -18,7 +18,7 @@ import ReadingHistory from "../../(component)/ReadingHistory";
 import NewEpisodeList from "../../(component)/NewEpisodeList";
 import NewChapterList from "../../(component)/NewChapterList";
 
-function HomeAlbum({session}) {
+function HomeAlbum({ session }) {
   const { getAnimeAlbum, getTopViewAnime } = useAnime();
   const { getComicAlbum } = useComic();
   const [listComicAlbum, setListComicAlbum] = useState();
@@ -75,7 +75,7 @@ function HomeAlbum({session}) {
               )}
 
               {index === 1 ? <ReadingHistory session={session} /> : ""}
-              {index === 1 ? <NewChapterList session={session} /> : ""}
+              {index === 1 ? <NewChapterList /> : ""}
               {2 * index < listAnimeAlbum.length ? (
                 <AnimeAlbumList
                   animeAlbumName={listAnimeAlbum[2 * index].albumName}
@@ -86,7 +86,7 @@ function HomeAlbum({session}) {
               )}
 
               {index === 1 ? <WatchingHistory session={session} /> : ""}
-              {index === 1 ? <NewEpisodeList session={session}/> : ""}
+              {index === 1 ? <NewEpisodeList /> : ""}
 
               {2 * index + 1 < listAnimeAlbum.length ? (
                 <AnimeAlbumList

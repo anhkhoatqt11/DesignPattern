@@ -12,18 +12,15 @@ import { TopViewItem } from "./TopViewItem";
 import { VideoHistoryItem } from "./VideoHistoryItem";
 import { NewEpisodeItem } from "./NewEpisodeItem";
 
-function NewEpisodeList({session}) {
-  const userId = session?.user?.id;
+function NewEpisodeList() {
   const { getNewEpisodeAnime } = useAnime();
   const [episodeList, setEpisodeList] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchNewEpisodeListDetail = async () => {
-      if (userId) {
-        const result = await getNewEpisodeAnime();
-        setEpisodeList(result);
-      }
+      const result = await getNewEpisodeAnime();
+      setEpisodeList(result);
       setIsLoading(false);
     };
     fetchNewEpisodeListDetail();

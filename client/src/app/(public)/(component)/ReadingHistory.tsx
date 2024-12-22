@@ -13,7 +13,7 @@ import { VideoHistoryItem } from "./VideoHistoryItem";
 import { useComic } from "@/hooks/useComic";
 import { ComicHistoryItem } from "./ComicHistoryItem";
 
-function ReadingHistory({session}) {
+function ReadingHistory({ session }) {
   const userId = session?.user?.id;
   const { getReadingHistories } = useComic();
   const [chapterList, setChapterList] = useState();
@@ -31,7 +31,7 @@ function ReadingHistory({session}) {
   }, []);
   return (
     <>
-      {isLoading ? (
+      {isLoading || !userId ? (
         <div className="flex h-full items-center justify-center"></div>
       ) : (
         <section
