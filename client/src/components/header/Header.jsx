@@ -118,9 +118,8 @@ const NavigationMenuDemo = ({ session }) => {
         >
           Skylark
         </div>
-        {pathname !== "/search" ? (
-          <div className="form-control ">
-            {/* <input
+        <div className="form-control ">
+          {/* <input
               type="text"
               placeholder="Tìm kiếm sự kiện"
               className="input input-bordered md:w-[500px] ml-5 h-10"
@@ -128,36 +127,35 @@ const NavigationMenuDemo = ({ session }) => {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleSearchKeyPress}
             /> */}
-            <Input
-              type="text"
-              placeholder="Hôm nay xem gì ta"
-              labelPlacement="outside"
-              className=" md:w-[450px] ml-5 h-10"
-              value={searchQuery}
-              radius="sm"
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleSearchKeyPress}
-              startContent={
-                <IoSearch className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-              }
-              endContent={
-                <div className="flex flex-row w-[60px] gap-3">
-                  <div className="text-sm text-[#CFCFCF]">|</div>
-                  <div
-                    className="text-sm text-[#2A2D34]"
-                    onClick={() => {
-                      router.push(
-                        `/search?searchWord=${encodeURIComponent(searchQuery)}`
-                      );
-                    }}
-                  >
-                    Search
-                  </div>
+          <Input
+            type="text"
+            placeholder="Hôm nay xem gì ta"
+            labelPlacement="outside"
+            className=" md:w-[450px] ml-5 h-10"
+            value={searchQuery}
+            radius="sm"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearchKeyPress}
+            startContent={
+              <IoSearch className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+            }
+            endContent={
+              <div className="flex flex-row w-[60px] gap-3">
+                <div className="text-sm text-[#CFCFCF]">|</div>
+                <div
+                  className="text-sm text-[#2A2D34]"
+                  onClick={() => {
+                    router.push(
+                      `/search?searchWord=${encodeURIComponent(searchQuery)}`
+                    );
+                  }}
+                >
+                  Search
                 </div>
-              }
-            />
-          </div>
-        ) : null}
+              </div>
+            }
+          />
+        </div>
         <div className="flex flex-row gap-4 items-center justify-center ml-auto mr-6">
           <Link href="/comic">
             <Button

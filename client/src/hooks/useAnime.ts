@@ -230,6 +230,22 @@ export const useAnime = () => {
     return res;
   };
 
+  const getGenres = async () => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getGenres`,
+    });
+    return res;
+  };
+
+  const searchForAnimes = async({searchWord}) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/animes/searchAnimeAndEpisodes?query=${searchWord}`
+    });
+    return res;
+  }
+
+
+
   return {
     fetchAnimeBanner,
     getAnimeAlbum,
@@ -255,5 +271,7 @@ export const useAnime = () => {
     updateUserLikeParentComment,
     getWatchingHistories,
     getNewEpisodeAnime,
+    getGenres,
+    searchForAnimes
   };
 };

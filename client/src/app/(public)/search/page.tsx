@@ -1,12 +1,11 @@
 import React from "react";
-import SearchLayout from "./components/SearchLayout";
+import SearchLayout from "./(components)/SearchLayout";
 const page = () => {
-  return (
-    // className="flex"
-    <div className="flex">
-      <SearchLayout />
-    </div>
-  );
+    return (
+        <div className="bg-[#141414]">
+            <SearchLayout />
+        </div>
+    );
 };
 
 export default page;

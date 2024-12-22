@@ -215,6 +215,13 @@ export const useComic = () => {
     return res;
   };
 
+  const searchForComics = async (searchWord) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/comics/searchComic?query=${searchWord}`,
+    });
+    return res;
+  }
+
   return {
     fetchComicBanner,
     getComicAlbum,
@@ -238,5 +245,6 @@ export const useComic = () => {
     updateUserLikeParentComment,
     updateChapterView,
     updateUserHistoryHadSeenChapter,
+    searchForComics
   };
 };
