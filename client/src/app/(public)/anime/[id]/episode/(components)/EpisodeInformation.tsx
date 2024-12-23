@@ -15,8 +15,8 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { EpisodeComment } from "./EpisodeComment";
-export const EpisodeInformation = ({ animeDetail, episodeDetail }) => {
-  const userId = "65ec67ad05c5cb2ad67cfb3f";
+export const EpisodeInformation = ({ animeDetail, episodeDetail, session }) => {
+  const userId = session?.user?.id;
   const [hasLiked, setHasLiked] = useState(false);
   const [hasSaved, setHasSaved] = useState(false);
   const {
@@ -149,7 +149,10 @@ export const EpisodeInformation = ({ animeDetail, episodeDetail }) => {
             <>
               <ModalHeader className="flex flex-col gap-1"></ModalHeader>
               <ModalBody>
-                <EpisodeComment episodeId={episodeDetail?._id} />
+                <EpisodeComment
+                  episodeId={episodeDetail?._id}
+                  session={session}
+                />
               </ModalBody>
             </>
           }

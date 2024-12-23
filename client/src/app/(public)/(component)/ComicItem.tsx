@@ -1,5 +1,5 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-export const ComicItem = ({ img, name, genres }) => {
+export const ComicItem = ({ img, name, genres = null }) => {
   const genreTag = genres.map((item) => item.genreName).join("/ ");
   return (
     <div className="flex flex-col gap-3">
@@ -13,7 +13,11 @@ export const ComicItem = ({ img, name, genres }) => {
         </AspectRatio>
       </div>
       <p className="truncate text-white text-lg font-semibold">{name}</p>
-      <div className="text-gray-500 text-sm font-medium -mt-3">{genreTag}</div>
+      {genreTag !== "/ " && (
+        <div className="text-gray-500 text-sm font-medium -mt-3">
+          {genreTag}
+        </div>
+      )}
     </div>
   );
 };

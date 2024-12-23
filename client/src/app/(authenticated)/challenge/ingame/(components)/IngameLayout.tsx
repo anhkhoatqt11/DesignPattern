@@ -201,7 +201,7 @@ const IngameLayout = ({ session }) => {
             {/* Sidebar */}
             <aside className="space-y-4">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-medium">Câu trả lời</h2>
+                <h2 className="text-lg font-medium">Danh sách câu hỏi</h2>
                 <Button
                   className="h-[40px] w-[150px] p-2 rounded text-white text-base font-semibold mt-2 transition-colors transition-transform transition-shadow transition-all duration-500 bg-left hover:bg-right hover:shadow-[#34d399] hover:shadow-md data-[hover=true]:opacity-100"
                   style={{

@@ -8,8 +8,10 @@ import { useAnime } from "@/hooks/useAnime";
 import { EpisodeOwnerList } from "./(components)/EpisodeOwnerList";
 import { SuggestionByView } from "./(components)/SuggestionByView";
 import Loader from "@/components/Loader";
+import { getSession } from "@/lib/auth";
 
-const page = ({ params }) => {
+const page = async ({ params }) => {
+  const session = await getSession();
   const searchParams = useSearchParams();
 
   const animeId = params.id;
@@ -43,10 +45,11 @@ const page = ({ params }) => {
         </div>
       ) : (
         <>
-          <EpisodePlayer episodeDetail={episodeDetail} />
+          <EpisodePlayer episodeDetail={episodeDetail} session={session} />
           <EpisodeInformation
             animeDetail={animeDetail}
             episodeDetail={episodeDetail}
+            session={session}
           />
           <EpisodeOwnerList
             listEpisodes={animeDetail?.listEpisodes}

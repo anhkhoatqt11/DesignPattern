@@ -99,6 +99,31 @@ const NavigationMenuDemo = ({ session }) => {
     }
   }, []);
 
+  const searchBoxStyle = {
+    label: "text-white/90 dark:text-white/90",
+    input: [
+      "rounded",
+      "bg-transparent",
+      "text-white/90 dark:text-white/90",
+      "placeholder:text-slate-200 dark:placeholder:text-white/60",
+      "group-data-[has-value=true]:text-white/90",
+    ],
+    innerWrapper: ["bg-transparent", "rounded", "text-white/90"],
+    inputWrapper: [
+      "rounded-full",
+      "shadow-xl",
+      "bg-white/10",
+      "text-white/90",
+      "data-[hover=true]:bg-white/10",
+      "group-data-[hover=true]:bg-white/10",
+      "data-[focus=true]:bg-white/10",
+      "group-data-[focus=true]:bg-white/10",
+      "dark:bg-default/60",
+      "backdrop-blur-xl",
+      "!cursor-text",
+    ],
+  };
+
   return (
     <div
       className={`w-full h-[50px] md:h-[76px] 
@@ -118,48 +143,24 @@ const NavigationMenuDemo = ({ session }) => {
         >
           Skylark
         </div>
-        <div className="form-control ">
-          {/* <input
-              type="text"
-              placeholder="Tìm kiếm sự kiện"
-              className="input input-bordered md:w-[500px] ml-5 h-10"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleSearchKeyPress}
-            /> */}
-          <Input
-            type="text"
-            placeholder="Hôm nay xem gì ta"
-            labelPlacement="outside"
-            className=" md:w-[450px] ml-5 h-10"
-            value={searchQuery}
-            radius="sm"
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={handleSearchKeyPress}
-            startContent={
-              <IoSearch className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-            }
-            endContent={
-              <div className="flex flex-row w-[60px] gap-3">
-                <div className="text-sm text-[#CFCFCF]">|</div>
-                <div
-                  className="text-sm text-[#2A2D34]"
-                  onClick={() => {
-                    router.push(
-                      `/search?searchWord=${encodeURIComponent(searchQuery)}`
-                    );
-                  }}
-                >
-                  Search
-                </div>
-              </div>
-            }
-          />
-        </div>
+        <Input
+          type="text"
+          placeholder="Hôm nay xem gì ta"
+          labelPlacement="outside"
+          className="w-[450px] ml-5 h-10 rounded-full text-white"
+          classNames={searchBoxStyle}
+          value={searchQuery}
+          radius="sm"
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleSearchKeyPress}
+          startContent={
+            <IoSearch className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+          }
+        />
         <div className="flex flex-row gap-4 items-center justify-center ml-auto mr-6">
           <Link href="/comic">
             <Button
-              className={`h-full py-0 w-fit text-lg bg-transparent text-white hover:text-fuchsia-500 hover:bg-transparent font-semibold`}
+              className={`h-full py-0 w-fit text-lg bg-transparent text-white hover:text-fuchsia-500 hover:bg-transparent font-semibold text-center`}
               style={{ fontFamily: "'Nunito', sans-serif" }}
             >
               Truyện tranh
@@ -167,7 +168,7 @@ const NavigationMenuDemo = ({ session }) => {
           </Link>
           <Link href="/anime">
             <Button
-              className={`h-full py-0 w-fit text-lg bg-transparent text-white hover:text-fuchsia-500 hover:bg-transparent font-semibold`}
+              className={`h-full py-0 w-fit text-lg bg-transparent text-white hover:text-fuchsia-500 hover:bg-transparent font-semibold text-center`}
               style={{ fontFamily: "'Nunito', sans-serif" }}
             >
               Anime
@@ -177,7 +178,7 @@ const NavigationMenuDemo = ({ session }) => {
             <>
               <Link href="/organizer/event">
                 <Button
-                  className={`h-full py-0 w-fit text-lg bg-transparent text-white hover:text-fuchsia-500 hover:bg-transparent font-semibold`}
+                  className={`h-full py-0 w-fit text-lg bg-transparent text-white hover:text-fuchsia-500 hover:bg-transparent font-semibold text-center`}
                   style={{ fontFamily: "'Nunito', sans-serif" }}
                 >
                   Thử thách

@@ -23,16 +23,11 @@ import { useAnime } from "@/hooks/useAnime";
 import toast from "react-hot-toast";
 import { useQuest } from "@/hooks/useQuest";
 import { EpisodeComment } from "./EpisodeComment";
+import { useQuery } from "@tanstack/react-query";
+import { useUser } from "@/hooks/useUser";
 
-const EpisodePlayer = ({ episodeDetail }) => {
-  const userId = "65ec67ad05c5cb2ad67cfb3f";
-  const userInfo = {
-    id: "65ec67ad05c5cb2ad67cfb3f",
-    questLog: {
-      readingTime: 3,
-      watchingTime: 2,
-    },
-  };
+const EpisodePlayer = ({ episodeDetail, session }) => {
+  const userId = session?.user?.id;
   const {
     checkUserHistoryHadSeenEpisode,
     updateUserHistoryHadSeenEpisode,
@@ -46,7 +41,16 @@ const EpisodePlayer = ({ episodeDetail }) => {
   const [adDuration, setAdDuration] = useState(0);
   const [previousPosition, setPreviousPosition] = useState(0);
   const [viewTimeStack, setViewTimeStack] = useState<number[]>([]);
+  const { getUserCoinAndChallenge } = useUser();
 
+  const { data: userCoinAndQCData, refetch: refetchUserCoinAndQCData } =
+    useQuery({
+      queryKey: ["user", "coinAndQCData", session?.user?.id],
+      queryFn: async () => {
+        const res = await getUserCoinAndChallenge(session?.user?.id);
+        return res;
+      },
+    });
   // video player .......................
   const onTimeUpdateFunction = () => {
     if (adVideoRef?.current?.currentTime === adVideoRef?.current?.duration)
@@ -65,13 +69,17 @@ const EpisodePlayer = ({ episodeDetail }) => {
     const currentVideoPosition = Math.round(
       animeVideoRef?.current?.currentTime
     );
-    if (viewTimeStack.length === 3) {
+    if (viewTimeStack.length === 16) {
       return;
     }
-    if (viewTimeStack.length === 2) {
+    if (viewTimeStack.length === 15) {
+      refetchUserCoinAndQCData();
       setViewTimeStack([...viewTimeStack, currentVideoPosition]);
       await updateEpisodeView(episodeDetail?._id);
-      await updateQuestLog("", userInfo);
+      await updateQuestLog("", {
+        id: session?.user?.id,
+        questLog: userCoinAndQCData?.questLog,
+      });
       return;
     }
     if (
@@ -170,7 +178,7 @@ const EpisodePlayer = ({ episodeDetail }) => {
           </Suspense>
         </div>
         <div className="hidden lg:block basis-1/3">
-          <EpisodeComment episodeId={episodeDetail?._id} />
+          <EpisodeComment episodeId={episodeDetail?._id} session={session} />
         </div>
       </section>
     </div>

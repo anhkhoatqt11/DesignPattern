@@ -49,8 +49,8 @@ const FormSchema = z.object({
   }),
 });
 
-export const EpisodeComment = ({ episodeId }) => {
-  const userId = "664e035739f321473ca8b5a3";
+export const EpisodeComment = ({ episodeId, session }) => {
+  const userId = session?.user?.id;
   const {
     getAnimeEpisodeComments,
     addRootEpisodeComment,

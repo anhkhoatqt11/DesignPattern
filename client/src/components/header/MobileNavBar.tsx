@@ -89,7 +89,11 @@ export function MobileNav({ session }) {
                     </Link>
                   </>
                 ))}
-                <Link onClick={() => signOut()} href={"/auth/login"}>
+                <Link
+                  key="logout"
+                  onClick={() => signOut()}
+                  href={"/auth/login"}
+                >
                   <div className="flex flex-row items-center py-3">
                     <LogoutIcon className="mr-2 ms-3 w-6 h-6" />
                     <div>Đăng xuất</div>
