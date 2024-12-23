@@ -16,29 +16,16 @@ import Link from "next/link";
 import Logo from "../logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import UserIcon from "../userprofileicon";
-import TicketIcon from "../ticketicon";
-import OrganizerIcon from "../nhatochucicon";
 import LogoutIcon from "../logouticon";
 import { signOut } from "next-auth/react";
 import { Separator } from "@radix-ui/react-separator";
 import { Divide } from "lucide-react";
 import { Divider } from "@nextui-org/react";
-import AdminIcon from "../adminicon";
 const avatarNav = [
   {
     name: "Hồ sơ",
     href: "/user/profile",
     icon: <UserIcon className="mr-2 ms-3 w-6 h-6" />,
-  },
-  {
-    name: "Vé của tôi",
-    href: "/user/my-ticket",
-    icon: <TicketIcon className="mr-2 ms-3 w-6 h-6" />,
-  },
-  {
-    name: "Nhà tổ chức",
-    href: "/organizer/profile",
-    icon: <OrganizerIcon className="mr-2 ms-3 w-6 h-6" />,
   },
 ];
 const adminAvatarNav = [
@@ -46,21 +33,6 @@ const adminAvatarNav = [
     name: "Hồ sơ",
     href: "/user/profile",
     icon: <UserIcon className="mr-2 ms-3 w-6 h-6" />,
-  },
-  {
-    name: "Vé của tôi",
-    href: "/user/my-ticket",
-    icon: <TicketIcon className="mr-2 ms-3 w-6 h-6" />,
-  },
-  {
-    name: "Nhà tổ chức",
-    href: "/organizer/profile",
-    icon: <OrganizerIcon className="mr-2 ms-3 w-6 h-6" />,
-  },
-  {
-    name: "Trang admin",
-    href: "/admin",
-    icon: <AdminIcon className="mr-2 ms-3 w-6 h-6" />,
   },
 ];
 export function MobileNav({ session }) {
