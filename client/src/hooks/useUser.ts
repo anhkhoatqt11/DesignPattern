@@ -90,6 +90,27 @@ export const useUser = () => {
     return res;
   }
 
+  const getBookmarkList = async (userId) => {
+    const res = await getRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/users/getBookmarkList?userId=${userId}`,
+    }
+    )
+    return res;
+  }
+
+  const removeBookmark = async (userId, bookmarksToRemove) => {
+    const res = await postRequest({
+      endPoint: `https://skylark-entertainment.vercel.app/api/users/removeBookmark`,
+      isFormData: false,
+      formData: {
+        userId,
+        bookmarksToRemove
+      }
+    }
+    );
+    return res;
+  }
+
   return {
     getPaymentHistories,
     paySkycoin,
@@ -99,6 +120,8 @@ export const useUser = () => {
     getUserCoinAndChallenge,
     getAvatarList,
     updateAvatar,
-    updateUsername
+    updateUsername,
+    getBookmarkList,
+    removeBookmark
   };
 };
