@@ -107,7 +107,7 @@ export function MobileNav({ session }) {
               <div className="pr-6">
                 Hãy
                 {
-                  <Link href={"/auth/login"}>
+                  <Link key="a" href={"/auth/login"}>
                     <span className="font-bold text-blue-700"> đăng nhập </span>
                   </Link>
                 }
@@ -116,7 +116,7 @@ export function MobileNav({ session }) {
               <div className="pr-6">
                 Chưa có tài khoản?
                 {
-                  <Link href={"/auth/register"}>
+                  <Link key="b" href={"/auth/register"}>
                     <span className="font-bold text-blue-700">
                       {" "}
                       Đăng kí ngay!{" "}

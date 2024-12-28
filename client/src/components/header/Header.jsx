@@ -176,7 +176,7 @@ const NavigationMenuDemo = ({ session }) => {
           </Link>
           {user ? (
             <>
-              <Link href="/organizer/event">
+              <Link href="/challenge/dashboard">
                 <Button
                   className={`h-full py-0 w-fit text-lg bg-transparent text-white hover:text-fuchsia-500 hover:bg-transparent font-semibold text-center`}
                   style={{ fontFamily: "'Nunito', sans-serif" }}
@@ -184,7 +184,13 @@ const NavigationMenuDemo = ({ session }) => {
                   Thử thách
                 </Button>
               </Link>
-              <Dropdown
+              <Link href="/user/profile">
+                <Avatar>
+                  <AvatarImage src={user.avatar} />
+                  <AvatarFallback></AvatarFallback>
+                </Avatar>
+              </Link>
+              {/* <Dropdown
                 shouldBlockScroll={true}
                 onOpenChange={(open) => {
                   setIsUserOpen(open);
@@ -224,7 +230,7 @@ const NavigationMenuDemo = ({ session }) => {
                     </DropdownItem>
                   </DropdownSection>
                 </DropdownMenu>
-              </Dropdown>
+              </Dropdown> */}
             </>
           ) : (
             <Link href={"/auth/login"}>
