@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ImageIcon } from "lucide-react";
+import { ImagePlus } from "lucide-react";
 import { Image } from "@nextui-org/react";
 import {
   Dialog,
@@ -35,14 +35,7 @@ const AvatarDialog = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant="secondary"
-          size="sm"
-          className="bg-purple-600 hover:bg-purple-500 text-white"
-        >
-          <ImageIcon className="w-4 h-4 mr-2" />
-          Thay đổi hình đại diện
-        </Button>
+        <ImagePlus className="w-6 h-6 mr-2 text-white transition ease-in-out duration-300 hover:scale-110 hover:text-emerald-400" />
       </DialogTrigger>
       <DialogContent className="max-w-3xl bg-[#141414]">
         <DialogHeader>

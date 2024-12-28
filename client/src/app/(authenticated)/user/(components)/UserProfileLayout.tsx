@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Image } from "@nextui-org/react";
+import { Divider, Image, useDisclosure } from "@nextui-org/react";
 import { useUser } from "@/hooks/useUser";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "@/components/Loader";
@@ -14,10 +14,46 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import LogoutIcon from "@/components/logouticon";
+import { VscSaveAs } from "react-icons/vsc";
+import { MdOutlineEdit } from "react-icons/md";
+import { TbPencilCancel } from "react-icons/tb";
+import { FaWallet } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { FaLayerGroup, FaRankingStar, FaSquarePlus } from "react-icons/fa6";
+import { LuBuilding2 } from "react-icons/lu";
+import { useDonate } from "@/hooks/useDonate";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Avatar,
+} from "@nextui-org/react";
 const UserProfileLayout = ({ session }) => {
   const { fetchUserInfoById, getAvatarList, updateAvatar, updateUsername } =
     useUser();
   const [username, setUsername] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const router = useRouter();
+
+  const { getDonatorList } = useDonate();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [isLoading, setIsLoading] = useState(false);
+  const [rankList, setRankList] = useState();
+
+  const fetchRank = async () => {
+    setIsLoading(true);
+    const result = await getDonatorList();
+    setRankList(result);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchRank();
+    }
+  }, [isOpen]);
 
   const {
     data: userInfo,
@@ -27,7 +63,6 @@ const UserProfileLayout = ({ session }) => {
     queryKey: ["user", "info", session?.user?.id],
     queryFn: async () => {
       const res = await fetchUserInfoById(session?.user?.id);
-      console.log(res);
       setUsername(res.username);
       return res;
     },
@@ -47,6 +82,7 @@ const UserProfileLayout = ({ session }) => {
         userId: session?.user?.id,
         username: username,
       };
+      setIsEditing(false);
       await updateUsername(data);
       await refetchUserInfo();
       toast.success("Cập nhật tên thành công");
@@ -66,18 +102,15 @@ const UserProfileLayout = ({ session }) => {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black p-4 md:p-8">
-        <Card className="mx-auto max-w-7xl bg-zinc-900/50 border-zinc-800">
-          <div className="p-6">
-            <h1 className="text-2xl font-semibold text-white mb-8">
-              Thông tin cá nhân
-            </h1>
-
-            <div className="flex gap-8">
+      <div className="relative flex justify-center items-center">
+        <div className="w-full h-[500px] bg-gradient-to-b from-[#A958FE] to-[#DA5EF0] absolute -top-[350px] left-0 rounded-[50px] md:rounded-[90px]"></div>
+        <div className="p-8 z-10 w-full flex justify-center">
+          <Card className="w-full max-w-7xl mx-8 border-[#242424] bg-[#242424] rounded-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 md:gap-8 p-10">
               {/* Left side - Avatar section */}
               <div className="flex flex-col items-center">
                 <div className="relative w-32 h-32 mb-4">
-                  <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-zinc-700">
+                  <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[#DA5EF0]">
                     <Image
                       src={userInfo?.avatar || "/placeholder.svg"}
                       alt="Profile picture"
@@ -86,69 +119,230 @@ const UserProfileLayout = ({ session }) => {
                       className="object-cover"
                     />
                   </div>
+                  <div className="absolute bottom-2 right-0 z-10">
+                    <AvatarDialog
+                      avatarList={avatarList}
+                      currentAvatar={userInfo?.avatar}
+                      onUpdateAvatar={updateAvatar}
+                      userId={session?.user?.id}
+                      refetchUserInfo={refetchUserInfo}
+                    />
+                  </div>
                 </div>
-
-                <AvatarDialog
-                  avatarList={avatarList}
-                  currentAvatar={userInfo?.avatar}
-                  onUpdateAvatar={updateAvatar}
-                  userId={session?.user?.id}
-                  refetchUserInfo={refetchUserInfo}
-                />
-              </div>
-
-              {/* Right side - Information section */}
-              <div className="flex-1 text-white">
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Số điện thoại</Label>
+                {isEditing ? (
+                  <div className="ml-[46px] flex flex-row items-center">
                     <Input
-                      disabled
-                      id="phone"
-                      value={userInfo?.phone || "Không có dữ liệu"}
-                    ></Input>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="coin">Skycoin</Label>
-                    <Input
-                      disabled
-                      id="coin"
-                      value={userInfo?.coinPoint || "Không có dữ liệu"}
-                    ></Input>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="username">Họ và tên</Label>
-                    <Input
-                      id="username"
+                      className="text-center text-white text-lg font-semibold rounded-none border-t-0 border-l-0 border-r-0 border-b-1.5 border-gray-500 focus-visible:ring-0 w-fit"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       placeholder={userInfo?.username || "Không có dữ liệu"}
                     />
-                    <Button
-                      onClick={handleUpdateUsername}
-                      disabled={!username}
-                      size="lg"
-                      className="mt-8 bg-purple-600 hover:bg-purple-500 text-white"
-                    >
-                      Cập nhật
-                    </Button>
-                    <Link
-                      key="logout"
-                      onClick={() => signOut()}
-                      href={"/auth/login"}
-                    >
-                      <div className="flex flex-row items-center py-3">
-                        <LogoutIcon className="mr-2 ms-3 w-6 h-6" />
-                        <div>Đăng xuất</div>
-                      </div>
-                    </Link>
+                    <div className="w-[46px] h-[46px] flex justify-center items-center">
+                      <Button
+                        onClick={handleUpdateUsername}
+                        disabled={!username}
+                        className="group p-0 bg-transparent hover:bg-transparent h-fit transition ease-in-out duration-1000 hover:bg-emerald-400 hover:p-3 hover:rounded-full"
+                      >
+                        <VscSaveAs className="w-5 h-5 text-emerald-400 group-hover:text-white transition ease-in-out duration-300 group-hover:scale-[0.8]" />
+                      </Button>
+                    </div>
+                    <div className="w-[46px] h-[46px] flex justify-center items-center">
+                      <Button
+                        onClick={() => {
+                          setUsername(userInfo?.username);
+                          setIsEditing(false);
+                        }}
+                        className="group p-0 bg-transparent hover:bg-transparent h-fit transition ease-in-out duration-1000 hover:bg-red-400 hover:p-3 hover:rounded-full"
+                      >
+                        <TbPencilCancel className="w-5 h-5 text-red-400 group-hover:text-white transition ease-in-out duration-300 group-hover:scale-[0.8]" />
+                      </Button>
+                    </div>
                   </div>
+                ) : (
+                  <div className="ml-[46px] flex flex-row items-center gap-3">
+                    <span className="text-center text-white text-lg font-semibold">
+                      {userInfo?.username || "Không có dữ liệu"}
+                    </span>
+                    <div className="w-[46px] h-[46px] flex justify-center items-center">
+                      <Button
+                        onClick={() => setIsEditing(true)}
+                        disabled={!username}
+                        className="group p-0 bg-transparent hover:bg-transparent h-fit transition ease-in-out duration-1000 hover:bg-emerald-400 hover:p-3 hover:rounded-full"
+                      >
+                        <MdOutlineEdit className="w-5 h-5 text-emerald-400 group-hover:text-white transition ease-in-out duration-1000 group-hover:scale-[0.8]" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                <div className="flex flex-row gap-2">
+                  <span className="text-gray-500 text-sm">UserId:</span>
+                  <span className="text-[#DA5EF0] text-sm">{userInfo?.id}</span>
+                </div>
+
+                <div className="flex flex-row gap-2 mt-12 w-full justify-between">
+                  <div className="flex flex-col gap-2">
+                    <span className="text-gray-400 text-sm">
+                      SKY COINS CỦA TÔI:
+                    </span>
+                    <div className="flex flex-row gap-2 text-white font-medium text-base">
+                      <img src="/skycoin.png" className="w-[24px] h-[24px]" />
+                      Hiện có {userInfo?.coinPoint?.toLocaleString(
+                        "de-DE"
+                      )}{" "}
+                      skycoins
+                    </div>
+                  </div>
+                  <Button
+                    size="sm"
+                    className="w-[250px] h-full transition-colors transition-transform transition-shadow transition-all duration-500 bg-left hover:bg-right hover:shadow-[#A958FE] hover:shadow-md data-[hover=true]:opacity-100"
+                    style={{
+                      backgroundSize: "200% auto",
+                      backgroundImage:
+                        "var(--button_primary_background_color, linear-gradient(90deg, #A958FE, #DA5EF0 50%, #A958FE))",
+                    }}
+                    onClick={() => {
+                      router.push(
+                        "https://anime-entertainment-payment.vercel.app/"
+                      );
+                    }}
+                  >
+                    <span className="text-white font-medium h-full flex flex-row items-center gap-3">
+                      <FaWallet className="text-white w-6 h-6" />
+                      Nạp ngay
+                    </span>
+                  </Button>
+                </div>
+
+                <Divider className="mt-4 mb-2 bg-gray-500" />
+                <Button
+                  size="sm"
+                  className="w-full bg-transparent py-3 justify-start"
+                  onClick={() => {}}
+                >
+                  <span className="text-white font-medium h-full flex flex-row items-center gap-3">
+                    <FaLayerGroup className="text-white w-6 h-6" />
+                    Lịch sử giao dịch
+                  </span>
+                </Button>
+                <Divider className="mt-2 mb-2 bg-gray-500" />
+              </div>
+
+              {/* Right side - Information section */}
+              <div className="text-white">
+                <div className="flex flex-col gap-1">
+                  <Button
+                    size="sm"
+                    className="w-full h-full bg-transparent py-3 justify-start"
+                    onClick={() => {
+                      router.push("/bookmark");
+                    }}
+                  >
+                    <span className="text-white font-medium h-full flex flex-row items-center gap-3">
+                      <FaSquarePlus className="text-white w-6 h-6" />
+                      Yêu thích
+                    </span>
+                  </Button>
+                  <Divider className="my-1 bg-gray-500" />
+                  <Button
+                    size="sm"
+                    className="w-full h-full bg-transparent py-3 justify-start"
+                    onClick={onOpen}
+                  >
+                    <span className="text-white font-medium h-full flex flex-row items-center gap-3">
+                      <FaRankingStar className="text-white w-6 h-6" />
+                      Bảng xếp hạng đóng góp
+                    </span>
+                  </Button>
+                  <Divider className="my-1 bg-gray-500" />
+                  <Button
+                    size="sm"
+                    className="w-full h-full bg-transparent py-3 justify-start"
+                    onClick={() => {}}
+                  >
+                    <span className="text-white font-medium h-full flex flex-row items-center gap-3">
+                      <LuBuilding2 className="text-white w-6 h-6" />
+                      Về chúng tôi
+                    </span>
+                  </Button>
+                  <Divider className="my-1 bg-gray-500" />
+                  <Link href="/donate">
+                    <img
+                      src="/donatebanner.png"
+                      className="w-full rounded-md"
+                    />
+                  </Link>
+                  <Link
+                    key="logout"
+                    onClick={() => signOut()}
+                    href={"/auth/login"}
+                  >
+                    <div className="mt-1 bg-transparent border-[#DA5EF0] border-2 text-[#DA5EF0] rounded text-center p-3 font-medium transition ease-in-out duration-300 hover:bg-[#DA5EF0] hover:text-white">
+                      Đăng xuất
+                    </div>
+                  </Link>
                 </div>
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </div>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent className="bg-black">
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-row items-center gap-2 text-white">
+                <img src="/goldtrophy.png" width={20} />{" "}
+                <span>Bảng xếp hạng donate</span>
+              </ModalHeader>
+              <ModalBody>
+                {isLoading ? (
+                  <div className="bg-[#141414] flex h-full items-center justify-center">
+                    <Loader />
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3 max-h-[500px] overflow-y-auto">
+                    {rankList?.map((item, index) => (
+                      <div className="flex flex-row gap-4 items-center">
+                        <span
+                          className={`text-${
+                            index === 0
+                              ? "[#DA5EF0]"
+                              : index === 1
+                              ? "emerald-500"
+                              : index === 2
+                              ? "blue-500"
+                              : "gray-500"
+                          } font-extrabold text-2xl`}
+                        >
+                          {index + 1}
+                        </span>
+                        <div className="flex flex-row items-center justify-between rounded-lg p-3 gap-2 bg-[#141414] w-full">
+                          <div className="flex flex-row gap-2">
+                            <Avatar src={item?.avatar} />
+                            <div className="flex flex-col gap-1">
+                              <span className="text-white font-semibold">
+                                {item?.username}
+                              </span>
+                              <span className="text-[#DA5EF0] text-sm font-medium">
+                                Đã donate {item?.donationCount} lần
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex flex-row justify-center items-center text-white font-medium">
+                            {item?.totalCoins.toLocaleString("de-DE")}{" "}
+                            <img src="/skycoin.png" className="ml-2 w-5 h-5" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </ModalBody>
+              <ModalFooter></ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>
   );
 };

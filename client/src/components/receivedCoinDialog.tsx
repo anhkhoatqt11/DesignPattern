@@ -23,7 +23,7 @@ export const ReceivedCoinDialog = ({
             <ModalHeader></ModalHeader>
             <ModalBody className="flex flex-col justify-center items-center w-full">
               <img src="/receivedcoin.gif" width={300} height={300} />
-              <span className="text-center text-white font-semibold text-lg">
+              <span className="mt-3 text-center text-white font-semibold text-lg bg-emerald-400 rounded-full p-[6px] pl-[12px] pr-[12px]">
                 {message}
               </span>
             </ModalBody>
