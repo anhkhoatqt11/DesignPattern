@@ -78,7 +78,14 @@ const EpisodePlayer = ({ episodeDetail, session }) => {
       await updateEpisodeView(episodeDetail?._id);
       await updateQuestLog("", {
         id: session?.user?.id,
-        questLog: userCoinAndQCData?.questLog,
+        questLog: {
+          finalTime: new Date(),
+          hasReceivedDailyGift:
+            userCoinAndQCData?.questLog?.hasReceivedDailyGift,
+          watchingTime: (userCoinAndQCData?.questLog?.watchingTime || 0) + 1,
+          received: userCoinAndQCData?.questLog?.received,
+          readingTime: userCoinAndQCData?.questLog?.readingTime,
+        },
       });
       return;
     }

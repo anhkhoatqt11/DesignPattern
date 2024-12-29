@@ -26,7 +26,6 @@ export const useUser = () => {
     const res = await getRequest({
       endPoint: `/api/user?id=${id}`,
     });
-    console.log(res);
     return res;
   };
 
@@ -67,36 +66,38 @@ export const useUser = () => {
 
   const getAvatarList = async () => {
     const res = await getRequest({
-      endPoint: "https://skylark-entertainment.vercel.app/api/users/getAvatarList",
+      endPoint:
+        "https://skylark-entertainment.vercel.app/api/users/getAvatarList",
     });
     return res;
-  }
+  };
 
   const updateAvatar = async (data) => {
     const res = await postRequest({
-      endPoint: "https://skylark-entertainment.vercel.app/api/users/updateAvatar",
+      endPoint:
+        "https://skylark-entertainment.vercel.app/api/users/updateAvatar",
       isFormData: false,
       formData: data,
     });
     return res;
-  }
+  };
 
   const updateUsername = async (data) => {
     const res = await postRequest({
-      endPoint: "https://skylark-entertainment.vercel.app/api/users/updateUsername",
+      endPoint:
+        "https://skylark-entertainment.vercel.app/api/users/updateUsername",
       isFormData: false,
       formData: data,
     });
     return res;
-  }
+  };
 
   const getBookmarkList = async (userId) => {
     const res = await getRequest({
       endPoint: `https://skylark-entertainment.vercel.app/api/users/getBookmarkList?userId=${userId}`,
-    }
-    )
+    });
     return res;
-  }
+  };
 
   const removeBookmark = async (userId, bookmarksToRemove) => {
     const res = await postRequest({
@@ -104,12 +105,11 @@ export const useUser = () => {
       isFormData: false,
       formData: {
         userId,
-        bookmarksToRemove
-      }
-    }
-    );
+        bookmarksToRemove,
+      },
+    });
     return res;
-  }
+  };
 
   return {
     getPaymentHistories,
@@ -122,6 +122,6 @@ export const useUser = () => {
     updateAvatar,
     updateUsername,
     getBookmarkList,
-    removeBookmark
+    removeBookmark,
   };
 };

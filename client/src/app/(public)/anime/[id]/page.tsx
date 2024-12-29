@@ -83,27 +83,27 @@ const page = ({ params }) => {
                 <div className="flex flex-col gap-1 justify-center items-center">
                   <FaRegThumbsUp className="text-white" />
                   <p className="text-xs text-[#8E8E8E]">
-                    <p className="text-fuchsia-500">
+                    <span className="text-fuchsia-500">
                       {animeDetail?.totalLikes.toLocaleString("de-DE")}
-                    </p>{" "}
+                    </span>{" "}
                     lượt thích
                   </p>
                 </div>
                 <div className="flex flex-col gap-1 justify-center items-center">
                   <FaEye className="text-white" />
                   <p className="text-xs text-[#8E8E8E]">
-                    <p className="text-fuchsia-500">
+                    <span className="text-fuchsia-500">
                       {animeDetail?.totalViews.toLocaleString("de-DE")}
-                    </p>{" "}
+                    </span>{" "}
                     lượt xem
                   </p>
                 </div>
                 <div className="flex flex-col gap-1 justify-center items-center">
                   <FaClipboardList className="text-white" />
                   <p className="text-xs text-[#8E8E8E]">
-                    <p className="text-fuchsia-500">
+                    <span className="text-fuchsia-500">
                       {animeDetail?.episodes?.length}
-                    </p>{" "}
+                    </span>{" "}
                     tập
                   </p>
                 </div>
@@ -139,7 +139,7 @@ const page = ({ params }) => {
             </div>
           </div>
           <p className="text-sm text-[#8E8E8E] line-clamp-4 xs:line-clamp-8 md:line-clamp-4 lg:line-clamp-6 2xl:line-clamp-8">
-            <p className="text-white font-medium">Mô tả: </p>
+            <span className="text-white font-medium">Mô tả: </span>
             {animeDetail?.description}
           </p>
         </div>

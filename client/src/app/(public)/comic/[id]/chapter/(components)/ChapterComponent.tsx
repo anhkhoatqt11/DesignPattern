@@ -41,8 +41,6 @@ const page = async ({ comicId, session }) => {
 
   const userId = session?.user?.id;
   const chapterId = searchParams.get("chapterId");
-
-  const userCoins = 1000;
   const {
     getChapter,
     checkUserHasLikeOrSaveChapter,
@@ -65,7 +63,6 @@ const page = async ({ comicId, session }) => {
   const [currentChapterDetail, setCurrentChapterDetail] = useState();
   const [hasLiked, setHasLiked] = useState(false);
   const [hasSaved, setHasSaved] = useState(false);
-  const [readingPercentage, setReadingPercentage] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
   const [boughtChapterList, setBoughtChapterList] = useState([]);
@@ -81,7 +78,7 @@ const page = async ({ comicId, session }) => {
 
   const { data: userCoinAndQCData, refetch: refetchUserCoinAndQCData } =
     useQuery({
-      queryKey: ["user", "coinAndQCData", session?.user?.id],
+      queryKey: ["user", "coinAndQCData"],
       queryFn: async () => {
         const res = await getUserCoinAndChallenge(session?.user?.id);
         return res;
@@ -89,15 +86,14 @@ const page = async ({ comicId, session }) => {
     });
 
   const { data: userInfo } = useQuery({
-    queryKey: ["user", "info", session?.user?.id],
+    queryKey: ["user", "info"],
     queryFn: async () => {
       const res = await fetchUserInfoById(session?.user?.id);
       return res;
     },
   });
-  console.log("🚀 ~ page ~ userInfo:", userInfo);
 
-  const onScroll = useCallback(async (event) => {
+  const onScroll = async (event) => {
     const { scrollY, innerHeight } = window;
     const scrollTop = scrollY;
     const docHeight = document.body.offsetHeight;
@@ -105,18 +101,23 @@ const page = async ({ comicId, session }) => {
     const scrollPercent = scrollTop / (docHeight - winHeight);
     const percentScroll = Math.round(scrollPercent * 100);
     if (percentScroll >= 50 && !completedView) {
-      completedView = true;
-      refetchUserCoinAndQCData();
       await updateChapterView(chapterId);
-      if (userId) {
+      if (userId && userCoinAndQCData) {
+        completedView = true;
         await updateQuestLog("", {
           id: userId,
-          questLog: userCoinAndQCData?.questLog,
+          questLog: {
+            finalTime: new Date(),
+            hasReceivedDailyGift:
+              userCoinAndQCData?.questLog?.hasReceivedDailyGift,
+            readingTime: (userCoinAndQCData?.questLog?.readingTime || 0) + 1,
+            received: userCoinAndQCData?.questLog?.received,
+            watchingTime: userCoinAndQCData?.questLog?.watchingTime,
+          },
         });
       }
     }
-    setReadingPercentage(percentScroll);
-  }, []);
+  };
 
   const processBuyChapter = async () => {
     setProcessPayment(true);
@@ -152,13 +153,16 @@ const page = async ({ comicId, session }) => {
     setHasSaved(result?.bookmark);
   };
   useEffect(() => {
-    fetchChapterList();
-    checkLikeSaveChapter();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, []);
+  }, [userCoinAndQCData]);
+
+  useEffect(() => {
+    fetchChapterList();
+    checkLikeSaveChapter();
+  }, [comicId]);
 
   const handleChangeLike = async () => {
     if (!userId) {
@@ -192,13 +196,6 @@ const page = async ({ comicId, session }) => {
               ))}
             </div>
             <div className="fixed bottom-0 left-0 right-0 flex flex-col gap-0">
-              <Progress
-                aria-label="Reading percentage"
-                value={readingPercentage}
-                className="w-full"
-                color="danger"
-                size={"sm"}
-              />
               <div className="bg-[#141414] p-6 px-12 flex flex-row justify-between">
                 <span className="text-white font-medium text-lg">
                   {chapterName}
@@ -326,7 +323,9 @@ const page = async ({ comicId, session }) => {
                                           </span>
                                         </div>
                                         <div className="flex flex-row gap-2 text-white font-semibold text-xl">
-                                          {userCoins.toLocaleString("de-DE")}
+                                          {userInfo?.coinPoint.toLocaleString(
+                                            "de-DE"
+                                          )}
                                           <img
                                             src="/skycoin.png"
                                             width={30}
@@ -432,7 +431,8 @@ const page = async ({ comicId, session }) => {
             <ModalHeader className="flex flex-col gap-1"></ModalHeader>
             {modalMode === "pay" ? (
               <ModalBody>
-                {userCoins < boughtInfo?.unlockPrice || errorMessage ? (
+                {userInfo?.coinPoint < boughtInfo?.unlockPrice ||
+                errorMessage ? (
                   <div className="text-white w-full h-full text-center flex flex-row gap-2 items-start">
                     <MdErrorOutline className="text-red-500 w-5 h-5" />
                     {errorMessage ||
