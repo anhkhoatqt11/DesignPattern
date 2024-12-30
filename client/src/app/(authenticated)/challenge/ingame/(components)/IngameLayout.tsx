@@ -35,6 +35,25 @@ const IngameLayout = ({ session }) => {
     queryFn: getChallengeInformation,
   });
 
+  const { data: userChallengesPoint, isLoading: isUserChallengesPointLoading } = useQuery({
+    queryKey: ["challenge", "userChallengesPoint"],
+    queryFn: getUsersChallengesPoint,
+  });
+
+  useEffect(() => {
+    if (userChallengesPoint) {
+      const challengePoint = userChallengesPoint.find(
+        (point) => point.userId === session?.user?.id
+      );
+      if (challengePoint) {
+        setScore(challengePoint.point);
+        console.log(challengePoint.point);
+        toast.error("Bạn đã hoàn thành thử thách này rồi");
+        router.push("/challenge/dashboard");
+      }
+    }
+  }, [userChallengesPoint]);
+
   const questionList = challengeInformation?.questionCollection || [];
 
   useEffect(() => {
@@ -76,8 +95,7 @@ const IngameLayout = ({ session }) => {
     try {
       // sửa thông báo kết quả ở đâyđây
       setMessage(
-        `Chúc mừng bạn đã hoàn thành thử thách với ${
-          correctCount * 100
+        `Chúc mừng bạn đã hoàn thành thử thách với ${correctCount * 100
         } điểm. Phần thưởng là ${(correctCount * 100) / 10} skycoin.`
       );
       onOpen();
@@ -90,6 +108,8 @@ const IngameLayout = ({ session }) => {
       console.log("Error uploading challenges point");
     }
   };
+
+
 
   const currentQuestion = questionList[currentQuestionIndex];
 
@@ -160,11 +180,10 @@ const IngameLayout = ({ session }) => {
                         group relative h-auto py-6 px-6
                         bg-emerald-500/10 hover:bg-emerald-500/20
                         border-2 border-transparent
-                        ${
-                          selectedAnswers[currentQuestionIndex] === index
-                            ? "border-emerald-500"
-                            : ""
-                        }
+                        ${selectedAnswers[currentQuestionIndex] === index
+                              ? "border-emerald-500"
+                              : ""
+                            }
                         transition-all duration-200
                                                 `}
                           onClick={() =>
@@ -221,9 +240,8 @@ const IngameLayout = ({ session }) => {
               {questionList.map((question, index) => (
                 <Card
                   key={question.questionId}
-                  className={`bg-zinc-900/50 border-zinc-800 p-4 hover:bg-zinc-800/50 transition-colors cursor-pointer ${
-                    currentQuestionIndex === index ? "border-emerald-500" : ""
-                  }`}
+                  className={`bg-zinc-900/50 border-zinc-800 p-4 hover:bg-zinc-800/50 transition-colors cursor-pointer ${currentQuestionIndex === index ? "border-emerald-500" : ""
+                    }`}
                   onClick={() => setCurrentQuestionIndex(index)}
                 >
                   <div className="flex gap-4">

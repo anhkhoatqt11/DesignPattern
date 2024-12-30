@@ -73,7 +73,7 @@ const ChallengeDashboardLayout = ({ session }) => {
     const fetchDateTime = async () => {
       try {
         const response = await fetch(
-          "http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh"
+          "https://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh"
         );
         const data = await response.json();
         console.log(data.datetime);

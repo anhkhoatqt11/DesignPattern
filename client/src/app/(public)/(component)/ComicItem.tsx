@@ -1,6 +1,6 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 export const ComicItem = ({ img, name, genres = null }) => {
-  const genreTag = genres.map((item) => item.genreName).join("/ ");
+  const genreTag = genres?.map((item) => item.genreName).join("/ ");
   return (
     <div className="flex flex-col gap-3">
       <div className="overflow-hidden rounded-md hover:shadow-lg hover:shadow-fuchsia-500">

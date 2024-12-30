@@ -21,13 +21,13 @@ const SearchLayout = () => {
   const searchParams = useSearchParams();
   const searchWord = searchParams.get("searchWord");
 
-  const { data: animeGenres, isLoading: isAnimeGenresLoading } = useQuery({
-    queryKey: ["anime", "genres"],
-    queryFn: async () => {
-      const res = await getGenres();
-      return res;
-    },
-  });
+  // const { data: animeGenres, isLoading: isAnimeGenresLoading } = useQuery({
+  //   queryKey: ["anime", "genres"],
+  //   queryFn: async () => {
+  //     const res = await getGenres();
+  //     return res;
+  //   },
+  // });
 
   const { data: animeResult, isLoading: isAnimeResultLoading } = useQuery({
     queryKey: ["anime", "search", searchWord],
@@ -52,7 +52,15 @@ const SearchLayout = () => {
     },
   });
 
-  if (isAnimeGenresLoading || isAnimeResultLoading || isComicResultLoading) {
+  const animeGenres = [
+    { id: 1, genreName: "Cuộc chiến tỏ tình" },
+    { id: 2, genreName: "SPYXFAMILY" },
+    { id: 3, genreName: "Nhật ký" },
+    { id: 4, genreName: "Lớp học đề cao thực lực" },
+    { id: 5, genreName: "High cards" },
+  ];
+
+  if (isAnimeResultLoading || isComicResultLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader />
@@ -142,7 +150,7 @@ const SearchLayout = () => {
               <div className="space-y-8">
                 <div>
                   <h3 className="text-lg font-semibold mb-4">
-                    Thể loại tìm kiếm
+                    Tìm kiếm thường xuyên
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     <GenresBadageList genresItem={animeGenres} />
