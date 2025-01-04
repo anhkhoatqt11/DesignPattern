@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 
 const ChallengeDashboardLayout = ({ session }) => {
   const { getUsersChallengesPoint, getChallengeInformation } = useChallenge();
-  const { updateLoginLog, getDailyQuests, updateQuestLog } = useQuest();
+  const { updateLoginLog, getDailyQuests, updateQuestLog, updateDailyData } = useQuest();
   const [currentDateTime, setCurrentDateTime] = React.useState(new Date());
   const { getUserCoinAndChallenge } = useUser();
   const [loginGift, setLoginGift] = useState(0);
@@ -70,21 +70,25 @@ const ChallengeDashboardLayout = ({ session }) => {
   });
 
   useEffect(() => {
-    const fetchDateTime = async () => {
-      try {
-        const response = await fetch(
-          "https://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh"
-        );
-        const data = await response.json();
-        console.log(data.datetime);
-        setCurrentDateTime(new Date(data.datetime));
-      } catch (error) {
-        console.error("Error fetching date and time:", error);
+    if (userCoinAndQCData?.questLog?.finalTime) {
+      const finalTime = new Date(userCoinAndQCData.questLog.finalTime);
+      const currentTime = new Date();
+      if (
+        finalTime.getFullYear() !== currentTime.getFullYear() ||
+        finalTime.getMonth() !== currentTime.getMonth() ||
+        finalTime.getDate() !== currentTime.getDate()
+      ) {
+        const formData = {
+          userId: session?.user?.id,
+          currentTime: currentTime.toISOString(),
+        };
+        updateDailyData(formData);
+        console.log("Updated daily data");
+      } else {
+        console.log("Daily data is up-to-date");
       }
-    };
-    console.log(session);
-    fetchDateTime();
-  }, []);
+    }
+  }, [userCoinAndQCData, session?.user?.id, updateDailyData]);
 
   if (
     isLoading ||
@@ -136,7 +140,7 @@ const ChallengeDashboardLayout = ({ session }) => {
                 {challengeInformation?.endTime && (
                   <div className="flex items-center justify-center lg:justify-start">
                     {currentDateTime <
-                    new Date(challengeInformation.endTime) ? (
+                      new Date(challengeInformation.endTime) ? (
                       <p className="text-[#A958FE] text-base flex flex-row items-center">
                         <Hourglass className="mr-1 w-4 h-4" />
                         Thời gian còn lại:{" "}
@@ -145,7 +149,7 @@ const ChallengeDashboardLayout = ({ session }) => {
                           Math.floor(
                             (new Date(challengeInformation.endTime).getTime() -
                               currentDateTime.getTime()) /
-                              (1000 * 60 * 60 * 24)
+                            (1000 * 60 * 60 * 24)
                           )
                         )}{" "}
                         ngày{" "}
@@ -154,7 +158,7 @@ const ChallengeDashboardLayout = ({ session }) => {
                           Math.floor(
                             (new Date(challengeInformation.endTime).getTime() -
                               currentDateTime.getTime()) /
-                              (1000 * 60 * 60)
+                            (1000 * 60 * 60)
                           ) % 24
                         )}{" "}
                         giờ{" "}
@@ -163,7 +167,7 @@ const ChallengeDashboardLayout = ({ session }) => {
                           Math.floor(
                             (new Date(challengeInformation.endTime).getTime() -
                               currentDateTime.getTime()) /
-                              (1000 * 60)
+                            (1000 * 60)
                           ) % 60
                         )}{" "}
                         phút
@@ -186,8 +190,8 @@ const ChallengeDashboardLayout = ({ session }) => {
                   {challengePoints?.find(
                     (user) => user.userId === session?.user?.id
                   )?.point.length !== 0
-                    ? "Chưa vượt thử thách"
-                    : "Kết quả thử thách"}
+                    ? "Kết quả thử thách"
+                    : "Chưa vượt thử thách"}
                 </span>
                 {challengePoints?.find(
                   (user) => user.userId === session?.user?.id

@@ -1,6 +1,8 @@
 import prisma from "@/lib/prisma";
+import connectMongoDB from "@/lib/mongodb";
 
 export async function GET(req: Request) {
+    await connectMongoDB();
     const url = new URL(req.url);
     const searchParams = new URLSearchParams(url.search);
     const userId = searchParams.get('id');
@@ -19,6 +21,7 @@ export async function GET(req: Request) {
             phone: true,
             coinPoint: true,
             username: true,
+            questLog: true,
         }
     });
 

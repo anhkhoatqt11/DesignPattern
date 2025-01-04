@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 const AvatarDialog = ({
   avatarList,
@@ -18,6 +19,7 @@ const AvatarDialog = ({
   userId,
   refetchUserInfo,
 }) => {
+  const { status, update } = useSession()
   const handleAvatarSelect = async (avatarUrl) => {
     try {
       const data = {
@@ -26,6 +28,7 @@ const AvatarDialog = ({
       };
       await onUpdateAvatar(data);
       refetchUserInfo();
+      update({avatar: avatarUrl});
       toast.success("Đã cập nhật hình đại diện");
     } catch (error) {
       console.error("Error updating avatar:", error);
@@ -54,11 +57,10 @@ const AvatarDialog = ({
                   <div
                     key={`${collection._id}-${index}`}
                     className={`w relative cursor-pointer rounded overflow-hidden transition-all
-                                            ${
-                                              currentAvatar === avatarUrl
-                                                ? "ring-2 ring-purple-500"
-                                                : "hover:shadow-md hover:shadow-emerald-500"
-                                            }
+                                            ${currentAvatar === avatarUrl
+                        ? "ring-2 ring-purple-500"
+                        : "hover:shadow-md hover:shadow-emerald-500"
+                      }
                                         `}
                     onClick={() => handleAvatarSelect(avatarUrl)}
                   >

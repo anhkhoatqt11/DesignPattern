@@ -77,7 +77,8 @@ const options: AuthOptions = {
       console.log('user in jwt: ');
       console.log(token);
       console.log(user);
-      if (trigger === 'update') {
+      if (trigger === 'update' && session?.avatar) {
+        token.avatar = session.avatar;
         return { ...token, ...session.user };
       }
       if (user) {

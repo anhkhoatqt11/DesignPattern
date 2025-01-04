@@ -34,9 +34,18 @@ export const useQuest = () => {
     });
     return res;
   };
+  const updateDailyData = async (data) => {
+    const res = await postRequest({
+      endPoint: "/api/quest/updateDailyData",
+      isFormData: false,
+      formData: data,
+    })
+    return res;
+  };
   return {
     updateQuestLog,
     getDailyQuests,
     updateLoginLog,
+    updateDailyData,
   };
 };

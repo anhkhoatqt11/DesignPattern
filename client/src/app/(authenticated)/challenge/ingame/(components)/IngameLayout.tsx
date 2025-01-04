@@ -24,6 +24,9 @@ const IngameLayout = ({ session }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
 
+
+
+
   const {
     getChallengeInformation,
     uploadChallengesPoint,
@@ -45,9 +48,9 @@ const IngameLayout = ({ session }) => {
       const challengePoint = userChallengesPoint.find(
         (point) => point.userId === session?.user?.id
       );
-      if (challengePoint) {
+      if (challengePoint && challengePoint.point.length > 0) {
         setScore(challengePoint.point);
-        console.log(challengePoint.point);
+        console.log(challengePoint);
         toast.error("Bạn đã hoàn thành thử thách này rồi");
         router.push("/challenge/dashboard");
       }
@@ -78,25 +81,60 @@ const IngameLayout = ({ session }) => {
     }
   };
 
-  const calculateScore = async () => {
-    const correctCount = questionList.reduce((count, question, index) => {
-      return (
-        count + (selectedAnswers[index] === question.correctAnswerID ? 1 : 0)
-      );
-    }, 0);
+  useEffect(() => {
+    const handleBeforeUnload = async (event) => {
+      event.preventDefault();
+      const data = {
+        userId: session?.user?.id,
+        point: 0,
+        date: new Date(),
+        remainingTime: timeLeft,
+      };
+      await uploadChallengesPoint(data);
+      event.returnValue = "";
+    };
 
-    var data = {
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [session, timeLeft, uploadChallengesPoint]);
+
+  const calculateScore = async () => {
+    let correctAnswers = 0;
+    const userAnswers = [];
+    const isCorrect = [];
+
+    questionList.forEach((question, index) => {
+      const userAnswerIndex = selectedAnswers[index];
+      const correctAnswerIndex = question.correctAnswerID;
+
+      if (userAnswerIndex !== null) {
+        if (userAnswerIndex === correctAnswerIndex) {
+          correctAnswers++;
+          isCorrect.push(true);
+        } else {
+          isCorrect.push(false);
+        }
+        userAnswers.push(question.answers[userAnswerIndex]);
+      }
+    });
+
+    const timeBonus = Math.min(Math.floor(timeLeft / 60) * 20, 1000);
+    const questionPoints = correctAnswers * 100;
+    const totalPoints = Math.min(questionPoints + timeBonus, 1000);
+
+    const data = {
       userId: session?.user?.id,
-      point: correctCount * 100,
+      point: totalPoints,
       date: new Date(),
       remainingTime: timeLeft,
     };
 
     try {
-      // sửa thông báo kết quả ở đâyđây
       setMessage(
-        `Chúc mừng bạn đã hoàn thành thử thách với ${correctCount * 100
-        } điểm. Phần thưởng là ${(correctCount * 100) / 10} skycoin.`
+        `Chúc mừng bạn đã hoàn thành thử thách với ${totalPoints} điểm. Phần thưởng là ${Math.ceil(totalPoints / 10)} skycoin.`
       );
       onOpen();
       await uploadChallengesPoint(data);
