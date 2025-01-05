@@ -1,115 +1,123 @@
 import { getRequest, postRequest, putRequest } from "@/lib/fetch";
+import { baseApiUrl } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 export const useAnime = () => {
   const fetchAnimeBanner = async () => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeBanner`,
+      endPoint: `${baseApiUrl}/api/animes/getAnimeBanner`,
     });
     return res;
   };
 
   const getAnimeAlbum = async () => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeAlbum`,
+      endPoint: `${baseApiUrl}/api/animes/getAnimeAlbum`,
     });
     return res;
   };
 
   const getAnimeAlbumContent = async (albumId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeInAlbum?idAlbum=${albumId}&limit=20&page=1`,
+      endPoint: `${baseApiUrl}/api/animes/getAnimeInAlbum?idAlbum=${albumId}&limit=20&page=1`,
     });
     return res;
   };
 
   const getAnimeAlbumContentAll = async (albumId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeInAlbum?idAlbum=${albumId}&limit=10000&page=1`,
+      endPoint: `${baseApiUrl}/api/animes/getAnimeInAlbum?idAlbum=${albumId}&limit=10000&page=1`,
     });
     return res;
   };
 
   const getTopViewAnime = async () => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getTopViewAnime`,
+      endPoint: `${baseApiUrl}/api/animes/getTopViewAnime`,
     });
     return res;
   };
 
   const getAnimeChapterById = async (animeId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeChapterById?animeId=${animeId}&limit=20&page=1`,
+      endPoint: `${baseApiUrl}/api/animes/getAnimeChapterById?animeId=${animeId}&limit=20&page=1`,
     });
     return res;
   };
 
   const getRankingTable = async () => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getRankingTable`,
+      endPoint: `${baseApiUrl}/api/animes/getRankingTable`,
     });
     return res;
   };
 
   const getWatchingHistories = async (userId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getWatchingHistories?userId=${userId}&limit=20&page=1`,
+      endPoint: `${baseApiUrl}/api/animes/getWatchingHistories?userId=${userId}&limit=20&page=1`,
     });
     return res;
   };
 
   const getAnimeDetailById = async (animeId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeDetailById?animeId=${animeId}`,
+      endPoint: `${baseApiUrl}/api/animes/getAnimeDetailById?animeId=${animeId}`,
     });
     return res;
   };
 
   const getAnimeDetailInEpisodePageById = async (animeId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeDetailInEpisodePageById?animeId=${animeId}`,
+      endPoint: `${baseApiUrl}/api/animes/getAnimeDetailInEpisodePageById?animeId=${animeId}`,
     });
     return res;
   };
 
   const getAnimeEpisodeDetailById = async (episodeId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeEpisodeDetailById?episodeId=${episodeId}`,
+      endPoint: `${baseApiUrl}/api/animes/getAnimeEpisodeDetailById?episodeId=${episodeId}`,
+    });
+    return res;
+  };
+
+  const getAnimeOfEpisode = async (episodeId) => {
+    const res = await getRequest({
+      endPoint: `${baseApiUrl}/api/animes/getAnimeOfEpisode?episodeId=${episodeId}`,
     });
     return res;
   };
 
   const getSomeTopViewEpisodes = async () => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getSomeTopViewEpisodes`,
+      endPoint: `${baseApiUrl}/api/animes/getSomeTopViewEpisodes`,
     });
     return res;
   };
 
   const getNewEpisodeAnime = async () => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getNewEpisodeAnime`,
+      endPoint: `${baseApiUrl}/api/animes/getNewEpisodeAnime`,
     });
     return res;
   };
 
   const checkUserHistoryHadSeenEpisode = async (episodeId, userId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/checkUserHistoryHadSeenEpisode?episodeId=${episodeId}&userId=${userId}`,
+      endPoint: `${baseApiUrl}/api/animes/checkUserHistoryHadSeenEpisode?episodeId=${episodeId}&userId=${userId}`,
     });
     return res;
   };
 
   const checkUserHasLikeOrSaveEpisode = async (episodeId, userId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/checkUserHasLikeOrSaveEpisode?episodeId=${episodeId}&userId=${userId}`,
+      endPoint: `${baseApiUrl}/api/animes/checkUserHasLikeOrSaveEpisode?episodeId=${episodeId}&userId=${userId}`,
     });
     return res;
   };
 
   const updateUserLikeEpisode = async (episodeId, userId) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/updateUserLikeEpisode`,
+      endPoint: `${baseApiUrl}/api/animes/updateUserLikeEpisode`,
       isFormData: false,
       formData: {
         episodeId,
@@ -121,7 +129,7 @@ export const useAnime = () => {
 
   const updateUserSaveEpisode = async (episodeId, userId) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/updateUserSaveEpisode`,
+      endPoint: `${baseApiUrl}/api/animes/updateUserSaveEpisode`,
       isFormData: false,
       formData: {
         episodeId,
@@ -137,7 +145,7 @@ export const useAnime = () => {
     position
   ) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/updateUserHistoryHadSeenEpisode`,
+      endPoint: `${baseApiUrl}/api/animes/updateUserHistoryHadSeenEpisode`,
       isFormData: false,
       formData: {
         episodeId,
@@ -150,7 +158,7 @@ export const useAnime = () => {
 
   const updateEpisodeView = async (episodeId) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/updateEpisodeView`,
+      endPoint: `${baseApiUrl}/api/animes/updateEpisodeView`,
       isFormData: false,
       formData: {
         episodeId,
@@ -161,14 +169,14 @@ export const useAnime = () => {
 
   const getAnimeEpisodeComments = async (episodeId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getAnimeEpisodeComments?episodeId=${episodeId}`,
+      endPoint: `${baseApiUrl}/api/animes/getAnimeEpisodeComments?episodeId=${episodeId}`,
     });
     return res;
   };
 
   const addRootEpisodeComment = async (episodeId, userId, content) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/addRootEpisodeComments`,
+      endPoint: `${baseApiUrl}/api/animes/addRootEpisodeComments`,
       isFormData: false,
       formData: {
         episodeId,
@@ -186,7 +194,7 @@ export const useAnime = () => {
     content
   ) => {
     const res = await putRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/addChildEpisodeComments`,
+      endPoint: `${baseApiUrl}/api/animes/addChildEpisodeComments`,
       isFormData: false,
       formData: {
         episodeId,
@@ -205,7 +213,7 @@ export const useAnime = () => {
     commentChildId
   ) => {
     const res = await putRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/updateUserLikeChildComment`,
+      endPoint: `${baseApiUrl}/api/animes/updateUserLikeChildComment`,
       isFormData: false,
       formData: {
         episodeId,
@@ -219,7 +227,7 @@ export const useAnime = () => {
 
   const updateUserLikeParentComment = async (episodeId, userId, commentId) => {
     const res = await putRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/updateUserLikeParentComment`,
+      endPoint: `${baseApiUrl}/api/animes/updateUserLikeParentComment`,
       isFormData: false,
       formData: {
         episodeId,
@@ -232,19 +240,17 @@ export const useAnime = () => {
 
   const getGenres = async () => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/getGenres`,
+      endPoint: `${baseApiUrl}/api/animes/getGenres`,
     });
     return res;
   };
 
-  const searchForAnimes = async({searchWord}) => {
+  const searchForAnimes = async ({ searchWord }) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/animes/searchAnimeAndEpisodes?query=${searchWord}`
+      endPoint: `${baseApiUrl}/api/animes/searchAnimeAndEpisodes?query=${searchWord}`,
     });
     return res;
-  }
-
-
+  };
 
   return {
     fetchAnimeBanner,
@@ -256,6 +262,7 @@ export const useAnime = () => {
     getRankingTable,
     getAnimeDetailById,
     getAnimeDetailInEpisodePageById,
+    getAnimeOfEpisode,
     getAnimeEpisodeDetailById,
     getSomeTopViewEpisodes,
     checkUserHistoryHadSeenEpisode,
@@ -272,6 +279,6 @@ export const useAnime = () => {
     getWatchingHistories,
     getNewEpisodeAnime,
     getGenres,
-    searchForAnimes
+    searchForAnimes,
   };
 };

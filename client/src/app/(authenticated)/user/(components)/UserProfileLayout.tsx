@@ -101,8 +101,6 @@ const UserProfileLayout = ({ session }) => {
     );
   }
 
-  
-
   return (
     <>
       <div className="relative flex justify-center items-center">
@@ -220,7 +218,9 @@ const UserProfileLayout = ({ session }) => {
                 <Button
                   size="sm"
                   className="w-full bg-transparent py-3 justify-start"
-                  onClick={() => { }}
+                  onClick={() => {
+                    router.push("/transaction/history");
+                  }}
                 >
                   <span className="text-white font-medium h-full flex flex-row items-center gap-3">
                     <FaLayerGroup className="text-white w-6 h-6" />
@@ -262,7 +262,7 @@ const UserProfileLayout = ({ session }) => {
                     className="w-full h-full bg-transparent py-3 justify-start"
                     onClick={() => {
                       router.push("/about-us");
-                     }}
+                    }}
                   >
                     <span className="text-white font-medium h-full flex flex-row items-center gap-3">
                       <LuBuilding2 className="text-white w-6 h-6" />
@@ -309,14 +309,15 @@ const UserProfileLayout = ({ session }) => {
                     {rankList?.map((item, index) => (
                       <div className="flex flex-row gap-4 items-center">
                         <span
-                          className={`text-${index === 0
+                          className={`text-${
+                            index === 0
                               ? "[#DA5EF0]"
                               : index === 1
-                                ? "emerald-500"
-                                : index === 2
-                                  ? "blue-500"
-                                  : "gray-500"
-                            } font-extrabold text-2xl`}
+                              ? "emerald-500"
+                              : index === 2
+                              ? "blue-500"
+                              : "gray-500"
+                          } font-extrabold text-2xl`}
                         >
                           {index + 1}
                         </span>

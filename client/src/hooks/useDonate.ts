@@ -1,31 +1,32 @@
 import { getRequest, postRequest } from "@/lib/fetch";
+import { baseApiUrl } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 export const useDonate = () => {
   const getDonatePackageList = async () => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/donates/getDonatePackageList`,
+      endPoint: `${baseApiUrl}/api/donates/getDonatePackageList`,
     });
     return res;
   };
 
   const getDonatePackageDetail = async (packageId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/donates/getDonatePackageDetail?packageId=${packageId}`,
+      endPoint: `${baseApiUrl}/api/donates/getDonatePackageDetail?packageId=${packageId}`,
     });
     return res;
   };
 
   const getDonatorList = async () => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/donates/getDonatorList`,
+      endPoint: `${baseApiUrl}/api/donates/getDonatorList`,
     });
     return res;
   };
 
   const uploadDonateRecord = async (packageId, userId) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/donates/uploadDonateRecord`,
+      endPoint: `${baseApiUrl}/api/donates/uploadDonateRecord`,
       isFormData: false,
       formData: {
         packageId,
@@ -38,7 +39,7 @@ export const useDonate = () => {
 
   const processDonationPayment = async (amount, userId) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/donates/processDonationPayment`,
+      endPoint: `${baseApiUrl}/api/donates/processDonationPayment`,
       isFormData: false,
       formData: {
         amount,

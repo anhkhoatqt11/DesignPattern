@@ -1,17 +1,18 @@
 import { getRequest, postRequest, putRequest } from "@/lib/fetch";
+import { baseApiUrl } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 export const useUser = () => {
   const getPaymentHistories = async (userId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/users/getPaymentHistories?userId=${userId}`,
+      endPoint: `${baseApiUrl}/api/users/getPaymentHistories?userId=${userId}`,
     });
     return res;
   };
 
   const paySkycoin = async (userId, coin, chapterId) => {
     const res = await putRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/users/paySkycoin`,
+      endPoint: `${baseApiUrl}/api/users/paySkycoin`,
       isFormData: false,
       formData: {
         userId,
@@ -66,16 +67,14 @@ export const useUser = () => {
 
   const getAvatarList = async () => {
     const res = await getRequest({
-      endPoint:
-        "https://skylark-entertainment.vercel.app/api/users/getAvatarList",
+      endPoint: `${baseApiUrl}/api/users/getAvatarList`,
     });
     return res;
   };
 
   const updateAvatar = async (data) => {
     const res = await postRequest({
-      endPoint:
-        "https://skylark-entertainment.vercel.app/api/users/updateAvatar",
+      endPoint: `${baseApiUrl}/api/users/updateAvatar`,
       isFormData: false,
       formData: data,
     });
@@ -84,8 +83,7 @@ export const useUser = () => {
 
   const updateUsername = async (data) => {
     const res = await postRequest({
-      endPoint:
-        "https://skylark-entertainment.vercel.app/api/users/updateUsername",
+      endPoint: `${baseApiUrl}/api/users/updateUsername`,
       isFormData: false,
       formData: data,
     });
@@ -94,18 +92,37 @@ export const useUser = () => {
 
   const getBookmarkList = async (userId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/users/getBookmarkList?userId=${userId}`,
+      endPoint: `${baseApiUrl}/api/users/getBookmarkList?userId=${userId}`,
     });
     return res;
   };
 
   const removeBookmark = async (userId, bookmarksToRemove) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/users/removeBookmark`,
+      endPoint: `${baseApiUrl}/api/users/removeBookmark`,
       isFormData: false,
       formData: {
         userId,
         bookmarksToRemove,
+      },
+    });
+    return res;
+  };
+
+  const getNotification = async (id) => {
+    const res = await getRequest({
+      endPoint: `${baseApiUrl}/api/users/getNotification?userId=${id}`,
+    });
+    return res;
+  };
+
+  const readNotication = async (userId, index) => {
+    const res = await putRequest({
+      endPoint: `${baseApiUrl}/api/users/readNotification`,
+      isFormData: false,
+      formData: {
+        userId,
+        index,
       },
     });
     return res;
@@ -123,5 +140,7 @@ export const useUser = () => {
     updateUsername,
     getBookmarkList,
     removeBookmark,
+    getNotification,
+    readNotication,
   };
 };

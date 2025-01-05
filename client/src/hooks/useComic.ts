@@ -1,87 +1,95 @@
 import { getRequest, postRequest, putRequest } from "@/lib/fetch";
+import { baseApiUrl } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 export const useComic = () => {
   const fetchComicBanner = async () => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getComicBanner`,
+      endPoint: `${baseApiUrl}/api/comics/getComicBanner`,
     });
     return res;
   };
 
   const getComicAlbum = async () => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getComicAlbum`,
+      endPoint: `${baseApiUrl}/api/comics/getComicAlbum`,
     });
     return res;
   };
 
   const getComicAlbumContent = async (idList) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getComicInAlbum?idList=${idList}&limit=20&page=1`,
+      endPoint: `${baseApiUrl}/api/comics/getComicInAlbum?idList=${idList}&limit=20&page=1`,
     });
     return res;
   };
 
   const getComic = async (id) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getComic?comicId=${id}`,
+      endPoint: `${baseApiUrl}/api/comics/getComic?comicId=${id}`,
     });
     return res;
   };
 
   const getChapter = async (id) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getDetailComicById?comicId=${id}`,
+      endPoint: `${baseApiUrl}/api/comics/getDetailComicById?comicId=${id}`,
     });
     return res;
   };
 
   const getComicAlbumContentAll = async (idList) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getComicInAlbum?idList=${idList}&limit=10000&page=1`,
+      endPoint: `${baseApiUrl}/api/comics/getComicInAlbum?idList=${idList}&limit=10000&page=1`,
     });
     return res;
   };
 
   const getRankingTable = async () => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getRankingTable`,
+      endPoint: `${baseApiUrl}/api/comics/getRankingTable`,
     });
     return res;
   };
 
   const getReadingHistories = async (userId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getReadingHistories?userId=${userId}&limit=20&page=1`,
+      endPoint: `${baseApiUrl}/api/comics/getReadingHistories?userId=${userId}&limit=20&page=1`,
     });
     return res;
   };
 
   const getNewChapterComic = async () => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getNewChapterComic`,
+      endPoint: `${baseApiUrl}/api/comics/getNewChapterComic`,
+    });
+    return res;
+  };
+
+  const getComicOfChapter = async (chapterId) => {
+    const res = await getRequest({
+      endPoint: `${baseApiUrl}/api/comics/getComicOfChapter?chapterId=${chapterId}`,
     });
     return res;
   };
 
   const checkUserBanned = async (userId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/checkUserBanned?userId=${userId}`,
+      endPoint: `${baseApiUrl}/api/comics/checkUserBanned?userId=${userId}`,
     });
     return res;
   };
 
   const checkValidCommentContent = async (content) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/checkValidCommentContent?content=${content}`,
+      endPoint: `${baseApiUrl}/api/comics/checkValidCommentContent?content=${content}`,
     });
     return res;
   };
 
   const banUser = async (userId) => {
     const res = await putRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/banUser`,
+      endPoint: `${baseApiUrl}/api/comics/banUser`,
       isFormData: false,
       formData: {
         userId,
@@ -92,14 +100,14 @@ export const useComic = () => {
 
   const checkUserHasLikeOrSaveChapter = async (chapterId, userId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/checkUserHasLikeOrSaveChapter?chapterId=${chapterId}&userId=${userId}`,
+      endPoint: `${baseApiUrl}/api/comics/checkUserHasLikeOrSaveChapter?chapterId=${chapterId}&userId=${userId}`,
     });
     return res;
   };
 
   const updateUserLikeChapter = async (chapterId, userId) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/updateUserLikeChapter`,
+      endPoint: `${baseApiUrl}/api/comics/updateUserLikeChapter`,
       isFormData: false,
       formData: {
         chapterId,
@@ -111,7 +119,7 @@ export const useComic = () => {
 
   const updateUserSaveChapter = async (chapterId, userId) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/updateUserSaveChapter`,
+      endPoint: `${baseApiUrl}/api/comics/updateUserSaveChapter`,
       isFormData: false,
       formData: {
         chapterId,
@@ -123,14 +131,14 @@ export const useComic = () => {
 
   const getComicChapterComments = async (chapterId) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/getComicChapterComments?chapterId=${chapterId}`,
+      endPoint: `${baseApiUrl}/api/comics/getComicChapterComments?chapterId=${chapterId}`,
     });
     return res;
   };
 
   const addRootChapterComment = async (chapterId, userId, content) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/addRootChapterComments`,
+      endPoint: `${baseApiUrl}/api/comics/addRootChapterComments`,
       isFormData: false,
       formData: {
         chapterId,
@@ -148,7 +156,7 @@ export const useComic = () => {
     content
   ) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/addChildChapterComments`,
+      endPoint: `${baseApiUrl}/api/comics/addChildChapterComments`,
       isFormData: false,
       formData: {
         chapterId,
@@ -167,7 +175,7 @@ export const useComic = () => {
     commentChildId
   ) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/updateUserLikeChildComment`,
+      endPoint: `${baseApiUrl}/api/comics/updateUserLikeChildComment`,
       isFormData: false,
       formData: {
         chapterId,
@@ -181,7 +189,7 @@ export const useComic = () => {
 
   const updateUserLikeParentComment = async (chapterId, userId, commentId) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/updateUserLikeParentComment`,
+      endPoint: `${baseApiUrl}/api/comics/updateUserLikeParentComment`,
       isFormData: false,
       formData: {
         chapterId,
@@ -194,7 +202,7 @@ export const useComic = () => {
 
   const updateChapterView = async (chapterId) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/updateChapterView`,
+      endPoint: `${baseApiUrl}/api/comics/updateChapterView`,
       isFormData: false,
       formData: {
         chapterId,
@@ -205,7 +213,7 @@ export const useComic = () => {
 
   const updateUserHistoryHadSeenChapter = async (chapterId, userId) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/updateUserHistoryHadSeenChapter`,
+      endPoint: `${baseApiUrl}/api/comics/updateUserHistoryHadSeenChapter`,
       isFormData: false,
       formData: {
         chapterId,
@@ -217,10 +225,10 @@ export const useComic = () => {
 
   const searchForComics = async (searchWord) => {
     const res = await getRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/comics/searchComic?query=${searchWord}`,
+      endPoint: `${baseApiUrl}/api/comics/searchComic?query=${searchWord}`,
     });
     return res;
-  }
+  };
 
   return {
     fetchComicBanner,
@@ -233,6 +241,7 @@ export const useComic = () => {
     banUser,
     getReadingHistories,
     getNewChapterComic,
+    getComicOfChapter,
     getChapter,
     getComic,
     checkUserHasLikeOrSaveChapter,
@@ -245,6 +254,6 @@ export const useComic = () => {
     updateUserLikeParentComment,
     updateChapterView,
     updateUserHistoryHadSeenChapter,
-    searchForComics
+    searchForComics,
   };
 };

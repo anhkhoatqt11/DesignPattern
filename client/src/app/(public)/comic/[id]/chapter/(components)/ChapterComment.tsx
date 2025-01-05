@@ -49,8 +49,7 @@ const FormSchema = z.object({
   }),
 });
 
-export const ChapterComment = ({ chapterId }) => {
-  const userId = "664e035739f321473ca8b5a3";
+export const ChapterComment = ({ chapterId, userId }) => {
   const {
     getComicChapterComments,
     addRootChapterComment,

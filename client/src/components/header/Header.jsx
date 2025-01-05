@@ -23,6 +23,7 @@ import Logo from "../logo";
 import { HiOutlineTicket } from "react-icons/hi2";
 import { useRouter, usePathname } from "next/navigation";
 import { main_color } from "../../../public/color";
+import { NotificationBadge } from "@/app/(authenticated)/notification/(components)/NotificationBadge";
 
 const avatarNav = [
   {
@@ -182,6 +183,14 @@ const NavigationMenuDemo = ({ session }) => {
                   style={{ fontFamily: "'Nunito', sans-serif" }}
                 >
                   Thử thách
+                </Button>
+              </Link>
+              <Link href="/notification">
+                <Button
+                  className={`h-full py-0 w-fit text-lg bg-transparent text-white hover:scale-105 hover:bg-transparent font-semibold text-center flex justify-centercenter`}
+                  style={{ fontFamily: "'Nunito', sans-serif" }}
+                >
+                  <NotificationBadge session={session} />
                 </Button>
               </Link>
               <Link href="/user/profile">

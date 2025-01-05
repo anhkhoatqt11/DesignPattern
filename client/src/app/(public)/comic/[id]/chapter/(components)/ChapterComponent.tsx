@@ -36,7 +36,7 @@ import { Button } from "@/components/ui/button";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { useQuery } from "@tanstack/react-query";
 
-const page = async ({ comicId, session }) => {
+const ChapterComponent = ({ comicId, session }) => {
   const searchParams = useSearchParams();
 
   const userId = session?.user?.id;
@@ -75,6 +75,7 @@ const page = async ({ comicId, session }) => {
   };
   const [modalMode, setModalMode] = useState("comment");
   const [errorMessage, setErrorMessage] = useState("");
+  const [readingPercentage, setReadingPercentage] = useState(0);
 
   const { data: userCoinAndQCData, refetch: refetchUserCoinAndQCData } =
     useQuery({
@@ -117,6 +118,7 @@ const page = async ({ comicId, session }) => {
         });
       }
     }
+    setReadingPercentage(percentScroll);
   };
 
   const processBuyChapter = async () => {
@@ -157,12 +159,12 @@ const page = async ({ comicId, session }) => {
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [userCoinAndQCData]);
+  }, []);
 
   useEffect(() => {
     fetchChapterList();
     checkLikeSaveChapter();
-  }, [comicId]);
+  }, []);
 
   const handleChangeLike = async () => {
     if (!userId) {
@@ -196,6 +198,13 @@ const page = async ({ comicId, session }) => {
               ))}
             </div>
             <div className="fixed bottom-0 left-0 right-0 flex flex-col gap-0">
+              <Progress
+                aria-label="Reading percentage"
+                value={readingPercentage}
+                className="w-full"
+                color="danger"
+                size={"sm"}
+              />
               <div className="bg-[#141414] p-6 px-12 flex flex-row justify-between">
                 <span className="text-white font-medium text-lg">
                   {chapterName}
@@ -468,7 +477,7 @@ const page = async ({ comicId, session }) => {
               </ModalBody>
             ) : (
               <ModalBody>
-                <ChapterComment chapterId={chapterId} />
+                <ChapterComment chapterId={chapterId} userId={userId} />
               </ModalBody>
             )}
             {modalMode === "pay" && <ModalFooter></ModalFooter>}
@@ -479,4 +488,4 @@ const page = async ({ comicId, session }) => {
   );
 };
 
-export default page;
+export default ChapterComponent;

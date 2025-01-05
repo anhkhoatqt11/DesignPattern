@@ -1,11 +1,12 @@
 import { getRequest, postRequest } from "@/lib/fetch";
+import { baseApiUrl } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 export const useQuest = () => {
   const updateQuestLog = async (questId, userInfo) => {
     try {
       const res = await postRequest({
-        endPoint: `https://skylark-entertainment.vercel.app/api/quest/updateQuestLog`,
+        endPoint: `${baseApiUrl}/api/quest/updateQuestLog`,
         isFormData: false,
         formData: {
           userId: userInfo.id,
@@ -22,13 +23,13 @@ export const useQuest = () => {
   };
   const getDailyQuests = async () => {
     const res = await getRequest({
-      endPoint: "https://skylark-entertainment.vercel.app/api/quest/getDailyQuests",
+      endPoint: `${baseApiUrl}/api/quest/getDailyQuests`,
     });
     return res;
   };
   const updateLoginLog = async (userInfo) => {
     const res = await postRequest({
-      endPoint: `https://skylark-entertainment.vercel.app/api/quest/updateLoginLog`,
+      endPoint: `${baseApiUrl}/api/quest/updateLoginLog`,
       isFormData: false,
       formData: userInfo,
     });
@@ -39,7 +40,7 @@ export const useQuest = () => {
       endPoint: "/api/quest/updateDailyData",
       isFormData: false,
       formData: data,
-    })
+    });
     return res;
   };
   return {

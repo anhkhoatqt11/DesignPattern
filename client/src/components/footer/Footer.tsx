@@ -21,14 +21,14 @@ const Footer = () => {
             </div>
             <div className="flex text-sm text-white/[0.5]  cursor-pointer items-center">
               <BsFillTelephoneFill className="mr-2" />
-              Thứ 2 - Thứ 6 (8:30 - 18:30)
+              Thứ 2 - Thứ 6 (8:00 - 18:00)
             </div>
             <div className="font-oswald font-medium  text-sm cursor-pointer">
               Email
             </div>
             <div className="flex text-sm text-white/[0.5]  cursor-pointer items-center">
               <MdEmail className="mr-2" />
-              support@ticketnow.vn
+              support@skylark.vn
             </div>
             <div className="font-oswald font-medium  text-sm cursor-pointer">
               Văn phòng
@@ -54,7 +54,7 @@ const Footer = () => {
                 Về công ty chúng tôi
               </div>
               <div className="text-sm text-white/[0.5] hover:text-white cursor-pointer">
-                Thông tin về TicketNow
+                Thông tin về Skylark
               </div>
               <div className="text-sm text-white/[0.5] hover:text-white cursor-pointer">
                 Điều khoản sử dụng
@@ -74,7 +74,7 @@ const Footer = () => {
                 Dành cho Khách hàng
               </div>
               <div className="text-sm text-white/[0.5] hover:text-white cursor-pointer">
-                Hướng dẫn mua vé
+                Hướng dẫn mua Skycoins
               </div>
               <div className="font-oswald font-medium  text-sm">
                 Trung tâm hỗ trợ
@@ -110,26 +110,26 @@ const Footer = () => {
         <div className="flex gap-[50px] md:gap-[75px] lg:gap-[100px] flex-col md:flex-row">
           <div className="flex text-[12px] text-white/[0.5] hover:text-white cursor-pointer  text-left ">
             <Logo />
-            Hệ thống quản lý và phân phối vé sự kiện hàng đầu Việt Nam
-            TicketNowCo. Ltd. © 2023
+            Hệ thống quản lý và phân phối nội dung giải trí hàng đầu Việt Nam
+            SkylarkCo. Ltd. © 2023
           </div>
           <div className="flex flex-col">
             <div className="text-[12px] text-white/[0.5] ">
-              Công ty TNHH TicketNow
+              Công ty TNHH Skylark Entertainment
             </div>
             <div className="text-[12px] text-white/[0.5] ">
-              Đại diện theo pháp luật: Đoàn Lê Tuấn Thành
+              Đại diện theo pháp luật: Đặng Thái Sơn
             </div>
             <div className="text-[12px] text-white/[0.5] ">
               Địa chỉ: UIT, Phường Linh Trung, Thành phố Thủ Đúc, TP. Hồ Chí
               Minh
             </div>
             <div className="text-[12px] text-white/[0.5] ">
-              Hotline: 1900.0000 - Email: support@ticketnow.vn
+              Hotline: 1900.0000 - Email: support@skylark.vn
             </div>
             <div className="text-[12px] text-white/[0.5] ">
               Giấy chứng nhận đăng ký doanh nghiệp số: 0123456789, cấp lần đầu
-              ngày 12/12/2023 bởi Sở Kế Hoạch và Đầu Tư TP. Hồ Chí Minh
+              ngày 12/12/2024 bởi Sở Kế Hoạch và Đầu Tư TP. Hồ Chí Minh
             </div>
           </div>
         </div>
