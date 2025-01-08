@@ -224,6 +224,7 @@ export const useComic = () => {
   };
 
   const searchForComics = async (searchWord) => {
+    console.log(searchWord);
     const res = await getRequest({
       endPoint: `${baseApiUrl}/api/comics/searchComic?query=${searchWord}`,
     });

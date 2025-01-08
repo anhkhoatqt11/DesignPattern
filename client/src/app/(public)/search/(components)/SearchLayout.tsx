@@ -113,10 +113,12 @@ const SearchLayout = () => {
                   </div>
                   <div className="grid grid-cols-3 md:grid-cols-5 2xl:grid-cols-6 gap-4">
                     {animeResult?.animeResults?.map((anime) => (
-                      <AnimeItem
-                        img={anime.coverImage}
-                        name={anime.movieName}
-                      />
+                      <Link key={anime._id} href={`/anime/${anime._id}`}>
+                        <AnimeItem
+                          img={anime.coverImage}
+                          name={anime.movieName}
+                        />
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -136,11 +138,13 @@ const SearchLayout = () => {
                   </div>
                   <div className="grid grid-cols-3 md:grid-cols-5 2xl:grid-cols-6 gap-4">
                     {comicResult?.slice(0, 8).map((comic) => (
-                      <ComicItem
-                        img={comic.coverImage}
-                        name={comic.comicName}
-                        genres={comic.genres}
-                      />
+                      <Link key={comic._id} href={`/comic/${comic._id}`}>
+                        <ComicItem
+                          img={comic.coverImage}
+                          name={comic.comicName}
+                          genres={comic.genres}
+                        />
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -168,7 +172,9 @@ const SearchLayout = () => {
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {animeResult?.animeResults?.map((anime) => (
-                    <AnimeItem img={anime.coverImage} name={anime.movieName} />
+                    <Link key={anime._id} href={`/anime/${anime._id}`}>
+                      <AnimeItem img={anime.coverImage} name={anime.movieName} />
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -183,11 +189,13 @@ const SearchLayout = () => {
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {comicResult?.map((comic) => (
-                    <ComicItem
-                      img={comic.coverImage}
-                      name={comic.comicName}
-                      genres={null}
-                    />
+                    <Link key={comic._id} href={`/comic/${comic._id}`}>
+                      <ComicItem
+                        img={comic.coverImage}
+                        name={comic.comicName}
+                        genres={null}
+                      />
+                    </Link>
                   ))}
                 </div>
               </div>
