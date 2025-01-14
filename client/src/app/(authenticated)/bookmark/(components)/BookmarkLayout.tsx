@@ -9,6 +9,7 @@ import { useUser } from "@/hooks/useUser";
 import BookmarkItem from "./BookmarkItem";
 import toast from "react-hot-toast";
 import Loader from "@/components/Loader";
+import Link from "next/link";
 
 const BookmarkLayout = ({ session }) => {
   const { getBookmarkList, removeBookmark } = useUser();
@@ -24,7 +25,6 @@ const BookmarkLayout = ({ session }) => {
       return res;
     },
   });
-  console.log("🚀 ~ BookmarkLayout ~ bookmarkList:", bookmarkList);
 
   const [isEditing, setIsEditing] = useState(false);
   const [bookmarksToRemove, setBookmarksToRemove] = useState([]);
@@ -42,9 +42,7 @@ const BookmarkLayout = ({ session }) => {
 
   const handleDeleteBookmarks = async () => {
     try {
-      // Send a single request with all bookmarks to remove
       await removeBookmark(session.user.id, bookmarksToRemove);
-
       toast.success("Đã xóa mục yêu thích thành công!");
       setBookmarksToRemove([]);
       setIsEditing(false);
@@ -53,6 +51,17 @@ const BookmarkLayout = ({ session }) => {
       console.error("Error removing bookmarks:", error);
       toast.error("Có lỗi xảy ra khi xóa mục yêu thích.");
     }
+  };
+
+  const BookmarkItemWrapper = ({ children, href, itemId }) => {
+    if (isEditing) {
+      return (
+        <div onClick={() => handleSelectBookmark(itemId)}>
+          {children}
+        </div>
+      );
+    }
+    return <Link href={href}>{children}</Link>;
   };
 
   if (isBookmarkListLoading) {
@@ -72,7 +81,7 @@ const BookmarkLayout = ({ session }) => {
             {isEditing && (
               <div className="flex justify-end gap-4">
                 <Button
-                  variant={"outline"}
+                  variant="outline"
                   color="success"
                   size="sm"
                   onClick={handleDeleteBookmarks}
@@ -85,7 +94,7 @@ const BookmarkLayout = ({ session }) => {
               </div>
             )}
             <Button
-              variant={"outline"}
+              variant="outline"
               color="success"
               size="sm"
               onClick={handleEditToggle}
@@ -125,37 +134,35 @@ const BookmarkLayout = ({ session }) => {
             <TabsContent value="anime" className="mt-0 border-0">
               <div className="space-y-4">
                 {bookmarkList[0].animes.map((anime) => (
-                  <div
+                  <BookmarkItemWrapper
                     key={anime._id}
-                    onClick={() => isEditing && handleSelectBookmark(anime._id)}
-                    className={`group relative rounded-lg overflow-hidden`}
+                    href={`/anime/${anime.owner[0]._id}/episode?episodeId=${anime._id}`}
+                    itemId={anime._id}
                   >
-                    <div
-                      className={`${
-                        bookmarksToRemove.includes(anime._id)
-                          ? "bg-gradient-to-r "
-                          : ""
-                      } ${
-                        isEditing
-                          ? "cursor-pointer group-hover:bg-gradient-to-l"
-                          : "group-hover:bg-blue-500 group-hover:scale-105"
-                      } from-emerald-500 to-blue-500 bg-right transition ease-in-out duration-1000 p-20 rounded-lg`}
-                    >
-                      "
-                    </div>
-                    <div className="m-[1px] absolute inset-0  bg-[#141414] rounded-lg">
-                      <BookmarkItem
-                        image={anime.coverImage}
-                        name={anime.episodeName}
-                        ownerName={anime.owner[0].movieName}
-                        genere={anime.owner[0].genreNames}
+                    <div className="group relative rounded-lg overflow-hidden">
+                      <div
+                        className={`${bookmarksToRemove.includes(anime._id)
+                            ? "bg-gradient-to-r "
+                            : ""
+                          } ${isEditing
+                            ? "cursor-pointer group-hover:bg-gradient-to-l"
+                            : "group-hover:bg-blue-500 group-hover:scale-105"
+                          } from-emerald-500 to-blue-500 bg-right transition ease-in-out duration-1000 p-20 rounded-lg`}
                       />
+                      <div className="m-[1px] absolute inset-0 bg-[#141414] rounded-lg">
+                        <BookmarkItem
+                          image={anime.coverImage}
+                          name={anime.episodeName}
+                          ownerName={anime.owner[0].movieName}
+                          genere={anime.owner[0].genreNames}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  </BookmarkItemWrapper>
                 ))}
                 {!bookmarkList[0].animes?.length && (
                   <div className="w-full flex flex-col justify-center items-center">
-                    <img src="/empty-box.png" className="w-1/2" />
+                    <img src="/empty-box.png" className="w-1/2" alt="Empty box" />
                     <span className="font-semibold text-lg">
                       Chưa có bộ anime nào
                     </span>
@@ -170,37 +177,35 @@ const BookmarkLayout = ({ session }) => {
             <TabsContent value="truyen" className="mt-0 border-0">
               <div className="space-y-4">
                 {bookmarkList[0].comics.map((comic) => (
-                  <div
+                  <BookmarkItemWrapper
                     key={comic._id}
-                    onClick={() => isEditing && handleSelectBookmark(comic._id)}
-                    className={`group relative rounded-lg overflow-hidden`}
+                    href={`/comic/${comic.owner[0]._id}/chapter?chapterId=${comic._id}`}
+                    itemId={comic._id}
                   >
-                    <div
-                      className={`${
-                        bookmarksToRemove.includes(comic._id)
-                          ? "bg-gradient-to-r "
-                          : ""
-                      } ${
-                        isEditing
-                          ? "cursor-pointer group-hover:bg-gradient-to-l"
-                          : "group-hover:bg-blue-500"
-                      } from-emerald-500 to-blue-500 bg-right transition ease-in-out duration-1000 p-20 rounded-lg`}
-                    >
-                      "
-                    </div>
-                    <div className="m-[1px] absolute inset-0  bg-[#141414] rounded-lg">
-                      <BookmarkItem
-                        image={comic.coverImage}
-                        name={comic.chapterName}
-                        ownerName={comic.owner[0].comicName}
-                        genere={comic.owner[0].genreNames}
+                    <div className="group relative rounded-lg overflow-hidden">
+                      <div
+                        className={`${bookmarksToRemove.includes(comic._id)
+                            ? "bg-gradient-to-r "
+                            : ""
+                          } ${isEditing
+                            ? "cursor-pointer group-hover:bg-gradient-to-l"
+                            : "group-hover:bg-blue-500"
+                          } from-emerald-500 to-blue-500 bg-right transition ease-in-out duration-1000 p-20 rounded-lg`}
                       />
+                      <div className="m-[1px] absolute inset-0 bg-[#141414] rounded-lg">
+                        <BookmarkItem
+                          image={comic.coverImage}
+                          name={comic.chapterName}
+                          ownerName={comic.owner[0].comicName}
+                          genere={comic.owner[0].genreNames}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  </BookmarkItemWrapper>
                 ))}
                 {!bookmarkList[0].comics?.length && (
                   <div className="w-full flex flex-col justify-center items-center">
-                    <img src="/empty-box.png" className="w-1/2" />
+                    <img src="/empty-box.png" className="w-1/2" alt="Empty box" />
                     <span className="font-semibold text-lg">
                       Chưa có bộ truyện nào
                     </span>

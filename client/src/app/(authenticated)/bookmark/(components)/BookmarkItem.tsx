@@ -12,7 +12,7 @@ const BookmarkItem = ({ image, name, ownerName, genere }) => {
             src={image}
             alt={name}
             className="object-cover rounded-md w-full h-full"
-            style={{ height: "100%" }}
+            style={{ height: "90%" }}
           />
         </div>
         <div className="space-y-2">
