@@ -1,6 +1,6 @@
 /** @format */
 
-import axiosClient from './axios';
+import axiosClient from "./axios";
 
 export const getRequest = async ({ endPoint }) => {
   const res = await axiosClient.get(endPoint);
@@ -13,7 +13,7 @@ export const postRequest = async ({ endPoint, formData, isFormData }) => {
     isFormData ? formData : JSON.stringify(formData),
     isFormData && {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     }
   );
@@ -25,7 +25,7 @@ export const putRequest = async ({ endPoint, formData, isFormData }) => {
     isFormData ? formData : JSON.stringify(formData),
     isFormData && {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     }
   );
@@ -35,3 +35,4 @@ export const deleteRequest = async ({ endPoint }) => {
   const res = await axiosClient.delete(endPoint);
   return res;
 };
+// sync deploying
