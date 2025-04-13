@@ -81,6 +81,7 @@ const ChapterComponent = ({ comicId, session }) => {
     useQuery({
       queryKey: ["user", "coinAndQCData"],
       queryFn: async () => {
+        if (!session?.user?.id) return {};
         const res = await getUserCoinAndChallenge(session?.user?.id);
         return res;
       },
@@ -89,6 +90,7 @@ const ChapterComponent = ({ comicId, session }) => {
   const { data: userInfo } = useQuery({
     queryKey: ["user", "info"],
     queryFn: async () => {
+      if (!session?.user?.id) return {};
       const res = await fetchUserInfoById(session?.user?.id);
       return res;
     },
@@ -124,8 +126,14 @@ const ChapterComponent = ({ comicId, session }) => {
   const processBuyChapter = async () => {
     setProcessPayment(true);
     try {
-      await paySkycoin(userId, boughtInfo?.unlockPrice, boughtInfo?.chapterId);
-      setBoughtChapterList([...boughtChapterList, boughtInfo.chapterId]);
+      if (userId) {
+        await paySkycoin(
+          userId,
+          boughtInfo?.unlockPrice,
+          boughtInfo?.chapterId
+        );
+        setBoughtChapterList([...boughtChapterList, boughtInfo.chapterId]);
+      }
     } catch (error) {
       setErrorMessage(
         "Giao dịch thất bại, vui lòng kiểm tra lại số dư và thử lại"
@@ -136,9 +144,11 @@ const ChapterComponent = ({ comicId, session }) => {
 
   const fetchChapterList = async () => {
     const result = await getChapter(comicId);
-    const boughtList = await getPaymentHistories(userId);
+    if (userId) {
+      const boughtList = await getPaymentHistories(userId);
+      setBoughtChapterList(boughtList);
+    }
     setChapterList(result[0]?.detailChapterList);
-    setBoughtChapterList(boughtList);
     setCurrentChapterDetail(
       result[0]?.detailChapterList?.find((i) => i?._id === chapterId)?.content
     );
@@ -150,9 +160,11 @@ const ChapterComponent = ({ comicId, session }) => {
     setIsLoading(false);
   };
   const checkLikeSaveChapter = async () => {
-    const result = await checkUserHasLikeOrSaveChapter(chapterId, userId);
-    setHasLiked(result?.like);
-    setHasSaved(result?.bookmark);
+    if (userId) {
+      const result = await checkUserHasLikeOrSaveChapter(chapterId, userId);
+      setHasLiked(result?.like);
+      setHasSaved(result?.bookmark);
+    }
   };
   useEffect(() => {
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -307,7 +319,7 @@ const ChapterComponent = ({ comicId, session }) => {
                                           />
                                           <div className="flex flex-col gap-1">
                                             <span className="text-[#DA5EF0] font-semibold text-xl">
-                                              {"kakaka"}
+                                              {"Chương truyện"}
                                             </span>
                                             <span className="text-lg text-slate-400">
                                               {chap?.chapterName}
@@ -332,9 +344,9 @@ const ChapterComponent = ({ comicId, session }) => {
                                           </span>
                                         </div>
                                         <div className="flex flex-row gap-2 text-white font-semibold text-xl">
-                                          {userInfo?.coinPoint.toLocaleString(
-                                            "de-DE"
-                                          )}
+                                          {(
+                                            userInfo?.coinPoint || "00"
+                                          )?.toLocaleString("de-DE")}
                                           <img
                                             src="/skycoin.png"
                                             width={30}

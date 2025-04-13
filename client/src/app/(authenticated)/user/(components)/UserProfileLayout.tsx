@@ -63,6 +63,7 @@ const UserProfileLayout = ({ session }) => {
   } = useQuery({
     queryKey: ["user", "info", session?.user?.id],
     queryFn: async () => {
+      if (!session?.user?.id) return {};
       const res = await fetchUserInfoById(session?.user?.id);
       setUsername(res.username);
       return res;

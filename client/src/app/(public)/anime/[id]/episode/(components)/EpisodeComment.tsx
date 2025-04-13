@@ -88,6 +88,7 @@ export const EpisodeComment = ({ episodeId, session }) => {
   });
 
   const checkUserCommentStatus = async (content) => {
+    if (!userId) return true;
     const result = await checkUserBanned(userId);
     if (result.toString().includes("2020")) {
       const checkRes = await checkValidCommentContent(content);
@@ -114,6 +115,10 @@ export const EpisodeComment = ({ episodeId, session }) => {
   };
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (!userId) {
+      toast.error("Vui lòng đăng nhập");
+      return;
+    }
     const commentContent = data.comment;
     form.reset({ comment: "" });
     const checkRes = await checkUserCommentStatus(commentContent);

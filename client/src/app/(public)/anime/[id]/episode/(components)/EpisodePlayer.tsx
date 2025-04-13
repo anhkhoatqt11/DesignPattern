@@ -47,6 +47,7 @@ const EpisodePlayer = ({ episodeDetail, session }) => {
     useQuery({
       queryKey: ["user", "coinAndQCData", session?.user?.id],
       queryFn: async () => {
+        if (!session?.user?.id) return {};
         const res = await getUserCoinAndChallenge(session?.user?.id);
         return res;
       },
@@ -101,19 +102,23 @@ const EpisodePlayer = ({ episodeDetail, session }) => {
 
   useEffect(() => {
     const getPreviousPositionVideo = async () => {
-      const result = await checkUserHistoryHadSeenEpisode(
-        episodeDetail?._id,
-        userId
-      );
-      setPreviousPosition(result ? result?.position : 0);
+      if (userId) {
+        const result = await checkUserHistoryHadSeenEpisode(
+          episodeDetail?._id,
+          userId
+        );
+        setPreviousPosition(result ? result?.position : 0);
+      }
     };
     const updateUserWatchingHistory = async () => {
       const position = localStorage.getItem("currentVideoPosition");
-      await updateUserHistoryHadSeenEpisode(
-        episodeDetail?._id,
-        userId,
-        Math.round(position || 0)
-      );
+      if (userId) {
+        await updateUserHistoryHadSeenEpisode(
+          episodeDetail?._id,
+          userId,
+          Math.round(position || 0)
+        );
+      }
     };
     getPreviousPositionVideo();
     return () => {
@@ -140,7 +145,7 @@ const EpisodePlayer = ({ episodeDetail, session }) => {
               {episodeDetail && (
                 <AspectRatio ratio={16 / 9}>
                   <div className="relative">
-                    {!hasWatchFullAd && (
+                    {/* {!hasWatchFullAd && (
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
@@ -164,10 +169,10 @@ const EpisodePlayer = ({ episodeDetail, session }) => {
                       </a>
                     )}
                     {!hasWatchFullAd && (
-                      <div className="absolute w-[200px] p-[10px] rounded-[40px] bg-[#dddddd] text-[16px] font-semibold pl-[20px] top-[20px] left-[20px] z-20">
-                        Quảng cáo còn {adDuration - adPosition}s
-                      </div>
-                    )}
+                        <div className="absolute w-[200px] p-[10px] rounded-[40px] bg-[#dddddd] text-[16px] font-semibold pl-[20px] top-[20px] left-[20px] z-20">
+                          Quảng cáo còn {adDuration - adPosition}s
+                        </div>
+                      )} */}
                     <video
                       id="animeVideo"
                       ref={animeVideoRef}

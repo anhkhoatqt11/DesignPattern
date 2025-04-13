@@ -17,7 +17,8 @@ import { Button } from "@/components/ui/button";
 
 const ChallengeDashboardLayout = ({ session }) => {
   const { getUsersChallengesPoint, getChallengeInformation } = useChallenge();
-  const { updateLoginLog, getDailyQuests, updateQuestLog, updateDailyData } = useQuest();
+  const { updateLoginLog, getDailyQuests, updateQuestLog, updateDailyData } =
+    useQuest();
   const [currentDateTime, setCurrentDateTime] = React.useState(new Date());
   const { getUserCoinAndChallenge } = useUser();
   const [loginGift, setLoginGift] = useState(0);
@@ -30,6 +31,7 @@ const ChallengeDashboardLayout = ({ session }) => {
   } = useQuery({
     queryKey: ["user", "coinAndQCData", session?.user?.id],
     queryFn: async () => {
+      if (!session?.user?.id) return {};
       const res = await getUserCoinAndChallenge(session?.user?.id);
       return res;
     },
@@ -140,7 +142,7 @@ const ChallengeDashboardLayout = ({ session }) => {
                 {challengeInformation?.endTime && (
                   <div className="flex items-center justify-center lg:justify-start">
                     {currentDateTime <
-                      new Date(challengeInformation.endTime) ? (
+                    new Date(challengeInformation.endTime) ? (
                       <p className="text-[#A958FE] text-base flex flex-row items-center">
                         <Hourglass className="mr-1 w-4 h-4" />
                         Thời gian còn lại:{" "}
@@ -149,7 +151,7 @@ const ChallengeDashboardLayout = ({ session }) => {
                           Math.floor(
                             (new Date(challengeInformation.endTime).getTime() -
                               currentDateTime.getTime()) /
-                            (1000 * 60 * 60 * 24)
+                              (1000 * 60 * 60 * 24)
                           )
                         )}{" "}
                         ngày{" "}
@@ -158,7 +160,7 @@ const ChallengeDashboardLayout = ({ session }) => {
                           Math.floor(
                             (new Date(challengeInformation.endTime).getTime() -
                               currentDateTime.getTime()) /
-                            (1000 * 60 * 60)
+                              (1000 * 60 * 60)
                           ) % 24
                         )}{" "}
                         giờ{" "}
@@ -167,7 +169,7 @@ const ChallengeDashboardLayout = ({ session }) => {
                           Math.floor(
                             (new Date(challengeInformation.endTime).getTime() -
                               currentDateTime.getTime()) /
-                            (1000 * 60)
+                              (1000 * 60)
                           ) % 60
                         )}{" "}
                         phút

@@ -49,9 +49,8 @@ export function convertUtcToGmtPlus7(utcString) {
 const ComicInfo = ({ id, session }) => {
   const userId = session?.user?.id;
   // const userId = "";
-  const userCoins = 1000;
   const router = useRouter();
-  const { getPaymentHistories, paySkycoin } = useUser();
+  const { getPaymentHistories, paySkycoin, fetchUserInfoById } = useUser();
   const { getChapter } = useComic();
   const [processPayment, setProcessPayment] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -61,6 +60,15 @@ const ComicInfo = ({ id, session }) => {
   const [boughtChapterList, setBoughtChapterList] = useState([]);
   const [boughtInfo, setBoughtInfo] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
+
+  const { data: userInfo } = useQuery({
+    queryKey: ["user", "info"],
+    queryFn: async () => {
+      if (!session?.user?.id) return {};
+      const res = await fetchUserInfoById(session?.user?.id);
+      return res;
+    },
+  });
 
   const { data, isLoading } = useQuery({
     queryKey: ["comic", id],
@@ -72,6 +80,10 @@ const ComicInfo = ({ id, session }) => {
 
   useEffect(() => {
     const fetchUserBoughtDetail = async () => {
+      if (!userId) {
+        setIsLoadingUserBoughtDetail(false);
+        return;
+      }
       const result = await getPaymentHistories(userId);
       setBoughtChapterList(result);
       setIsLoadingUserBoughtDetail(false);
@@ -132,7 +144,7 @@ const ComicInfo = ({ id, session }) => {
                 height={270}
                 className="rounded-lg absolute"
               />
-              <div className="absolute inset-x-0 -bottom-2 left-0 z-10 w-full flex justify-center">
+              {/* <div className="absolute inset-x-0 -bottom-2 left-0 z-10 w-full flex justify-center">
                 <Button
                   size="sm"
                   className="w-2/3 z-10 transition-colors transition-transform transition-shadow transition-all duration-500 bg-left hover:bg-right shadow-[#A958FE] hover:shadow-md"
@@ -149,7 +161,7 @@ const ComicInfo = ({ id, session }) => {
                 >
                   📖 ĐỌC NGAY
                 </Button>
-              </div>
+              </div> */}
             </div>
 
             {/* Comic Details */}
@@ -336,7 +348,9 @@ const ComicInfo = ({ id, session }) => {
                                 </span>
                               </div>
                               <div className="flex flex-row gap-2 text-white font-semibold text-xl">
-                                {userCoins.toLocaleString("de-DE")}
+                                {(userInfo?.coinPoint || "0")?.toLocaleString(
+                                  "de-DE"
+                                )}
                                 <img
                                   src="/skycoin.png"
                                   width={30}
@@ -418,7 +432,8 @@ const ComicInfo = ({ id, session }) => {
             <>
               <ModalHeader className="flex flex-col gap-1"></ModalHeader>
               <ModalBody>
-                {userCoins < boughtInfo?.unlockPrice || errorMessage ? (
+                {userInfo?.coinPoint < boughtInfo?.unlockPrice ||
+                errorMessage ? (
                   <div className="text-white w-full h-full text-center flex flex-row gap-2 items-start">
                     <MdErrorOutline className="text-red-500 w-5 h-5" />
                     {errorMessage ||

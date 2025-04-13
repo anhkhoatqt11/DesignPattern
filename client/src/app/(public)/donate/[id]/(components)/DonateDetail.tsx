@@ -35,10 +35,11 @@ import {
 import { GoQuestion } from "react-icons/go";
 import { MdErrorOutline } from "react-icons/md";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
+import { useQuery } from "@tanstack/react-query";
+import { useUser } from "@/hooks/useUser";
 
 const DonateDetail = ({ params, session }) => {
   const userId = session?.user?.id;
-  const userCoins = 1000;
   const [isLoading, setIsLoading] = useState(true);
   const [packageDetail, setPackageDetail] = useState();
   const [packageList, setPackageList] = useState();
@@ -49,6 +50,7 @@ const DonateDetail = ({ params, session }) => {
     uploadDonateRecord,
     processDonationPayment,
   } = useDonate();
+  const { fetchUserInfoById } = useUser();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [verifyDonate, setVerifyDonate] = useState(false);
   const [processPayment, setProcessPayment] = useState(false);
@@ -79,6 +81,15 @@ const DonateDetail = ({ params, session }) => {
     }
     setProcessPayment(false);
   };
+
+  const { data: userInfo } = useQuery({
+    queryKey: ["user", "info"],
+    queryFn: async () => {
+      if (!session?.user?.id) return {};
+      const res = await fetchUserInfoById(session?.user?.id);
+      return res;
+    },
+  });
 
   return isLoading ? (
     <div className="bg-[#141414] flex h-screen items-center justify-center -mt-[50px] md:-mt-[76px]">
@@ -191,7 +202,9 @@ const DonateDetail = ({ params, session }) => {
                             </span>
                           </div>
                           <div className="flex flex-row gap-2 text-white font-semibold text-xl">
-                            {userCoins.toLocaleString("de-DE")}
+                            {(userInfo?.coinPoint || "0")?.toLocaleString(
+                              "de-DE"
+                            )}
                             <img src="/skycoin.png" width={30} height={30} />
                           </div>
                         </div>
@@ -320,7 +333,8 @@ const DonateDetail = ({ params, session }) => {
             <>
               <ModalHeader className="flex flex-col gap-1"></ModalHeader>
               <ModalBody>
-                {userCoins < packageDetail?.coin || errorMessage !== "" ? (
+                {userInfo?.coinPoint < packageDetail?.coin ||
+                errorMessage !== "" ? (
                   <div className="text-white w-full h-full text-center flex flex-row gap-1">
                     <MdErrorOutline className="text-red-500 w-5 h-5" />
                     {errorMessage ||

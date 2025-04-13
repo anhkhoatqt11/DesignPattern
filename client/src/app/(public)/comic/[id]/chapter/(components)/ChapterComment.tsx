@@ -87,6 +87,7 @@ export const ChapterComment = ({ chapterId, userId }) => {
   });
 
   const checkUserCommentStatus = async (content) => {
+    if (!userId) return true;
     const result = await checkUserBanned(userId);
     if (result.toString().includes("2020")) {
       const checkRes = await checkValidCommentContent(content);

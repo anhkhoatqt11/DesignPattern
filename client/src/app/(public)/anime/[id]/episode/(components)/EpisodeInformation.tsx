@@ -29,12 +29,14 @@ export const EpisodeInformation = ({ animeDetail, episodeDetail, session }) => {
 
   useEffect(() => {
     const checkLikeSaveEpisode = async () => {
-      const result = await checkUserHasLikeOrSaveEpisode(
-        episodeDetail?._id,
-        userId
-      );
-      setHasLiked(result?.like);
-      setHasSaved(result?.bookmark);
+      if (userId) {
+        const result = await checkUserHasLikeOrSaveEpisode(
+          episodeDetail?._id,
+          userId
+        );
+        setHasLiked(result?.like);
+        setHasSaved(result?.bookmark);
+      }
     };
     checkLikeSaveEpisode();
   }, []);
