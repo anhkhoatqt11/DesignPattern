@@ -38,6 +38,8 @@ const EpisodePlayer = ({ episodeDetail, session }) => {
   const [adPosition, setAdPosition] = useState(0);
   const adVideoRef = useRef(null);
   const animeVideoRef = useRef(null);
+  const manager = PlaybackManager.getInstance();
+  manager.setVideoRef(animeVideoRef);
   const [adDuration, setAdDuration] = useState(0);
   const [previousPosition, setPreviousPosition] = useState(0);
   const [viewTimeStack, setViewTimeStack] = useState<number[]>([]);
@@ -52,7 +54,7 @@ const EpisodePlayer = ({ episodeDetail, session }) => {
         return res;
       },
     });
-  // video player .......................
+
   const onTimeUpdateFunction = () => {
     if (adVideoRef?.current?.currentTime === adVideoRef?.current?.duration)
       setHasWatchFullAd(true);
@@ -134,8 +136,6 @@ const EpisodePlayer = ({ episodeDetail, session }) => {
     }
   }, [previousPosition, animeVideoRef]);
 
-  // video player ..............................
-
   return (
     <div>
       <section className="flex flex-row gap-3 px-4">
@@ -145,34 +145,6 @@ const EpisodePlayer = ({ episodeDetail, session }) => {
               {episodeDetail && (
                 <AspectRatio ratio={16 / 9}>
                   <div className="relative">
-                    {/* {!hasWatchFullAd && (
-                      <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={
-                          episodeDetail?.advertisementContent[0]?.forwardLink
-                        }
-                      >
-                        <video
-                          ref={adVideoRef}
-                          width="100%"
-                          height="100%"
-                          autoPlay
-                          muted
-                          playsInline
-                          className="absolute top-0 left-0 z-10"
-                          src={
-                            episodeDetail?.advertisementContent[0]?.adVideoUrl
-                          }
-                          onTimeUpdate={onTimeUpdateFunction}
-                        />
-                      </a>
-                    )}
-                    {!hasWatchFullAd && (
-                        <div className="absolute w-[200px] p-[10px] rounded-[40px] bg-[#dddddd] text-[16px] font-semibold pl-[20px] top-[20px] left-[20px] z-20">
-                          Quảng cáo còn {adDuration - adPosition}s
-                        </div>
-                      )} */}
                     <video
                       id="animeVideo"
                       ref={animeVideoRef}
@@ -198,3 +170,39 @@ const EpisodePlayer = ({ episodeDetail, session }) => {
 };
 
 export default EpisodePlayer;
+
+class PlaybackManager {
+  private static instance: PlaybackManager;
+  private videoRef: React.RefObject<HTMLVideoElement> | null = null;
+
+  private constructor() {}
+
+  public static getInstance(): PlaybackManager {
+    if (!PlaybackManager.instance) {
+      PlaybackManager.instance = new PlaybackManager();
+    }
+    return PlaybackManager.instance;
+  }
+
+  public setVideoRef(ref: React.RefObject<HTMLVideoElement>) {
+    this.videoRef = ref;
+  }
+
+  public play() {
+    this.videoRef?.current?.play();
+  }
+
+  public pause() {
+    this.videoRef?.current?.pause();
+  }
+
+  public seek(seconds: number) {
+    if (this.videoRef?.current) {
+      this.videoRef.current.currentTime = seconds;
+    }
+  }
+
+  public getCurrentTime(): number {
+    return this.videoRef?.current?.currentTime || 0;
+  }
+}
