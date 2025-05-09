@@ -1,4 +1,5 @@
-import { RequestHandler } from "express";
+import { Request } from "express";
+import type { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import mongoose from "mongoose";
 import ComicsModel from "../models/comics";
@@ -9,6 +10,15 @@ import UserModel from "../models/user";
 import * as admin from "firebase-admin";
 import ComicAlbumModel from "../models/comicAlbum";
 import qs from "qs";
+import { StorageProviderFactory } from '../factories/StorageProviderFactory';
+
+interface FileRequest extends Request {
+    body: {
+        file: string; // base64 string
+        filename: string;
+        contentType: string;
+    }
+}
 
 // api get
 export const getComicBanner: RequestHandler = async (req, res, next) => {
@@ -1008,4 +1018,53 @@ export const searchComicByGenres: RequestHandler = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+// Helper function to get storage provider
+const getStorageProvider = () => {
+    return StorageProviderFactory.getProvider();
+};
+
+// Example of using storage in a controller method
+export const uploadComicImage: RequestHandler = async (req: FileRequest, res, next) => {
+    try {
+        const { file, filename, contentType } = req.body;
+        if (!file) {
+            throw createHttpError(400, "No file uploaded");
+        }
+
+        // Convert base64 to buffer
+        const buffer = Buffer.from(file.split(',')[1], 'base64');
+
+        const storage = getStorageProvider();
+        const result = await storage.uploadFile(buffer, {
+            path: 'comics',
+            filename: filename || `${Date.now()}-upload.${contentType.split('/')[1]}`,
+            contentType
+        });
+
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteComicImage: RequestHandler = async (req, res, next) => {
+    try {
+        const { path } = req.body;
+        if (!path) {
+            throw createHttpError(400, "File path is required");
+        }
+
+        const storage = getStorageProvider();
+        const success = await storage.deleteFile(path);
+
+        if (!success) {
+            throw createHttpError(404, "File not found or could not be deleted");
+        }
+
+        res.status(200).json({ message: "File deleted successfully" });
+    } catch (error) {
+        next(error);
+    }
 };
