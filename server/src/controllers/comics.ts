@@ -550,15 +550,46 @@ export const testComment: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const sendPushNoti: RequestHandler = async (req, res, next) => {
-  try {
+interface NotificationObserver {
+  update(message: any): Promise<void>;
+}
+
+class NotificationSubject {
+  private observers: NotificationObserver[] = [];
+
+  subscribe(observer: NotificationObserver) {
+    this.observers.push(observer);
+  }
+
+  unsubscribe(observer: NotificationObserver) {
+    this.observers = this.observers.filter((obs) => obs !== observer);
+  }
+
+  async notify(message: any) {
+    for (const observer of this.observers) {
+      await observer.update(message);
+    }
+  }
+}
+
+class FirebaseNotificationObserver implements NotificationObserver {
+  async update(message: any): Promise<void> {
     try {
       var serviceAccount = require("../../pushnotiflutter-95328-firebase-adminsdk-rdiar-9008d7c00f.json");
-      admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-      });
-    } catch {}
+      if (!admin.apps.length) {
+        admin.initializeApp({
+          credential: admin.credential.cert(serviceAccount),
+        });
+      }
+      await admin.messaging().send(message);
+    } catch (error) {
+      console.error("Firebase notification error:", error);
+    }
+  }
+}
 
+export const sendPushNoti: RequestHandler = async (req, res, next) => {
+  try {
     const token =
       "fYxl0HrhQGWk50NtCOKqq6:APA91bHMWUF391_XNFlIlBQcCzPK-1qwofwwZAj0pfE072_3q5ZhbzGOIgmV8i-nk-lOrLHoYPVo6rL7MjFXn0XttdBFwn5-rh3Wad8dfy7xFXfcN5MNRdmaUb0PpOJakDZvqLvdXGAt";
 
@@ -567,23 +598,12 @@ export const sendPushNoti: RequestHandler = async (req, res, next) => {
         title: req.body.title,
         body: req.body.body,
       },
-      token: token, // This is the device token
+      token: token,
     };
-
-    // Send a message to the device corresponding to the provided
-    // registration token.
-    admin
-      .messaging()
-      .send(message)
-      .then((response) => {
-        // Response is a message ID string.
-        console.log("Successfully sent message:", response);
-        res.send("Successfully sent message: " + response);
-      })
-      .catch((error) => {
-        console.log("Error sending message:", error);
-        res.send("Error sending message: " + error);
-      });
+    const subject = new NotificationSubject();
+    subject.subscribe(new FirebaseNotificationObserver());
+    await subject.notify(message);
+    res.send("Successfully sent message");
   } catch (error) {
     next(error);
   }
