@@ -1,4 +1,4 @@
-// NotificationFactory.ts
+
 import { EpisodeNotification } from "./EpisodeNotification";
 import { ChapterNotification } from "./ChapterNotification";
 import { CommentChapterNotification } from "./CommentChapterNotification";
@@ -12,7 +12,8 @@ export function NotificationFactory(data: any): INotificationHandler {
     case "chapter":
       return new ChapterNotification(data);
     case "commentChapter":
-      return new CommentChapterNotification(data);
+    case "commentEpisode":
+        return new CommentChapterNotification(data);
     default:
       return new DefaultNotification(data);
   }

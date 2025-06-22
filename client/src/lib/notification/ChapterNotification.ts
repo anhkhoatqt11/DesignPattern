@@ -4,7 +4,7 @@ export class ChapterNotification implements INotificationHandler {
   constructor(private data: any) {}
 
   getImage(): string {
-    return this.data.comic?.image || "/default-chapter.jpg";
+    return this.data.comic?.landspaceImage || "/loadingcomicimage.png";
   }
 
   getRedirectUrl(): string {

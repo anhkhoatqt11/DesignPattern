@@ -4,7 +4,7 @@ export class EpisodeNotification implements INotificationHandler {
   constructor(private data: any) {}
 
   getImage(): string {
-    return this.data.anime?.image || "/default-episode.jpg";
+    return this.data.anime?.landspaceImage || "/commentempty.png";
   }
 
   getRedirectUrl(): string {

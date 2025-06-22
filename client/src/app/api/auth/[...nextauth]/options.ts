@@ -4,6 +4,11 @@ import prisma from "@/lib/prisma";
 import jwt from 'jsonwebtoken';
 import { hashPassword } from "@/lib/auth";
 
+function normalizePhone(phone: string): string {
+  const cleaned = phone.replace(/\D/g, "");
+  if (cleaned.startsWith("0")) return `+84${cleaned.slice(1)}`;
+  return phone;
+}
 
 const options: AuthOptions = {
   secret: process.env.AUTH_SECRET,
@@ -23,28 +28,28 @@ const options: AuthOptions = {
           password: string;
         };
 
-        // Find the user by phone
+        const normalizedPhone = normalizePhone(phone);
+        console.log("[AUTH] Input phone:", phone);
+        console.log("[AUTH] Normalized phone:", normalizedPhone);
+
         const user = await prisma.users.findFirst({
-          where: { phone },
+          where: { phone: normalizedPhone },
         });
 
-        if (!user) throw new Error("Phone or password is incorrect");
+        console.log("[AUTH] Found user:", user?.id || null);
 
-        if (!user.authentication) throw new Error("User authentication data is missing");
+        if (!user) throw new Error("Số điện thoại hoặc mật khẩu không đúng");
+        if (!user.authentication) throw new Error("Thiếu dữ liệu đăng nhập");
 
         const { password: storedPassword, salt } = user.authentication;
-
-        // Hash the provided password using the shared utility
         const hashedInputPassword = hashPassword(salt, password);
 
-        console.log(hashedInputPassword, storedPassword);
+        console.log("[AUTH] Hash input vs stored:", hashedInputPassword, storedPassword);
 
-        // Compare the hashes
         if (hashedInputPassword !== storedPassword) {
-          throw new Error("Phone or password is incorrect");
+          throw new Error("Số điện thoại hoặc mật khẩu không đúng");
         }
 
-        // Return user data to attach to the session
         return {
           id: user.id,
           username: user.username,
@@ -59,8 +64,7 @@ const options: AuthOptions = {
 
   callbacks: {
     async signIn(params) {
-      console.log('paramssssssssssssssssssssssssssssssssssssssssssssss: ');
-      console.log(params);
+      console.log('[AUTH] signIn callback params:', params);
       if (!params?.user?.id || parseInt(params?.user?.id) === -1) {
         const payload = jwt.sign(
           { email: params?.user?.email, name: params?.user?.name },
@@ -74,13 +78,14 @@ const options: AuthOptions = {
     },
 
     async jwt({ token, user, trigger, session }) {
-      console.log('user in jwt: ');
-      console.log(token);
-      console.log(user);
+      console.log('[AUTH] jwt callback token:', token);
+      console.log('[AUTH] jwt callback user:', user);
+
       if (trigger === 'update' && session?.avatar) {
         token.avatar = session.avatar;
         return { ...token, ...session.user };
       }
+
       if (user) {
         token.id = user.id;
         token.coinPoint = user.coinPoint;
@@ -92,19 +97,20 @@ const options: AuthOptions = {
 
       return token;
     },
-    async session({ token, session }) {
 
+    async session({ token, session }) {
       if (session.user) {
-        (session.user as { id: string }).id = token.id as string;
-        (session.user as { username: string }).username = token.username as string;
-        (session.user as { avatar: string }).avatar = token.avatar as string;
-        (session.user as { phone: string }).phone = token.phone as string;
-        (session.user as { coinPoint: number }).coinPoint = token.coinPoint as number;
-        (session.user as { questLog: any[] }).questLog = token.questLog as any[];
+        session.user.id = token.id as string;
+        session.user.username = token.username as string;
+        session.user.avatar = token.avatar as string;
+        session.user.phone = token.phone as string;
+        session.user.coinPoint = token.coinPoint as number;
+        session.user.questLog = token.questLog as any[];
       }
       return session;
     },
   },
+
   pages: {
     signIn: '/auth/login',
   },

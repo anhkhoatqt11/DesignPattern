@@ -4,7 +4,7 @@ export class DefaultNotification implements INotificationHandler {
   constructor(private data: any) {}
 
   getImage(): string {
-    return "/default-noti.jpg";
+    return "/commentempty.png";
   }
 
   getRedirectUrl(): string {
